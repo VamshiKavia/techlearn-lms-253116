@@ -15,7 +15,7 @@ export default function DashboardLayout() {
       { to: '/admin/users', label: 'Users' },
     ],
     instructor: [
-      { to: '/instructor', label: 'Overview' },
+      { to: '/instructor/overview', label: 'Overview' },
       { to: '/instructor/courses', label: 'My Courses' },
       { to: '/instructor/courses/new', label: 'Create Course' },
     ],

@@ -15,6 +15,7 @@ import AdminOverview from '../pages/admin/AdminOverview';
 import InstructorDashboard from '../pages/instructor/InstructorDashboard';
 import InstructorCourses from '../pages/instructor/InstructorCourses';
 import InstructorCreateCourse from '../pages/instructor/InstructorCreateCourse';
+import InstructorOverview from '../pages/instructor/InstructorOverview';
 
 import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentCourses from '../pages/student/StudentCourses';
@@ -51,7 +52,8 @@ export default function AppRoutes() {
         {
           element: <DashboardLayout />,
           children: [
-            { path: '/instructor', element: <InstructorDashboard /> },
+            { path: '/instructor', element: <InstructorOverview /> },
+            { path: '/instructor/overview', element: <InstructorOverview /> },
             { path: '/instructor/courses', element: <InstructorCourses /> },
             { path: '/instructor/courses/new', element: <InstructorCreateCourse /> },
           ],
