@@ -21,6 +21,11 @@ import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentCourses from '../pages/student/StudentCourses';
 import StudentOverview from '../pages/student/StudentOverview';
 import StudentMyLearning from '../pages/student/StudentMyLearning';
+import StudentCatalog from '../pages/student/StudentCatalog';
+import CourseDetail from '../pages/student/CourseDetail';
+import LessonPlayer from '../pages/student/LessonPlayer';
+import QuizAttempt from '../pages/student/QuizAttempt';
+import AssignmentSubmission from '../pages/student/AssignmentSubmission';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
@@ -71,7 +76,11 @@ export default function AppRoutes() {
             { path: '/student/overview', element: <StudentOverview /> },
             { path: '/student/courses', element: <StudentCourses /> },
             { path: '/student/learning', element: <StudentMyLearning /> },
-            { path: '/student/catalog', element: <StudentCourses /> },
+            { path: '/student/catalog', element: <StudentCatalog /> },
+            { path: '/student/courses/:courseId', element: <CourseDetail /> },
+            { path: '/student/courses/:courseId/lessons/:lessonId', element: <LessonPlayer /> },
+            { path: '/student/courses/:courseId/quizzes/:quizId', element: <QuizAttempt /> },
+            { path: '/student/courses/:courseId/assignments/:assignmentId', element: <AssignmentSubmission /> },
           ],
         },
       ],

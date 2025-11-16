@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../../components/ui/Card';
 import MetricCard from '../../components/ui/MetricCard';
 import LineChart from '../../components/ui/LineChart';
+import ProgressBar from '../../components/ui/ProgressBar';
 
 /**
  * PUBLIC_INTERFACE
@@ -48,23 +49,6 @@ export default function StudentMyLearning() {
       ],
     },
   ];
-
-  function ProgressBar({ value }) {
-    // Simple progress bar using theme
-    const v = Math.max(0, Math.min(100, Number(value) || 0));
-    return (
-      <div aria-label="progress" style={{ height: 10, background: 'rgba(17,24,39,0.08)', borderRadius: 8, overflow: 'hidden' }}>
-        <div
-          style={{
-            width: `${v}%`,
-            height: '100%',
-            background: 'var(--color-primary)',
-            transition: 'width .3s ease',
-          }}
-        />
-      </div>
-    );
-  }
 
   function ModuleItem({ mod }) {
     return (
