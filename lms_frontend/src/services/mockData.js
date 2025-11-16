@@ -1,5 +1,27 @@
 export const mockEnrolledCourseIds = ['fs-react-node', 'devops-kubernetes', 'ds-python-ml'];
 
+// PUBLIC_INTERFACE
+// Minimal user directory for admin mock features
+export const mockUsers = [
+  { id: 'u_admin', name: 'Alice Admin', email: 'alice.admin@example.com', role: 'Admin' },
+  { id: 'u_inst_1', name: 'Ian Instructor', email: 'ian.inst@example.com', role: 'Instructor' },
+  { id: 'u_inst_2', name: 'Ingrid Instructor', email: 'ingrid.inst@example.com', role: 'Instructor' },
+  { id: 'u_stu_1', name: 'Sam Student', email: 'sam.student@example.com', role: 'Student' },
+  { id: 'u_stu_2', name: 'Sasha Student', email: 'sasha.student@example.com', role: 'Student' },
+  { id: 'u_stu_3', name: 'Sanjay Student', email: 'sanjay.student@example.com', role: 'Student' },
+];
+
+// PUBLIC_INTERFACE
+// Minimal enrollments snapshot used for admin progress summaries
+export const mockEnrollments = [
+  { userId: 'u_stu_1', courseId: 'fs-react-node', progress: 35 },
+  { userId: 'u_stu_2', courseId: 'fs-react-node', progress: 62 },
+  { userId: 'u_stu_3', courseId: 'fs-react-node', progress: 10 },
+  { userId: 'u_stu_1', courseId: 'devops-kubernetes', progress: 55 },
+  { userId: 'u_stu_2', courseId: 'devops-kubernetes', progress: 48 },
+  { userId: 'u_stu_3', courseId: 'ds-python-ml', progress: 20 },
+];
+
 // Default progress map for enrolled courses (overridable by pages/tests)
 export const mockCourseProgress = {
   'fs-react-node': 32,

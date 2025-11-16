@@ -19,6 +19,11 @@ export const AuthContext = createContext({
   api: null,
   services: null,
 });
+/**
+ * PUBLIC_INTERFACE
+ * Simple hook to access AuthContext safely.
+ */
+export const useAuth = () => React.useContext(AuthContext);
 
 // PUBLIC_INTERFACE
 export function AuthProvider({ children }) {

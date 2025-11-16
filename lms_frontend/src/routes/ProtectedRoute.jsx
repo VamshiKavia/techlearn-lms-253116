@@ -1,17 +1,24 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { AuthContext } from '../providers/AuthProvider';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../providers/AuthProvider.jsx';
 
 // PUBLIC_INTERFACE
-export function ProtectedRoute({ allowedRoles }) {
-  /** Protects nested routes; redirects to /login if not authenticated or unauthorized. */
-  const { user, role } = React.useContext(AuthContext);
+export default function ProtectedRoute({ children, roles }) {
+  /** Protects routes: requires auth and one of the roles if provided. */
+  const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to="/" replace />;
+
+  if (Array.isArray(roles) && roles.length > 0) {
+    const allowed = roles.includes(user.role);
+    if (!allowed) {
+      if (user.role === 'Instructor') return <Navigate to="/instructor/overview" replace />;
+      if (user.role === 'Student') return <Navigate to="/student/overview" replace />;
+      return <Navigate to="/" replace />;
+    }
   }
-  return <Outlet />;
+
+  return children;
 }

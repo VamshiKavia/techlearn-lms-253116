@@ -1,110 +1,77 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import MainLayout from '../components/layouts/MainLayout';
-import DashboardLayout from '../components/layouts/DashboardLayout';
+import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import NotFound from '../pages/NotFound';
-import { ProtectedRoute } from './ProtectedRoute';
+import ProtectedRoute from './ProtectedRoute.jsx';
 
 import AdminDashboard from '../pages/admin/AdminDashboard';
-import AdminCourses from '../pages/admin/AdminCourses';
 import AdminOverview from '../pages/admin/AdminOverview';
+import AdminUsers from '../pages/admin/AdminUsers';
+import AdminCourses from '../pages/admin/AdminCourses';
+import AdminEnrollments from '../pages/admin/AdminEnrollments';
 
 import InstructorDashboard from '../pages/instructor/InstructorDashboard';
+import InstructorOverview from '../pages/instructor/InstructorOverview';
 import InstructorCourses from '../pages/instructor/InstructorCourses';
 import InstructorCreateCourse from '../pages/instructor/InstructorCreateCourse';
-import InstructorOverview from '../pages/instructor/InstructorOverview';
 
 import StudentDashboard from '../pages/student/StudentDashboard';
-import StudentCourses from '../pages/student/StudentCourses';
 import StudentOverview from '../pages/student/StudentOverview';
-import StudentMyLearning from '../pages/student/StudentMyLearning';
 import StudentCatalog from '../pages/student/StudentCatalog';
-import CourseDetail from '../pages/student/CourseDetail';
-import LessonPlayer from '../pages/student/LessonPlayer';
-import QuizAttempt from '../pages/student/QuizAttempt';
-import AssignmentSubmission from '../pages/student/AssignmentSubmission';
-import StudentFullStack from '../pages/student/StudentFullStack';
-import StudentDataScience from '../pages/student/StudentDataScience';
-import StudentCloud from '../pages/student/StudentCloud';
-import StudentDevOps from '../pages/student/StudentDevOps';
-import Reviews from '../pages/student/Reviews';
-import QnA from '../pages/student/QnA';
-import Certificates from '../pages/student/Certificates';
-import StudentSoftwareTesting from '../pages/student/StudentSoftwareTesting';
-import StudentAI from '../pages/student/StudentAI';
+import StudentMyLearning from '../pages/student/StudentMyLearning';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
-  /** Sets up router with public and protected role routes. */
-  const router = createBrowserRouter([
-    {
-      element: <MainLayout />,
-      children: [
-        { path: '/', element: <Home /> },
-        { path: '/login', element: <Login /> },
-        { path: '/signup', element: <Signup /> },
-      ],
-    },
-    {
-      element: <ProtectedRoute allowedRoles={['admin']} />,
-      children: [
-        {
-          element: <DashboardLayout />,
-          children: [
-            { path: '/admin', element: <AdminOverview /> },
-            { path: '/admin/overview', element: <AdminOverview /> },
-            { path: '/admin/courses', element: <AdminCourses /> },
-          ],
-        },
-      ],
-    },
-    {
-      element: <ProtectedRoute allowedRoles={['instructor']} />,
-      children: [
-        {
-          element: <DashboardLayout />,
-          children: [
-            { path: '/instructor', element: <InstructorOverview /> },
-            { path: '/instructor/overview', element: <InstructorOverview /> },
-            { path: '/instructor/courses', element: <InstructorCourses /> },
-            { path: '/instructor/courses/new', element: <InstructorCreateCourse /> },
-          ],
-        },
-      ],
-    },
-    {
-      element: <ProtectedRoute allowedRoles={['student']} />,
-      children: [
-        {
-          element: <DashboardLayout />,
-          children: [
-            { path: '/student', element: <StudentOverview /> },
-            { path: '/student/overview', element: <StudentOverview /> },
-            { path: '/student/courses', element: <StudentCourses /> },
-            { path: '/student/learning', element: <StudentMyLearning /> },
-            { path: '/student/catalog', element: <StudentCatalog /> },
-            { path: '/student/paths/full-stack', element: <StudentFullStack /> },
-            { path: '/student/paths/data-science', element: <StudentDataScience /> },
-            { path: '/student/paths/cloud', element: <StudentCloud /> },
-            { path: '/student/paths/devops', element: <StudentDevOps /> },
-            { path: '/student/paths/testing', element: <StudentSoftwareTesting /> },
-            { path: '/student/paths/ai', element: <StudentAI /> },
-            { path: '/student/reviews', element: <Reviews /> },
-            { path: '/student/qna', element: <QnA /> },
-            { path: '/student/certificates', element: <Certificates /> },
-            { path: '/student/courses/:courseId', element: <CourseDetail /> },
-            { path: '/student/courses/:courseId/lessons/:lessonId', element: <LessonPlayer /> },
-            { path: '/student/courses/:courseId/quizzes/:quizId', element: <QuizAttempt /> },
-            { path: '/student/courses/:courseId/assignments/:assignmentId', element: <AssignmentSubmission /> },
-          ],
-        },
-      ],
-    },
-    { path: '*', element: <NotFound /> },
-  ]);
+  /** Defines app routes with role-protected admin/instructor/student areas. */
+  return (
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-  return <RouterProvider router={router} />;
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute roles={['Admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="overview" element={<AdminOverview />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="courses" element={<AdminCourses />} />
+        <Route path="enrollments" element={<AdminEnrollments />} />
+      </Route>
+
+      <Route
+        path="/instructor"
+        element={
+          <ProtectedRoute roles={['Instructor', 'Admin']}>
+            <InstructorDashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="overview" element={<InstructorOverview />} />
+        <Route path="courses" element={<InstructorCourses />} />
+        <Route path="create-course" element={<InstructorCreateCourse />} />
+      </Route>
+
+      <Route
+        path="/student"
+        element={
+          <ProtectedRoute roles={['Student', 'Admin']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="overview" element={<StudentOverview />} />
+        <Route path="catalog" element={<StudentCatalog />} />
+        <Route path="mylearning" element={<StudentMyLearning />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 }

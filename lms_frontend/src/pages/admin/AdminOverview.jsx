@@ -1,83 +1,109 @@
 import React from 'react';
-import MetricCard from '../../components/ui/MetricCard';
+import { Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
+import MetricCard from '../../components/ui/MetricCard';
 import LineChart from '../../components/ui/LineChart';
 import BarChart from '../../components/ui/BarChart';
+import RatingStars from '../../components/ui/RatingStars';
+import Button from '../../components/ui/Button';
+import { getAdminOverview, getIntegratedQuickLinks } from '../../services/adminService';
 
 // PUBLIC_INTERFACE
 export default function AdminOverview() {
-  /** Admin Overview dashboard with mock KPI metrics and simple charts. No backend calls. */
-  const metrics = [
-    { label: 'Total Users', value: '12,430', trend: 3.2, hint: 'vs last 30 days' },
-    { label: 'Active Learners', value: '2,145', trend: 1.1, hint: 'weekly active' },
-    { label: 'Courses', value: '86', trend: 0.0, hint: 'published' },
-    { label: 'Enrollments', value: '28,902', trend: 5.6, hint: 'lifetime' },
-    { label: 'Completion Rate', value: '62%', trend: -0.7, hint: 'rolling 30 days' },
+  /** Admin Overview page with integrated metrics, charts and quick links. */
+  const { metrics, progress, latestCourses, topRated } = getAdminOverview();
+  const quickLinks = getIntegratedQuickLinks();
+
+  const progressSeries = [
+    {
+      id: 'Avg Progress',
+      data: Object.values(progress.byCourse).map((c, idx) => ({
+        x: `C${idx + 1}`,
+        y: c.avgProgress,
+      })),
+    },
+  ];
+  const enrollmentSeries = [
+    {
+      id: 'Enrollments',
+      data: Object.values(progress.byCourse).map((c, idx) => ({
+        x: `C${idx + 1}`,
+        y: c.learners,
+      })),
+    },
   ];
 
-  const enrollmentsTrend = [120, 130, 128, 140, 160, 180, 175, 190, 210, 205, 230, 245];
-  const completionsTrend = [60, 62, 61, 63, 64, 66, 65, 67, 66, 68, 69, 70];
-  const topCategories = [320, 280, 260, 210, 160, 120];
-
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
-      <div>
-        <h1 style={{ margin: 0 }}>Admin Overview</h1>
-        <p style={{ color: 'var(--color-secondary)', marginTop: 6 }}>
-          Platform health and learning activity at a glance.
-        </p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-gray-800">Admin Overview</h1>
+        <div className="flex gap-2">
+          {quickLinks.map((q) => (
+            <Link key={q.to} to={q.to}>
+              <Button variant="secondary">{q.label}</Button>
+            </Link>
+          ))}
+        </div>
       </div>
 
-      <div
-        aria-label="metrics"
-        style={{
-          display: 'grid',
-          gap: 12,
-          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        }}
-      >
-        {metrics.map((m) => (
-          <MetricCard key={m.label} label={m.label} value={m.value} trend={m.trend} hint={m.hint} />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <MetricCard label="Total Users" value={metrics.usersTotal} />
+        <MetricCard label="Courses" value={`${metrics.coursesTotal} (${metrics.coursesPublished} published)`} />
+        <MetricCard label="Enrollments" value={metrics.enrollmentsTotal} />
       </div>
 
-      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: '2fr 1fr' }}>
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Monthly Enrollments</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>Last 12 months</div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <LineChart data={enrollmentsTrend} label="Monthly Enrollments line chart" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card title="Average Progress by Course">
+          <div className="h-56">
+            <LineChart series={progressSeries} />
           </div>
         </Card>
-
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Completion Rate</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>Last 12 months</div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <LineChart data={completionsTrend} color="var(--color-success)" label="Completion Rate line chart" />
+        <Card title="Enrollments by Course">
+          <div className="h-56">
+            <BarChart series={enrollmentSeries} />
           </div>
         </Card>
       </div>
 
-      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}>
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Top Categories by Enrollment</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>This quarter</div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <BarChart data={topCategories} label="Top Categories bar chart" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card title="Latest Updated Courses">
+          <div className="grid grid-cols-1 gap-3">
+            {latestCourses.length === 0 ? (
+              <div className="text-gray-500">No courses available.</div>
+            ) : latestCourses.map((c) => (
+              <div key={c.id} className="flex items-center justify-between border rounded p-3 bg-white">
+                <div>
+                  <div className="font-medium text-gray-800">{c.title}</div>
+                  <div className="text-xs text-gray-500">{c.category} • {c.instructorName || 'Instructor'}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RatingStars value={c.rating || 0} />
+                  <span className={`text-xs ${c.published ? 'text-green-600' : 'text-gray-500'}`}>
+                    {c.published ? 'Published' : 'Draft'}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
-
-        <Card>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>Announcements</div>
-          <div style={{ fontSize: 14, color: 'var(--color-secondary)' }}>
-            No new announcements. Use the Admin tools to create platform notices.
+        <Card title="Top Rated Courses">
+          <div className="grid grid-cols-1 gap-3">
+            {topRated.length === 0 ? (
+              <div className="text-gray-500">No courses available.</div>
+            ) : topRated.map((c) => (
+              <div key={c.id} className="flex items-center justify-between border rounded p-3 bg-white">
+                <div>
+                  <div className="font-medium text-gray-800">{c.title}</div>
+                  <div className="text-xs text-gray-500">{c.category} • {c.instructorName || 'Instructor'}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <RatingStars value={c.rating || 0} />
+                  <span className={`text-xs ${c.published ? 'text-green-600' : 'text-gray-500'}`}>
+                    {c.published ? 'Published' : 'Draft'}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>

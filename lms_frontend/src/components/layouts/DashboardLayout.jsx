@@ -1,74 +1,49 @@
 import React from 'react';
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import '../../styles/theme.css';
-import { AuthContext } from '../../providers/AuthProvider';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 
-/**
- * PUBLIC_INTERFACE
- * Role-based dashboard layout with sidebar navigation and topbar.
- */
+// PUBLIC_INTERFACE
 export default function DashboardLayout() {
-  const { user, role, logout } = React.useContext(AuthContext);
-
-  const navByRole = {
-    admin: [
-      { to: '/admin/overview', label: 'Overview' },
-      { to: '/admin/courses', label: 'Courses' },
-    ],
-    instructor: [
-      { to: '/instructor/overview', label: 'Overview' },
-      { to: '/instructor/courses', label: 'My Courses' },
-      { to: '/instructor/courses/new', label: 'Create Course' },
-    ],
-    student: [
-      { to: '/student/overview', label: 'Overview' },
-      { to: '/student/learning', label: 'My Learning' },
-      { to: '/student/catalog', label: 'Catalog' },
-      // Simple Paths
-      { to: '/student/paths/full-stack', label: 'Full-Stack' },
-      { to: '/student/paths/data-science', label: 'Data Science' },
-      { to: '/student/paths/cloud', label: 'Cloud' },
-      { to: '/student/paths/devops', label: 'DevOps' },
-      { to: '/student/paths/testing', label: 'Software Testing', testId: 'nav-testing' },
-      { to: '/student/paths/ai', label: 'AI', testId: 'nav-ai' },
-      // Keep essentials in student menu
-      { to: '/student/reviews', label: 'Reviews' },
-      { to: '/student/qna', label: 'Q&A' },
-      { to: '/student/certificates', label: 'Certificates' },
-    ],
+  /** Shared dashboard layout with role sections and sidebar navigation */
+  const location = useLocation();
+  const NavItem = ({ to, label }) => {
+    const active = location.pathname === to;
+    return (
+      <Link
+        to={to}
+        className={`block px-3 py-2 rounded ${active ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-100'}`}
+      >
+        {label}
+      </Link>
+    );
   };
 
-  const links = navByRole[role] || [];
-  const linkClass = ({ isActive }) => `nav-link ${isActive ? 'active' : ''}`;
-
   return (
-    <div className="layout">
-      <aside className="sidebar">
-        <div className="brand" style={{ fontWeight: 800, color: 'var(--primary)', marginBottom: 12 }}>TechLearn</div>
-        <div style={{ marginBottom: 12, color: 'var(--muted)' }}>
-          <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 1 }}>Signed in</div>
-          <div style={{ fontWeight: 600 }}>{user?.email}</div>
-          <div style={{ fontSize: 12, opacity: .85 }}>Role: {role}</div>
-        </div>
-        <nav aria-label="Sidebar" style={{ display: 'grid', gap: 4 }}>
-          {links.map((item) => (
-            <NavLink key={item.to} to={item.to} end className={linkClass} data-testid={item.testId || undefined}>
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-      <div>
-        <div className="topbar">
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <Link to="/">TechLearn LMS</Link>
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Link className="btn ghost" to="/">Home</Link>
-            <button className="btn" onClick={logout}>Logout</button>
-          </div>
-        </div>
-        <main className="container">
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex">
+        <aside className="w-64 bg-white border-r min-h-screen p-4">
+          <div className="text-gray-800 font-semibold mb-3">Admin</div>
+          <nav className="space-y-1">
+            <NavItem to="/admin/overview" label="Overview" />
+            <NavItem to="/admin/users" label="Users" />
+            <NavItem to="/admin/courses" label="Courses" />
+            <NavItem to="/admin/enrollments" label="Enrollments" />
+          </nav>
+
+          <div className="text-gray-800 font-semibold mt-6 mb-3">Instructor</div>
+          <nav className="space-y-1">
+            <NavItem to="/instructor/overview" label="Overview" />
+            <NavItem to="/instructor/courses" label="Courses" />
+            <NavItem to="/instructor/create-course" label="Create Course" />
+          </nav>
+
+          <div className="text-gray-800 font-semibold mt-6 mb-3">Student</div>
+          <nav className="space-y-1">
+            <NavItem to="/student/overview" label="Overview" />
+            <NavItem to="/student/catalog" label="Catalog" />
+            <NavItem to="/student/mylearning" label="My Learning" />
+          </nav>
+        </aside>
+        <main className="flex-1 p-6">
           <Outlet />
         </main>
       </div>
