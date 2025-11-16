@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import MetricCard from '../../components/ui/MetricCard';
 import Card from '../../components/ui/Card';
 import LineChart from '../../components/ui/LineChart';
 import BarChart from '../../components/ui/BarChart';
+import Breadcrumbs from '../../components/ui/Breadcrumbs';
+import ContinueLearningWidget from '../../components/ui/ContinueLearningWidget';
+import { useAuth } from '../../providers/AuthProvider';
+import { getStudentContinueLearningItems } from '../../services/learningSelectors';
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * Student Overview dashboard with mock metrics, charts, recent activity, and Continue Learning widget.
+ * No backend calls; all data is mocked.
+ */
 export default function StudentOverview() {
-  /** Student Overview dashboard with mock metrics, charts, and recent activity. No backend calls. */
+  const { user } = useAuth();
+  const studentId = user?.id || 'student-1';
+
   const metrics = [
     { label: 'Enrolled Courses', value: '5', trend: 2.1, hint: 'vs last month' },
     { label: 'Active Courses', value: '3', trend: 0.0, hint: 'currently learning' },
@@ -26,8 +36,12 @@ export default function StudentOverview() {
     { id: 'a4', title: 'Resumed: Git & GitHub Essentials', when: '5d ago' },
   ];
 
+  const continueItems = useMemo(() => getStudentContinueLearningItems(studentId), [studentId]);
+
   return (
     <div style={{ display: 'grid', gap: 16 }}>
+      <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Student', to: '/student/overview' }, { label: 'Overview' }]} />
+
       <div>
         <h1 style={{ margin: 0 }}>Student Overview</h1>
         <p style={{ color: 'var(--color-secondary)', marginTop: 6 }}>
@@ -46,6 +60,11 @@ export default function StudentOverview() {
         {metrics.map((m) => (
           <MetricCard key={m.label} label={m.label} value={m.value} trend={m.trend} hint={m.hint} />
         ))}
+      </div>
+
+      <div>
+        <h2 className="text-base font-semibold text-gray-800 mb-2">Continue Learning</h2>
+        <ContinueLearningWidget items={continueItems} />
       </div>
 
       <div style={{ display: 'grid', gap: 12, gridTemplateColumns: '2fr 1fr' }}>

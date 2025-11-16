@@ -14,6 +14,7 @@ import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentCourses from '../pages/student/StudentCourses';
 import StudentCatalog from '../pages/student/StudentCatalog';
 import StudentCertificates from '../pages/student/Certificates';
+import LessonPlayer from '../pages/student/LessonPlayer';
 
 // Instructor pages
 import InstructorOverview from '../pages/instructor/InstructorOverview';
@@ -55,6 +56,7 @@ const AppRoutes = () => {
           <Route path="student/courses" element={<StudentCourses />} />
           <Route path="student/catalog" element={<StudentCatalog />} />
           <Route path="student/certificates" element={<StudentCertificates />} />
+          <Route path="student/courses/:courseId/lessons/:lessonId" element={<LessonPlayer />} />
 
           {/* Instructor */}
           <Route element={<ProtectedRoute roles={['instructor']} />}>

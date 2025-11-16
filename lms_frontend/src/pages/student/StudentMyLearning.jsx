@@ -5,6 +5,10 @@ import Button from '../../components/ui/Button';
 import ProgressBar from '../../components/ui/ProgressBar';
 import EmptyState from '../../components/ui/EmptyState';
 import { Skeleton } from '../../components/ui/Skeleton';
+import Breadcrumbs from '../../components/ui/Breadcrumbs';
+import ContinueLearningWidget from '../../components/ui/ContinueLearningWidget';
+import { useAuth } from '../../providers/AuthProvider';
+import { getStudentContinueLearningItems } from '../../services/learningSelectors';
 const mockCourses = [
   {
     id: 'fs-react-node',
@@ -39,16 +43,15 @@ import '../../styles/theme.css';
 
 /**
  * PUBLIC_INTERFACE
- * Student My Learning page
- * - Shows enrolled courses with progress bars
- * - Next lesson CTA (Resume)
- * - Recent activity (last 5)
- * - Badges/achievements (mock)
- * - Quick links to Course Detail and Lesson Player
+ * Student My Learning page with Continue Learning widget and enrolled courses list.
  * Strictly mock-driven: no backend calls.
  */
 export default function StudentMyLearning() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const studentId = user?.id || 'student-1';
+  const continueItems = useMemo(() => getStudentContinueLearningItems(studentId), [studentId]);
+
   const [loading, setLoading] = useState(true);
   const [enrollments, setEnrollments] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -106,7 +109,14 @@ export default function StudentMyLearning() {
 
   return (
     <div>
+      <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: 'Student', to: '/student/overview' }, { label: 'My Learning' }]} />
+
       <h1 className="h1 mb-4">My Learning</h1>
+
+      <div className="mb-4">
+        <h2 className="text-base font-semibold text-gray-800 mb-2">Continue Learning</h2>
+        <ContinueLearningWidget items={continueItems} />
+      </div>
 
       {/* Loading skeleton */}
       {loading && (

@@ -14,10 +14,16 @@ export default function Button({
   onClick,
   ...rest
 }) {
-  const cls = ['btn'];
-  if (variant === 'secondary') cls.push('secondary');
-  if (variant === 'ghost') cls.push('ghost');
-  const finalClass = cls.concat(className ? [className] : []).join(' ');
+  const base = 'btn focus:outline-none focus:ring-2 focus:ring-gray-400';
+  const variantClass =
+    variant === 'secondary'
+      ? 'secondary'
+      : variant === 'ghost'
+      ? 'ghost'
+      : variant === 'danger'
+      ? 'danger'
+      : '';
+  const finalClass = [base, variantClass, className].filter(Boolean).join(' ');
   return (
     <button
       type={type}
