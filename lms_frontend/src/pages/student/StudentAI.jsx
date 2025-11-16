@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
  * StudentAI
  * PUBLIC_INTERFACE
  * A mock content page for the AI path. Displays tracks, modules, lessons and resources.
- * Lessons link to the existing LessonPlayer using /student/lesson/:lessonId with type query.
+ * Lessons link to the existing LessonPlayer using /student/courses/:courseId/lessons/:lessonId.
  */
 const StudentAI = () => {
   const tracks = [

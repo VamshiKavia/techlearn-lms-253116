@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
  * StudentSoftwareTesting
  * PUBLIC_INTERFACE
  * A mock content page for the Software Testing path. Displays tracks, modules, lessons and resources.
- * Lessons link to the existing LessonPlayer using /student/lesson/:lessonId and include a lesson type.
+ * Lessons link to the existing LessonPlayer using /student/courses/:courseId/lessons/:lessonId.
  */
 const StudentSoftwareTesting = () => {
   // Mock structure for Software Testing path
