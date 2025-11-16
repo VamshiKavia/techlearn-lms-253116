@@ -5,13 +5,13 @@ import Pagination from '../../components/ui/Pagination';
 import RatingStars from '../../components/ui/RatingStars';
 import EmptyState from '../../components/ui/EmptyState';
 import { CardSkeleton } from '../../components/ui/Skeleton';
-import { mockCourses } from '../../services/mockData';
+import { getMockCatalog } from '../../services/mockData';
 import '../../styles/theme.css';
 
 /**
  * PUBLIC_INTERFACE
  * Minimal student course catalog: category filter, search, simple sort (Newest/Rating), and pagination.
- * No backend calls; all data is mocked.
+ * No backend calls; all data is mocked via getMockCatalog().
  */
 export default function StudentCatalog() {
   const CATEGORIES = ['All', 'Full-Stack', 'Data Science', 'Cloud', 'DevOps', 'Software Testing', 'AI'];
@@ -22,10 +22,31 @@ export default function StudentCatalog() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortBy, setSortBy] = useState('Newest');
   const [query, setQuery] = useState('');
+  const [catalog, setCatalog] = useState([]);
+
+  // Load mock catalog (supports sync/async return)
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const res = await Promise.resolve(getMockCatalog());
+        const items = Array.isArray(res?.courses) ? res.courses : Array.isArray(res) ? res : [];
+        if (mounted) setCatalog(items);
+      } catch {
+        if (mounted) setCatalog([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Compute filtered items (category + search + simple sort)
   const filteredCourses = useMemo(() => {
-    let list = [...mockCourses];
+    let list = [...catalog];
 
     if (activeCategory !== 'All') {
       list = list.filter(c => c.category === activeCategory);
@@ -47,14 +68,16 @@ export default function StudentCatalog() {
     }
 
     return list;
-  }, [activeCategory, sortBy, query]);
+  }, [activeCategory, sortBy, query, catalog]);
 
   // Loading simulation on filter changes
   useEffect(() => {
+    // only simulate loading for UX after initial load is done
+    if (!catalog.length) return;
     setLoading(true);
     const t = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(t);
-  }, [activeCategory, sortBy, query]);
+  }, [activeCategory, sortBy, query, catalog.length]);
 
   // Reset page when filters change
   useEffect(() => { setPage(1); }, [activeCategory, sortBy, query]);
@@ -135,7 +158,7 @@ export default function StudentCatalog() {
               <Card key={c.id} role="article">
                 <div style={{ display: 'grid', gap: 8 }}>
                   <div style={{ fontWeight: 700 }}>{c.title}</div>
-                  <div className="subtle text-sm">{c.category} • {c.level || 'Level'}</div>
+                  <div className="subtle text-sm">{c.category || 'General'} • {c.level || 'Level'}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <RatingStars value={c.rating} />
                   </div>

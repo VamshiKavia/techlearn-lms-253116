@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { getCurrentUser } from '../services/authService';
+import { createAuthService } from '../services/authService';
 
 /**
  * PUBLIC_INTERFACE
@@ -13,6 +13,9 @@ export const AuthContext = createContext();
  */
 export const useAuth = () => useContext(AuthContext);
 
+// Create a singleton auth service instance for the app
+const auth = createAuthService();
+
 /**
  * PUBLIC_INTERFACE
  * AuthProvider - provides user auth state (mock-friendly).
@@ -22,12 +25,31 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const u = getCurrentUser();
-    setUser(u);
-    setLoading(false);
+    let mounted = true;
+    async function init() {
+      try {
+        // Support either method or property depending on mock implementation
+        const maybeUser =
+          typeof auth.getCurrentUser === 'function'
+            ? await auth.getCurrentUser()
+            : auth.currentUser ?? null;
+        if (mounted) setUser(maybeUser);
+      } catch {
+        if (mounted) setUser(null);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    init();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const value = useMemo(() => ({ user, loading, login: () => {}, logout: () => {} }), [user, loading]);
+  const value = useMemo(
+    () => ({ user, loading, auth, login: auth?.login, logout: auth?.logout }),
+    [user, loading]
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
