@@ -18,6 +18,7 @@ import InstructorCreateCourse from '../pages/instructor/InstructorCreateCourse';
 
 import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentCourses from '../pages/student/StudentCourses';
+import StudentOverview from '../pages/student/StudentOverview';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
@@ -63,7 +64,8 @@ export default function AppRoutes() {
         {
           element: <DashboardLayout />,
           children: [
-            { path: '/student', element: <StudentDashboard /> },
+            { path: '/student', element: <StudentOverview /> },
+            { path: '/student/overview', element: <StudentOverview /> },
             { path: '/student/courses', element: <StudentCourses /> },
             { path: '/student/catalog', element: <StudentCourses /> },
           ],

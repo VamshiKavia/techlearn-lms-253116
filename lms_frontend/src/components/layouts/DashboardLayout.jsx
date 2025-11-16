@@ -20,7 +20,7 @@ export default function DashboardLayout() {
       { to: '/instructor/courses/new', label: 'Create Course' },
     ],
     student: [
-      { to: '/student', label: 'Overview' },
+      { to: '/student/overview', label: 'Overview' },
       { to: '/student/courses', label: 'My Learning' },
       { to: '/student/catalog', label: 'Catalog' },
     ],
