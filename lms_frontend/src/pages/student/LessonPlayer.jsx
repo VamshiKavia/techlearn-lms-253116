@@ -1,29 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { mockCourses } from '../../services/mockData';
-import { Link } from 'react-router-dom';
 import '../../styles/theme.css';
 
 /**
  * PUBLIC_INTERFACE
  * Minimal Lesson player: video/text viewport, Mark as Complete, and link to Q&A.
+ * Resolves the lesson from route params: /student/courses/:courseId/lessons/:lessonId
  */
 export default function LessonPlayer() {
+  const { courseId, lessonId } = useParams();
   const [lesson, setLesson] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const resolvedLesson = useMemo(() => {
+    const course = mockCourses.find(c => c.id === courseId) || mockCourses[0];
+    const allLessons = (course.modules || []).flatMap(m => m.lessons || []);
+    return allLessons.find(l => l.id === lessonId) || allLessons[0];
+  }, [courseId, lessonId]);
 
   useEffect(() => {
     setLoading(true);
     const t = setTimeout(() => {
-      const c = mockCourses[0];
-      const l = c?.modules?.[0]?.lessons?.[0];
-      setLesson(l);
+      setLesson(resolvedLesson || null);
       setLoading(false);
     }, 300);
     return () => clearTimeout(t);
-  }, []);
+  }, [resolvedLesson]);
 
   return (
     <div>
@@ -45,25 +51,36 @@ export default function LessonPlayer() {
           </>
         ) : (
           <>
-            <div
-              aria-label="lesson player viewport"
-              style={{
-                height: 320,
-                width: '100%',
-                background: 'rgba(17,24,39,0.06)',
-                borderRadius: 12,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--muted)',
-              }}
-            >
-              {lesson?.type === 'video' ? 'Video Placeholder' : 'Reading Placeholder'}
+            <div aria-label="lesson player viewport" className="mb-4">
+              {lesson?.type === 'video' && lesson?.url ? (
+                // Fallback to HTML5 video for mp4 placeholders (kept simple for tests)
+                <video controls style={{ width: '100%', maxHeight: 360, borderRadius: 12 }}>
+                  <source src={lesson.url} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div
+                  style={{
+                    height: 320,
+                    width: '100%',
+                    background: 'rgba(17,24,39,0.06)',
+                    borderRadius: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--muted)',
+                  }}
+                >
+                  Reading Placeholder
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex items-center gap-3 mt-2">
               <Button ariaLabel="Mark as complete">Mark as Complete</Button>
-              <Link to="/student/qna" className="btn secondary" aria-label="Go to Q&A">Q&A</Link>
+              <Link to="/student/qna" className="btn secondary" aria-label="Go to Q&A">
+                Q&A
+              </Link>
             </div>
           </>
         )}

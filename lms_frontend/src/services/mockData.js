@@ -145,7 +145,7 @@ export const mockCourses = [
     thumbnail: '/images/cicd.png',
   },
 
-  // Software Testing
+  // Software Testing (with mock video lessons)
   {
     id: 'test-cypress',
     title: 'Modern Web Testing with Cypress',
@@ -159,6 +159,34 @@ export const mockCourses = [
     prerequisites: ['javascript'],
     createdAt: '2024-04-05T00:00:00.000Z',
     thumbnail: '/images/cypress.png',
+    modules: [
+      {
+        id: 'mt-mod-1',
+        title: 'Manual Testing Fundamentals',
+        lessons: [
+          { id: 'mt-vid-1', title: 'What is Software Testing?', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+          { id: 'mt-vid-2', title: 'Writing Effective Test Plans', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+        resources: [{ title: 'ISTQB Foundation Syllabus (PDF)', link: '#' }],
+      },
+      {
+        id: 'at-mod-1',
+        title: 'Automation with Selenium & Cypress',
+        lessons: [
+          { id: 'at-vid-1', title: 'Selenium WebDriver Setup', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+          { id: 'at-vid-2', title: 'Cypress Test Runner Overview', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+        resources: [{ title: 'Cypress Docs', link: 'https://docs.cypress.io' }],
+      },
+      {
+        id: 'ps-mod-1',
+        title: 'Performance & Security Basics',
+        lessons: [
+          { id: 'ps-vid-1', title: 'Getting Started with k6', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+        resources: [{ title: 'k6 Docs', link: 'https://k6.io/docs/' }],
+      },
+    ],
   },
   {
     id: 'test-playwright',
@@ -175,7 +203,7 @@ export const mockCourses = [
     thumbnail: '/images/playwright.png',
   },
 
-  // AI
+  // AI (with mock video lessons)
   {
     id: 'ai-llms-foundations',
     title: 'LLMs Foundations & Prompting',
@@ -189,6 +217,31 @@ export const mockCourses = [
     prerequisites: ['python-basics'],
     createdAt: '2024-07-30T00:00:00.000Z',
     thumbnail: '/images/llm.png',
+    modules: [
+      {
+        id: 'aif-mod-1',
+        title: 'AI Foundations',
+        lessons: [
+          { id: 'ai-vid-1', title: 'Linear Algebra for ML', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+      },
+      {
+        id: 'dl-mod-1',
+        title: 'Deep Learning',
+        lessons: [
+          { id: 'dl-vid-1', title: 'Feedforward Networks', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+          { id: 'dl-vid-2', title: 'CNN Intuition', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+      },
+      {
+        id: 'gen-mod-1',
+        title: 'Generative AI & LLMs',
+        lessons: [
+          { id: 'gen-vid-1', title: 'Prompting Patterns', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+          { id: 'gen-vid-2', title: 'RAG System Overview', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
+        ],
+      },
+    ],
   },
   {
     id: 'ai-computer-vision',
