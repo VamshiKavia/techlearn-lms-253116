@@ -30,6 +30,9 @@ import StudentFullStack from '../pages/student/StudentFullStack';
 import StudentDataScience from '../pages/student/StudentDataScience';
 import StudentCloud from '../pages/student/StudentCloud';
 import StudentDevOps from '../pages/student/StudentDevOps';
+import Reviews from '../pages/student/Reviews';
+import QnA from '../pages/student/QnA';
+import Certificates from '../pages/student/Certificates';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
@@ -85,6 +88,9 @@ export default function AppRoutes() {
             { path: '/student/paths/data-science', element: <StudentDataScience /> },
             { path: '/student/paths/cloud', element: <StudentCloud /> },
             { path: '/student/paths/devops', element: <StudentDevOps /> },
+            { path: '/student/reviews', element: <Reviews /> },
+            { path: '/student/qna', element: <QnA /> },
+            { path: '/student/certificates', element: <Certificates /> },
             { path: '/student/courses/:courseId', element: <CourseDetail /> },
             { path: '/student/courses/:courseId/lessons/:lessonId', element: <LessonPlayer /> },
             { path: '/student/courses/:courseId/quizzes/:quizId', element: <QuizAttempt /> },

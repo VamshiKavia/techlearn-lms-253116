@@ -43,6 +43,10 @@ export default function CourseDetail() {
         <div style={{ display: 'grid', gap: 6 }}>
           <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>Overall Progress</div>
           <ProgressBar value={progress} />
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <Link to={`/student/reviews?courseId=${course.id}`} className="btn ghost">Course Reviews</Link>
+            <Link to={`/student/qna?courseId=${course.id}`} className="btn ghost">Course Q&A</Link>
+          </div>
         </div>
       </Card>
 

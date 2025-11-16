@@ -2,6 +2,9 @@ import React, { createContext, useCallback, useEffect, useMemo, useState } from 
 import { createApiClient } from '../services/apiClient';
 import { createAuthService } from '../services/authService';
 import { createCoursesService } from '../services/coursesService';
+import { createReviewsService } from '../services/reviewsService';
+import { createQnaService } from '../services/qnaService';
+import { createCertificatesService } from '../services/certificatesService';
 import { useRequestId } from '../hooks/useRequestId';
 
 const STORAGE_KEY = 'lms_auth_v1';
@@ -50,6 +53,9 @@ export function AuthProvider({ children }) {
   const api = useMemo(() => createApiClient(getToken, getReqId), [getToken, getReqId]);
   const authService = useMemo(() => createAuthService(api), [api]);
   const coursesService = useMemo(() => createCoursesService(api), [api]);
+  const reviewsService = useMemo(() => createReviewsService(api), [api]);
+  const qnaService = useMemo(() => createQnaService(api), [api]);
+  const certificatesService = useMemo(() => createCertificatesService(api), [api]);
 
   const login = useCallback(async (credentials) => {
     const result = await authService.login(credentials);
@@ -74,7 +80,16 @@ export function AuthProvider({ children }) {
   }, [clear]);
 
   const role = user?.role ?? null;
-  const services = useMemo(() => ({ auth: authService, courses: coursesService }), [authService, coursesService]);
+  const services = useMemo(
+    () => ({
+      auth: authService,
+      courses: coursesService,
+      reviews: reviewsService,
+      qna: qnaService,
+      certificates: certificatesService,
+    }),
+    [authService, coursesService, reviewsService, qnaService, certificatesService]
+  );
 
   const value = useMemo(
     () => ({ user, token, role, login, signup, logout, api, services }),

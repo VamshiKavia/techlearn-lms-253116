@@ -41,6 +41,9 @@ export default function LessonPlayer() {
           <div style={{ fontSize: 14 }}>
             This is a mock lesson viewer. Integrate a real video player or rich text reader during backend hookup.
           </div>
+          <div>
+            <Link to={`/student/qna?courseId=${courseId}`} className="btn ghost">Ask a Question</Link>
+          </div>
         </div>
       </Card>
     </div>
