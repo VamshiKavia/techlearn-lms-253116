@@ -36,25 +36,29 @@ test('redirects unauthenticated to login when accessing student my learning', as
   expect(await screen.findByText(/Login Page/i)).toBeInTheDocument();
 });
 
-test('renders My Learning with both tracks for authenticated student', async () => {
+test('renders enrolled courses with progress bars and resume buttons for authenticated student', async () => {
   const authValue = {
     user: { email: 'student@example.com', role: 'student' },
     role: 'student',
     logout: () => {},
+    services: { courses: { list: async () => ({ items: [] }) } }, // not used in this page, but context-safe
   };
   renderWithAuth('/student/learning', authValue);
 
-  // Heading
+  // Page heading
   expect(await screen.findByText(/My Learning/i)).toBeInTheDocument();
 
-  // Track titles present
-  expect(screen.getByText(/Full-Stack Development/i)).toBeInTheDocument();
-  expect(screen.getByText(/Data Science/i)).toBeInTheDocument();
+  // Progress bars present
+  const progressBars = await screen.findAllByLabelText('progress');
+  expect(progressBars.length).toBeGreaterThan(0);
 
-  // Next lesson labels exist
-  expect(screen.getByText(/Next Up/i)).toBeInTheDocument();
+  // Resume buttons present
+  const resumeButtons = await screen.findAllByRole('button', { name: /resume/i });
+  expect(resumeButtons.length).toBeGreaterThan(0);
 
-  // Progress bars should be present by aria-label
-  const progressBars = screen.getAllByLabelText('progress');
-  expect(progressBars.length).toBeGreaterThan(1);
+  // Recent activity section
+  expect(screen.getByText(/Recent Activity/i)).toBeInTheDocument();
+
+  // Badges section
+  expect(screen.getByText(/Badges & Achievements/i)).toBeInTheDocument();
 });

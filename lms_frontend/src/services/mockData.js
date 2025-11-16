@@ -1,3 +1,21 @@
+export const mockEnrolledCourseIds = ['fs-react-node', 'devops-kubernetes', 'ds-python-ml'];
+
+// Default progress map for enrolled courses (overridable by pages/tests)
+export const mockCourseProgress = {
+  'fs-react-node': 32,
+  'devops-kubernetes': 58,
+  'ds-python-ml': 10,
+};
+
+// Recent activity sample generator (returns up to last 5)
+export const getMockRecentActivity = () => ([
+  { id: 'ra-1', title: 'Watched: Intro & Setup', courseId: 'fs-react-node', when: '2h ago' },
+  { id: 'ra-2', title: 'Completed: React Hooks Quiz', courseId: 'fs-react-node', when: '14h ago' },
+  { id: 'ra-3', title: 'Resumed: Kubernetes Basics Lesson 2', courseId: 'devops-kubernetes', when: '1d ago' },
+  { id: 'ra-4', title: 'Viewed: Pandas Basics', courseId: 'ds-python-ml', when: '2d ago' },
+  { id: 'ra-5', title: 'Earned: Consistent Learner Badge', courseId: null, when: '4d ago' },
+]);
+
 export const mockCourses = [
   // Full-Stack
   {
