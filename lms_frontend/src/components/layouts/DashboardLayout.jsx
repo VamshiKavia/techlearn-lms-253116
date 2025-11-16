@@ -21,7 +21,7 @@ export default function DashboardLayout() {
     ],
     student: [
       { to: '/student/overview', label: 'Overview' },
-      { to: '/student/courses', label: 'My Learning' },
+      { to: '/student/learning', label: 'My Learning' },
       { to: '/student/catalog', label: 'Catalog' },
     ],
   };

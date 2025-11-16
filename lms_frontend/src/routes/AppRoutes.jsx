@@ -20,6 +20,7 @@ import InstructorOverview from '../pages/instructor/InstructorOverview';
 import StudentDashboard from '../pages/student/StudentDashboard';
 import StudentCourses from '../pages/student/StudentCourses';
 import StudentOverview from '../pages/student/StudentOverview';
+import StudentMyLearning from '../pages/student/StudentMyLearning';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
@@ -69,6 +70,7 @@ export default function AppRoutes() {
             { path: '/student', element: <StudentOverview /> },
             { path: '/student/overview', element: <StudentOverview /> },
             { path: '/student/courses', element: <StudentCourses /> },
+            { path: '/student/learning', element: <StudentMyLearning /> },
             { path: '/student/catalog', element: <StudentCourses /> },
           ],
         },
