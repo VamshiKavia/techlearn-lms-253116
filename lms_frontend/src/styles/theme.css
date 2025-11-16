@@ -169,3 +169,162 @@ a { color: inherit; text-decoration: none; }
 
 /* Rating */
 .star-active { color: #F59E0B; }
+
+/* Minimal utilities for student pages (Ocean Professional) */
+.page-wrap {
+  padding: var(--spacing-6);
+}
+.section-intro {
+  margin-bottom: var(--spacing-6);
+}
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--spacing-2) 0;
+  color: var(--text);
+}
+.section-subtitle {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Track card */
+.track-card {
+  background: #fff;
+  border: 1px solid var(--surface-alt);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.track-card__head {
+  padding: 20px;
+  border-bottom: 1px solid var(--surface-alt);
+  background: linear-gradient(180deg, #FFFFFF, #FAFAFB);
+}
+.track-card__title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+.track-card__desc {
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+/* Modules and lessons */
+.module-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text);
+}
+.modules-wrap {
+  padding: 20px;
+  display: grid;
+  gap: 24px;
+}
+.lesson-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 768px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.lesson-card {
+  display: block;
+  border: 1px solid var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: #fff;
+  transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.lesson-card:hover {
+  border-color: rgba(17,24,39,0.18);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.lesson-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lesson-title {
+  font-weight: 600;
+}
+.badge {
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-alt);
+  color: #374151;
+}
+
+/* Resources */
+.resources {
+  margin-top: 12px;
+}
+.resources-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4B5563;
+  margin: 0 0 8px 0;
+}
+.resource-list {
+  list-style: disc;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+.resource-link {
+  color: #2563EB;
+  text-decoration: none;
+}
+.resource-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive video/player utility */
+.responsive-video {
+  width: 100%;
+  border-radius: 12px;
+  background: #000;
+  max-height: 420px;
+}
+.video-fallback {
+  height: 320px;
+  width: 100%;
+  background: rgba(17,24,39,0.06);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+/* Spacing helpers used in pages */
+.mt-2 { margin-top: var(--spacing-2); }
+.mt-3 { margin-top: var(--spacing-3); }
+.mt-6 { margin-top: var(--spacing-6); }
+.mb-2 { margin-bottom: var(--spacing-2); }
+.mb-6 { margin-bottom: var(--spacing-6); }
+
+/* Simple flex/grid helpers for environments without Tailwind */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-3 { gap: var(--spacing-3); }
+.gap-2 { gap: var(--spacing-2); }
+.space-y-8 > * + * { margin-top: 32px; }
+
+/* Accessible focus for interactive cards */
+.lesson-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}

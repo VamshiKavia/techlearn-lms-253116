@@ -100,51 +100,49 @@ const StudentSoftwareTesting = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-2">Software Testing Paths</h1>
-      <p className="text-gray-600 mb-6">
+    <div className="page-wrap">
+      <h1 className="section-title mb-2">Software Testing Paths</h1>
+      <p className="section-subtitle mb-6">
         Explore curated tracks to become a well-rounded QA engineer. Select a lesson to start learning.
       </p>
 
       <div className="space-y-8">
         {tracks.map((track) => (
-          <div key={track.id} className="bg-white rounded-lg border border-gray-200">
-            <div className="p-5 border-b border-gray-200">
-              <h2 className="text-xl font-medium">{track.title}</h2>
-              {track.description && <p className="text-gray-600 mt-1">{track.description}</p>}
+          <div key={track.id} className="track-card">
+            <div className="track-card__head">
+              <h2 className="track-card__title">{track.title}</h2>
+              {track.description && <p className="track-card__desc">{track.description}</p>}
             </div>
 
-            <div className="p-5 space-y-6">
+            <div className="modules-wrap">
               {track.modules.map((mod) => (
                 <div key={mod.id}>
-                  <h3 className="text-lg font-medium mb-2">{mod.title}</h3>
+                  <h3 className="module-title mb-2">{mod.title}</h3>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="lesson-grid">
                     {mod.lessons.map((lesson) => (
                       <Link
                         data-testid={`testing-lesson-${lesson.id}`}
                         key={lesson.id}
-                        className="block rounded-md border border-gray-200 p-3 hover:border-gray-300 hover:bg-gray-50"
+                        className="lesson-card"
                         to={`/student/courses/mock-course/lessons/${lesson.id}`}
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{lesson.title}</span>
-                          <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 uppercase">
-                            {lesson.type}
-                          </span>
+                        <div className="lesson-card__row">
+                          <span className="lesson-title">{lesson.title}</span>
+                          <span className="badge">{lesson.type}</span>
                         </div>
                       </Link>
                     ))}
                   </div>
 
                   {mod.resources?.length > 0 && (
-                    <div className="mt-3">
-                      <h4 className="text-sm font-semibold text-gray-700 mb-2">Resources</h4>
-                      <ul className="list-disc pl-5 space-y-1">
+                    <div className="resources">
+                      <h4 className="resources-title">Resources</h4>
+                      <ul className="resource-list">
                         {mod.resources.map((res, idx) => (
                           <li key={idx}>
                             <a
-                              className="text-blue-600 hover:underline"
+                              className="resource-link"
                               href={res.url}
                               target="_blank"
                               rel="noreferrer"

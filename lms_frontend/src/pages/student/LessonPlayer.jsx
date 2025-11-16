@@ -54,7 +54,7 @@ export default function LessonPlayer() {
             <div aria-label="lesson player viewport" className="mb-4">
               {lesson?.type === 'video' && lesson?.url ? (
                 // Fallback to HTML5 video for mp4 placeholders (kept simple for tests)
-                <video controls style={{ width: '100%', maxHeight: 360, borderRadius: 12 }}>
+                <video controls className="responsive-video">
                   <source src={lesson.url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
