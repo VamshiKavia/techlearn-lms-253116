@@ -142,31 +142,61 @@ export function toggleCoursePublish(courseId) {
   return { ...course, published: !course.published };
 }
 
-// PUBLIC_INTERFACE
-export function getAdminEnrollments({ page = 1, pageSize = 10, userId, courseId } = {}) {
+/**
+ * PUBLIC_INTERFACE
+ * Returns paginated enrollments, filterable by user/course and searchable by name/email.
+ */
+export function getAdminEnrollments({
+  page = 1,
+  pageSize = 10,
+  userId,
+  courseId,
+  search,
+} = {}) {
   /** Returns paginated enrollments optionally filtered by user or course */
   let data = [...mockEnrollments];
   if (userId) data = data.filter((e) => e.userId === userId);
   if (courseId) data = data.filter((e) => e.courseId === courseId);
 
-  // enrich with names
+  // enrich with names and emails
   const itemsEnriched = data.map((e) => {
     const user = mockUsers.find((u) => u.id === e.userId);
     const course = mockCourses.find((c) => c.id === e.courseId);
     return {
       ...e,
       userName: user ? user.name : `User ${e.userId}`,
+      userEmail: user ? user.email : '',
       userRole: user?.role || 'Student',
       courseTitle: course ? course.title : `Course ${e.courseId}`,
       courseCategory: course?.category || '',
     };
   });
 
-  const total = itemsEnriched.length;
+  // optional text search by user name/email
+  const filtered = search
+    ? itemsEnriched.filter((row) => {
+        const q = search.toLowerCase();
+        return (
+          (row.userName || '').toLowerCase().includes(q) ||
+          (row.userEmail || '').toLowerCase().includes(q)
+        );
+      })
+    : itemsEnriched;
+
+  const total = filtered.length;
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
 
-  return { items: itemsEnriched.slice(start, end), total, page, pageSize };
+  return { items: filtered.slice(start, end), total, page, pageSize };
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * Get enriched enrollments by course for per-course UI panels.
+ */
+export function getEnrollmentsForCourse(courseId) {
+  const { items } = getAdminEnrollments({ courseId, page: 1, pageSize: Number.MAX_SAFE_INTEGER });
+  return items;
 }
 
 // PUBLIC_INTERFACE

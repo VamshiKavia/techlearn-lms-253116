@@ -11,15 +11,53 @@ export const mockUsers = [
   { id: 'u_stu_3', name: 'Sanjay Student', email: 'sanjay.student@example.com', role: 'Student' },
 ];
 
-// PUBLIC_INTERFACE
-// Minimal enrollments snapshot used for admin progress summaries
+/**
+ * PUBLIC_INTERFACE
+ * Enrollments with user info, status and timestamps for admin progress summaries.
+ */
 export const mockEnrollments = [
-  { userId: 'u_stu_1', courseId: 'fs-react-node', progress: 35 },
-  { userId: 'u_stu_2', courseId: 'fs-react-node', progress: 62 },
-  { userId: 'u_stu_3', courseId: 'fs-react-node', progress: 10 },
-  { userId: 'u_stu_1', courseId: 'devops-kubernetes', progress: 55 },
-  { userId: 'u_stu_2', courseId: 'devops-kubernetes', progress: 48 },
-  { userId: 'u_stu_3', courseId: 'ds-python-ml', progress: 20 },
+  {
+    userId: 'u_stu_1',
+    courseId: 'fs-react-node',
+    progress: 35,
+    status: 'active',
+    enrolled_at: '2024-11-01T10:00:00.000Z',
+  },
+  {
+    userId: 'u_stu_2',
+    courseId: 'fs-react-node',
+    progress: 62,
+    status: 'active',
+    enrolled_at: '2024-10-28T12:15:00.000Z',
+  },
+  {
+    userId: 'u_stu_3',
+    courseId: 'fs-react-node',
+    progress: 10,
+    status: 'inactive',
+    enrolled_at: '2024-10-20T09:30:00.000Z',
+  },
+  {
+    userId: 'u_stu_1',
+    courseId: 'devops-kubernetes',
+    progress: 55,
+    status: 'active',
+    enrolled_at: '2024-11-03T08:45:00.000Z',
+  },
+  {
+    userId: 'u_stu_2',
+    courseId: 'devops-kubernetes',
+    progress: 48,
+    status: 'active',
+    enrolled_at: '2024-11-04T14:10:00.000Z',
+  },
+  {
+    userId: 'u_stu_3',
+    courseId: 'ds-python-ml',
+    progress: 20,
+    status: 'active',
+    enrolled_at: '2024-11-02T16:20:00.000Z',
+  },
 ];
 
 // Default progress map for enrolled courses (overridable by pages/tests)
