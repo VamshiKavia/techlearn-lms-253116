@@ -1,166 +1,115 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
-import Button from '../../components/ui/Button';
 import Pagination from '../../components/ui/Pagination';
 import EmptyState from '../../components/ui/EmptyState';
-import RatingStars from '../../components/ui/RatingStars';
-import ProgressBar from '../../components/ui/ProgressBar';
-import { getAdminCourses, toggleCoursePublish, getEnrollmentsForCourse } from '../../services/adminService';
 
-// PUBLIC_INTERFACE
-export default function AdminCourses() {
-  /** Admin Courses management with mock search/filter and publish toggling. */
-  const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('All');
+/**
+ * PUBLIC_INTERFACE
+ * AdminCourses - Minimal course list with simple search/filter and publish toggle (mock).
+ */
+const initialCourses = [
+  { id: 'c1', title: 'Intro to Testing', status: 'Published', category: 'Software Testing', enrollments: 132 },
+  { id: 'c2', title: 'React for Beginners', status: 'Draft', category: 'Full-Stack', enrollments: 0 },
+  { id: 'c3', title: 'DevOps Fundamentals', status: 'Published', category: 'DevOps', enrollments: 252 },
+];
+
+const AdminCourses = () => {
+  const [q, setQ] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [courses, setCourses] = useState(initialCourses);
   const [page, setPage] = useState(1);
+
+  const filtered = useMemo(() => {
+    const term = q.toLowerCase();
+    return courses.filter((c) => {
+      const matchesQ = c.title.toLowerCase().includes(term);
+      const matchesF = filter === 'all' ? true : c.status.toLowerCase() === filter;
+      return matchesQ && matchesF;
+    });
+  }, [q, filter, courses]);
+
   const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const current = filtered.slice((page - 1) * pageSize, page * pageSize);
 
-  const { items, total } = useMemo(
-    () => getAdminCourses({ query, status, page, pageSize }),
-    [query, status, page]
-  );
-
-  const statuses = ['All', 'Published', 'Unpublished'];
-
-  const handleToggle = (courseId) => {
-    toggleCoursePublish(courseId);
+  const togglePublish = (id) => {
+    setCourses((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, status: c.status === 'Published' ? 'Draft' : 'Published' } : c
+      )
+    );
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold text-gray-800">Courses</h1>
+    <div className="space-y-10">
+      <section>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Courses</h1>
+        <p className="text-gray-500">Manage all courses on the platform.</p>
+      </section>
 
       <Card>
-        <div className="flex flex-col md:flex-row md:items-end gap-3">
-          <div className="flex-1">
-            <label className="text-sm text-gray-600">Search</label>
-            <Input value={query} onChange={(e) => { setPage(1); setQuery(e.target.value); }} placeholder="Search by title, category, instructor" />
-          </div>
-          <div>
-            <label className="text-sm text-gray-600">Status</label>
-            <select
-              className="border rounded px-3 py-2 text-gray-700"
-              value={status}
-              onChange={(e) => { setPage(1); setStatus(e.target.value); }}
-            >
-              {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-          <Button onClick={() => { setQuery(''); setStatus('All'); setPage(1); }} variant="secondary">Reset</Button>
+        <div className="flex items-center gap-3 mb-3">
+          <Input placeholder="Search courses" value={q} onChange={(e) => setQ(e.target.value)} />
+          <select
+            className="border rounded px-2 py-2 text-sm"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
         </div>
-      </Card>
 
-      <Card title={`Courses (${total})`}>
-        {items.length === 0 ? (
-          <EmptyState title="No courses found" description="Try adjusting your filters or search keyword." />
+        <div className="grid grid-cols-12 bg-gray-50 border-b">
+          <div className="col-span-5 p-3 text-sm text-gray-600">Course</div>
+          <div className="col-span-2 p-3 text-sm text-gray-600">Status</div>
+          <div className="col-span-2 p-3 text-sm text-gray-600">Enrollments</div>
+          <div className="col-span-3 p-3 text-sm text-gray-600 text-right">Actions</div>
+        </div>
+        {current.length === 0 ? (
+          <EmptyState title="No courses found" subtitle="Try a different search or filter." />
         ) : (
-          <div className="grid grid-cols-1 gap-3">
-            {items.map((c) => (
-              <CourseRow key={c.id} course={c} onToggle={handleToggle} />
-            ))}
+          current.map((c) => (
+            <div key={c.id} className="grid grid-cols-12 border-b last:border-0">
+              <div className="col-span-5 p-3 text-gray-800">
+                <div className="font-medium">{c.title}</div>
+                <div className="text-xs text-gray-500">{c.category}</div>
+              </div>
+              <div className="col-span-2 p-3">
+                <span
+                  className={
+                    'inline-flex items-center px-2 py-0.5 rounded text-xs ' +
+                    (c.status === 'Published'
+                      ? 'bg-green-50 text-green-700'
+                      : 'bg-gray-100 text-gray-700')
+                  }
+                >
+                  {c.status}
+                </span>
+              </div>
+              <div className="col-span-2 p-3 text-gray-800">{c.enrollments}</div>
+              <div className="col-span-3 p-3 text-right">
+                <button
+                  onClick={() => togglePublish(c.id)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  {c.status === 'Published' ? 'Unpublish' : 'Publish'}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+
+        {filtered.length > pageSize && (
+          <div className="pt-4">
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
           </div>
         )}
-        <div className="mt-4">
-          <Pagination
-            currentPage={page}
-            pageSize={pageSize}
-            totalItems={total}
-            onPageChange={(p) => setPage(p)}
-          />
-        </div>
       </Card>
     </div>
   );
-}
+};
 
-/**
- * Course row with expandable enrolled students list.
- */
-function CourseRow({ course, onToggle }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState('');
-  const learners = useMemo(() => {
-    const list = getEnrollmentsForCourse(course.id);
-    if (!q) return list;
-    const s = q.toLowerCase();
-    return list.filter(
-      (e) => (e.userName || '').toLowerCase().includes(s) || (e.userEmail || '').toLowerCase().includes(s)
-    );
-  }, [course.id, q]);
-
-  return (
-    <div className="border rounded bg-white">
-      <div className="flex items-center justify-between p-3">
-        <div>
-          <div className="font-medium text-gray-800">{course.title}</div>
-          <div className="text-xs text-gray-500">
-            {course.category} • {course.instructorName || 'Instructor'}
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <RatingStars value={course.rating || 0} />
-          <span className={`text-xs ${course.published ? 'text-green-600' : 'text-gray-500'}`}>
-            {course.published ? 'Published' : 'Draft'}
-          </span>
-          <Button size="sm" onClick={() => onToggle(course.id)} variant={course.published ? 'secondary' : 'primary'}>
-            {course.published ? 'Unpublish' : 'Publish'}
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => setOpen(!open)} ariaLabel="Toggle enrolled students">
-            {open ? 'Hide Students' : 'View Students'}
-          </Button>
-        </div>
-      </div>
-      {open && (
-        <div className="border-t p-3 bg-gray-50">
-          <div className="flex items-end gap-3 mb-3">
-            <div className="flex-1">
-              <label className="text-sm text-gray-600">Search student</label>
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or email" />
-            </div>
-            <Link className="text-sm underline hover:text-gray-800" to={`/student/mylearning?course=${course.id}`}>
-              Open as student
-            </Link>
-          </div>
-          {learners.length === 0 ? (
-            <EmptyState title="No enrolled students" description="Try a different search." />
-          ) : (
-            <div className="grid grid-cols-1 gap-2">
-              {learners.map((e) => (
-                <div key={`${e.userId}-${e.courseId}`} className="bg-white border rounded p-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium text-gray-800">
-                        {e.userName} <span className="text-xs text-gray-500">({e.userEmail})</span>
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {course.title} • <span className={e.status === 'active' ? 'text-green-600' : 'text-gray-500'}>{e.status}</span> • Enrolled{' '}
-                        {new Date(e.enrolled_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                    <div className="text-sm text-gray-600">{e.progress}%</div>
-                  </div>
-                  <div className="mt-2">
-                    <ProgressBar value={e.progress} />
-                  </div>
-                  <div className="mt-2 text-xs text-gray-600 flex gap-3">
-                    <Link className="underline hover:text-gray-800" to={`/admin/users#${e.userId}`}>
-                      View profile
-                    </Link>
-                    <Link className="underline hover:text-gray-800" to="/admin/courses">
-                      Open course
-                    </Link>
-                    <Link className="underline hover:text-gray-800" to={`/student/mylearning?course=${e.courseId}`}>
-                      Open as student
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+export default AdminCourses;

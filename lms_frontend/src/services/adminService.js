@@ -1,8 +1,32 @@
 //
 // Admin mock service providing integrated visibility across users, courses, enrollments, and progress.
-// Uses existing mockData where possible. No real backend requests.
+// Uses local mock arrays only. No real backend requests.
 //
-import { mockUsers, mockCourses, mockEnrollments } from './mockData';
+/* eslint-disable no-unused-vars */
+
+// Minimal admin-side mock data to support simplified pages
+
+// PUBLIC_INTERFACE
+export const mockUsers = [
+  { id: 'u1', name: 'Alice Johnson', email: 'alice@example.com', role: 'Student' },
+  { id: 'u2', name: 'Bob Smith', email: 'bob@example.com', role: 'Instructor' },
+  { id: 'u3', name: 'Carol Jones', email: 'carol@example.com', role: 'Student' },
+  { id: 'u4', name: 'David Lee', email: 'david@example.com', role: 'Admin' },
+];
+
+// PUBLIC_INTERFACE
+export const mockCourses = [
+  { id: 'c1', title: 'Intro to Testing', category: 'Software Testing', published: true, rating: 4.5, updatedAt: 5 },
+  { id: 'c2', title: 'React for Beginners', category: 'Full-Stack', published: false, rating: 4.3, updatedAt: 3 },
+  { id: 'c3', title: 'DevOps Fundamentals', category: 'DevOps', published: true, rating: 4.6, updatedAt: 9 },
+];
+
+// PUBLIC_INTERFACE
+export const mockEnrollments = [
+  { userId: 'u1', courseId: 'c1', progress: 64, status: 'active', enrolled_at: '2024-10-28T12:15:00.000Z' },
+  { userId: 'u2', courseId: 'c3', progress: 100, status: 'active', enrolled_at: '2024-11-04T14:10:00.000Z' },
+  { userId: 'u3', courseId: 'c2', progress: 28, status: 'inactive', enrolled_at: '2024-10-20T09:30:00.000Z' },
+];
 
 /**
  * Build derived progress summary per course and overall metrics.
@@ -139,7 +163,8 @@ export function toggleCoursePublish(courseId) {
   /** Mock publish/unpublish toggle. Returns updated course without persisting */
   const course = mockCourses.find((c) => c.id === courseId);
   if (!course) return null;
-  return { ...course, published: !course.published };
+  course.published = !course.published; // mutate local mock for subsequent reads
+  return { ...course };
 }
 
 /**
@@ -203,9 +228,9 @@ export function getEnrollmentsForCourse(courseId) {
 export function getIntegratedQuickLinks() {
   /** Provides cross-navigation suggestions from admin into instructor/student areas */
   return [
-    { label: 'Go to Instructor Dashboard', to: '/instructor/dashboard' },
-    { label: 'Create New Course', to: '/instructor/create-course' },
+    { label: 'Go to Instructor Dashboard', to: '/instructor/overview' },
+    { label: 'Create New Course', to: '/instructor/courses/create' },
     { label: 'Browse Student Catalog', to: '/student/catalog' },
-    { label: 'Student My Learning', to: '/student/mylearning' },
+    { label: 'Student My Learning', to: '/student/courses' },
   ];
 }

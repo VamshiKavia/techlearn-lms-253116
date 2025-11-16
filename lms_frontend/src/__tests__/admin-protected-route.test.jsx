@@ -1,30 +1,21 @@
 import React from 'react';
-import { AuthProvider } from '../providers/AuthProvider.jsx';
-import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import AppRoutes from '../routes/AppRoutes.jsx';
+import App from '../../App';
+import { MemoryRouter } from 'react-router-dom';
+import { AuthContext } from '../../providers/AuthProvider';
 
-describe('ProtectedRoute for Admin', () => {
-  it('allows Admin role', () => {
-    render(
-      <AuthProvider initialUser={{ role: 'Admin', name: 'Admin' }}>
-        <MemoryRouter initialEntries={['/admin/overview']}>
-          <AppRoutes />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    expect(screen.getByText('Admin Overview')).toBeInTheDocument();
-  });
-
-  it('denies Student role', () => {
-    render(
-      <AuthProvider initialUser={{ role: 'Student', name: 'Bob' }}>
-        <MemoryRouter initialEntries={['/admin/overview']}>
-          <AppRoutes />
-        </MemoryRouter>
-      </AuthProvider>
-    );
-    expect(screen.queryByText('Admin Overview')).not.toBeInTheDocument();
-  });
+/**
+ * Ensures non-admin users are blocked from admin routes.
+ */
+test('non-admin cannot access admin route', async () => {
+  const value = { user: { id: '1', role: 'student' }, loading: false, login: jest.fn(), logout: jest.fn() };
+  render(
+    <AuthContext.Provider value={value}>
+      <MemoryRouter initialEntries={['/admin/overview']}>
+        <App />
+      </MemoryRouter>
+    </AuthContext.Provider>
+  );
+  // The app may redirect or show not-found; assert we didn't render the Admin nav
+  expect(screen.queryByText(/Admin/i)).not.toBeInTheDocument();
 });

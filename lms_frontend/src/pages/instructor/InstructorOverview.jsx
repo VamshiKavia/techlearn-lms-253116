@@ -1,103 +1,72 @@
-import React from 'react';
-import MetricCard from '../../components/ui/MetricCard';
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
-import LineChart from '../../components/ui/LineChart';
-import BarChart from '../../components/ui/BarChart';
+import MetricCard from '../../components/ui/MetricCard';
+import Button from '../../components/ui/Button';
+import { getMockInstructorCourses, getMockInstructorSubmissions } from '../../services/mockData';
 
-// PUBLIC_INTERFACE
-export default function InstructorOverview() {
-  /** Instructor Overview dashboard with mock KPI metrics and simple charts. No backend calls. */
-  const metrics = [
-    { label: 'Active Courses', value: '4', trend: 1.5, hint: 'currently published' },
-    { label: 'Total Enrollments', value: '1,245', trend: 3.8, hint: 'across all courses' },
-    { label: 'Monthly Revenue', value: '$4,320', trend: 2.4, hint: 'last 30 days' },
-    { label: 'Avg. Rating', value: '4.6', trend: 0.0, hint: 'weighted average' },
-    { label: 'Completion Rate', value: '71%', trend: 0.9, hint: 'rolling 12 weeks' },
-  ];
+/**
+ * PUBLIC_INTERFACE
+ * InstructorOverview - Minimal KPI view and quick links for instructors (mock only).
+ */
+const InstructorOverview = () => {
+  const myCourses = useMemo(() => getMockInstructorCourses(), []);
+  const submissions = useMemo(() => getMockInstructorSubmissions(), []);
 
-  const enrollmentsTrend = [45, 50, 48, 60, 62, 70, 68, 75, 80, 78, 85, 92];
-  const completionTrend = [60, 62, 63, 64, 66, 68, 67, 69, 70, 71, 71, 72];
-  const courseEnrollments = [320, 240, 180, 150, 120];
-
-  const recentReviews = [
-    { id: 'r1', course: 'React Fundamentals', rating: 5, comment: 'Great explanations!', when: '2d ago' },
-    { id: 'r2', course: 'Docker & Kubernetes', rating: 4, comment: 'Very informative', when: '4d ago' },
-    { id: 'r3', course: 'Python for Data Science', rating: 5, comment: 'Loved the examples', when: '6d ago' },
+  const kpis = [
+    { label: 'My Courses', value: myCourses.length, trend: '' },
+    {
+      label: 'Active Enrollments',
+      value: myCourses.reduce((acc, c) => acc + (c.enrollments || 0), 0),
+      trend: '',
+    },
+    {
+      label: 'Pending Submissions',
+      value: submissions.filter((s) => s.status === 'Submitted').length,
+      trend: '',
+    },
   ];
 
   return (
-    <div style={{ display: 'grid', gap: 16 }}>
-      <div>
-        <h1 style={{ margin: 0 }}>Instructor Overview</h1>
-        <p style={{ color: 'var(--color-secondary)', marginTop: 6 }}>
-          Monitor course performance, engagement, and outcomes.
-        </p>
-      </div>
+    <div className="space-y-16">
+      <section>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Overview</h1>
+        <p className="text-gray-500">Your teaching snapshot.</p>
+      </section>
 
-      <div
-        aria-label="instructor-metrics"
-        style={{
-          display: 'grid',
-          gap: 12,
-          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        }}
-      >
-        {metrics.map((m) => (
-          <MetricCard key={m.label} label={m.label} value={m.value} trend={m.trend} hint={m.hint} />
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {kpis.map((k) => (
+          <MetricCard key={k.label} label={k.label} value={String(k.value)} trend={k.trend} />
         ))}
-      </div>
+      </section>
 
-      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: '2fr 1fr' }}>
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Monthly Enrollments</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>Last 12 months</div>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-medium text-gray-800">Quick links</h2>
+            <Link to="/instructor/courses/create">
+              <Button variant="primary">Create Course</Button>
+            </Link>
           </div>
-          <div style={{ marginTop: 8 }}>
-            <LineChart data={enrollmentsTrend} label="Monthly Enrollments line chart" />
+          <div className="flex gap-2">
+            <Link to="/instructor/courses">
+              <Button variant="secondary">My Courses</Button>
+            </Link>
+            <Link to="/instructor/submissions">
+              <Button variant="secondary">Submissions</Button>
+            </Link>
           </div>
         </Card>
 
         <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Completion Rate</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>Last 12 months</div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <LineChart data={completionTrend} color="var(--color-success)" label="Completion Rate line chart" />
+          <h2 className="text-lg font-medium text-gray-800 mb-2">Getting started</h2>
+          <div className="text-sm text-gray-600">
+            Keep lessons concise and add assignments for engagement.
           </div>
         </Card>
-      </div>
-
-      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}>
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <div style={{ fontWeight: 700 }}>Top Courses by Enrollment</div>
-            <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>This quarter</div>
-          </div>
-          <div style={{ marginTop: 8 }}>
-            <BarChart data={courseEnrollments} label="Top Courses bar chart" />
-          </div>
-        </Card>
-
-        <Card>
-          <div style={{ fontWeight: 700, marginBottom: 8 }}>Recent Reviews</div>
-          <ul style={{ display: 'grid', gap: 8 }}>
-            {recentReviews.map((r) => (
-              <li key={r.id} style={{ display: 'grid', gap: 2 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: 600 }}>{r.course}</span>
-                  <span style={{ fontSize: 12, color: 'var(--color-secondary)' }}>{r.when}</span>
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--color-secondary)' }}>
-                  {'★'.repeat(r.rating)}{' '}
-                  <span style={{ marginLeft: 6 }}>{r.comment}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
+      </section>
     </div>
   );
-}
+};
+
+export default InstructorOverview;

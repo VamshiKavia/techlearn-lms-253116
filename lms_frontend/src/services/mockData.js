@@ -1,378 +1,59 @@
-export const mockEnrolledCourseIds = ['fs-react-node', 'devops-kubernetes', 'ds-python-ml'];
-
-// PUBLIC_INTERFACE
-// Minimal user directory for admin mock features
-export const mockUsers = [
-  { id: 'u_admin', name: 'Alice Admin', email: 'alice.admin@example.com', role: 'Admin' },
-  { id: 'u_inst_1', name: 'Ian Instructor', email: 'ian.inst@example.com', role: 'Instructor' },
-  { id: 'u_inst_2', name: 'Ingrid Instructor', email: 'ingrid.inst@example.com', role: 'Instructor' },
-  { id: 'u_stu_1', name: 'Sam Student', email: 'sam.student@example.com', role: 'Student' },
-  { id: 'u_stu_2', name: 'Sasha Student', email: 'sasha.student@example.com', role: 'Student' },
-  { id: 'u_stu_3', name: 'Sanjay Student', email: 'sanjay.student@example.com', role: 'Student' },
-];
-
 /**
- * PUBLIC_INTERFACE
- * Enrollments with user info, status and timestamps for admin progress summaries.
+ * Mock data helpers for various pages.
+ * Keep these minimal and consistent with the Ocean Professional minimalist theme usage.
  */
-export const mockEnrollments = [
-  {
-    userId: 'u_stu_1',
-    courseId: 'fs-react-node',
-    progress: 35,
-    status: 'active',
-    enrolled_at: '2024-11-01T10:00:00.000Z',
-  },
-  {
-    userId: 'u_stu_2',
-    courseId: 'fs-react-node',
-    progress: 62,
-    status: 'active',
-    enrolled_at: '2024-10-28T12:15:00.000Z',
-  },
-  {
-    userId: 'u_stu_3',
-    courseId: 'fs-react-node',
-    progress: 10,
-    status: 'inactive',
-    enrolled_at: '2024-10-20T09:30:00.000Z',
-  },
-  {
-    userId: 'u_stu_1',
-    courseId: 'devops-kubernetes',
-    progress: 55,
-    status: 'active',
-    enrolled_at: '2024-11-03T08:45:00.000Z',
-  },
-  {
-    userId: 'u_stu_2',
-    courseId: 'devops-kubernetes',
-    progress: 48,
-    status: 'active',
-    enrolled_at: '2024-11-04T14:10:00.000Z',
-  },
-  {
-    userId: 'u_stu_3',
-    courseId: 'ds-python-ml',
-    progress: 20,
-    status: 'active',
-    enrolled_at: '2024-11-02T16:20:00.000Z',
-  },
-];
-
-// Default progress map for enrolled courses (overridable by pages/tests)
-export const mockCourseProgress = {
-  'fs-react-node': 32,
-  'devops-kubernetes': 58,
-  'ds-python-ml': 10,
-};
-
-// Recent activity sample generator (returns up to last 5)
-export const getMockRecentActivity = () => ([
-  { id: 'ra-1', title: 'Watched: Intro & Setup', courseId: 'fs-react-node', when: '2h ago' },
-  { id: 'ra-2', title: 'Completed: React Hooks Quiz', courseId: 'fs-react-node', when: '14h ago' },
-  { id: 'ra-3', title: 'Resumed: Kubernetes Basics Lesson 2', courseId: 'devops-kubernetes', when: '1d ago' },
-  { id: 'ra-4', title: 'Viewed: Pandas Basics', courseId: 'ds-python-ml', when: '2d ago' },
-  { id: 'ra-5', title: 'Earned: Consistent Learner Badge', courseId: null, when: '4d ago' },
-]);
-
-export const mockCourses = [
-  // Full-Stack
-  {
-    id: 'fs-react-node',
-    title: 'Full-Stack React & Node.js',
-    category: 'Full-Stack',
-    level: 'Intermediate',
-    rating: 4.7,
-    students: 18420,
-    progress: 0,
-    durationMinutes: 540,
-    tags: ['react', 'node', 'rest', 'hooks'],
-    prerequisites: ['html', 'javascript'],
-    createdAt: '2024-05-01T00:00:00.000Z',
-    thumbnail: '/images/react-node.png',
-    modules: [
-      {
-        id: 'm1',
-        title: 'Foundations',
-        lessons: [
-          { id: 'l1', title: 'Intro & Setup', type: 'video', duration: '08:21', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-          { id: 'l2', title: 'Project Structure', type: 'reading' },
-        ],
-        resources: [{ title: 'Starter Repo', link: 'https://github.com/' }],
-      },
-      {
-        id: 'm2',
-        title: 'Frontend with React',
-        lessons: [
-          { id: 'l3', title: 'Hooks Deep Dive', type: 'video', duration: '12:05', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-        resources: [{ title: 'React Docs', link: 'https://react.dev' }],
-      },
-    ],
-  },
-  {
-    id: 'fs-next-prisma',
-    title: 'Next.js + Prisma + Postgres',
-    category: 'Full-Stack',
-    level: 'Advanced',
-    rating: 4.6,
-    students: 9212,
-    progress: 0,
-    durationMinutes: 620,
-    tags: ['nextjs', 'prisma', 'postgres', 'fullstack'],
-    prerequisites: ['javascript', 'sql'],
-    createdAt: '2024-07-12T00:00:00.000Z',
-    thumbnail: '/images/next-prisma.png',
-    modules: [
-      { id: 'm1', title: 'Next.js Routing', lessons: [{ id: 'l1', title: 'App Router', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' }] },
-    ],
-  },
-
-  // Data Science
-  {
-    id: 'ds-python-ml',
-    title: 'Python for Data Science & ML',
-    category: 'Data Science',
-    level: 'Beginner',
-    rating: 4.8,
-    students: 25210,
-    progress: 0,
-    durationMinutes: 480,
-    tags: ['python', 'pandas', 'numpy', 'ml'],
-    prerequisites: ['python-basics'],
-    createdAt: '2024-02-22T00:00:00.000Z',
-    thumbnail: '/images/ds-python.png',
-    modules: [
-      { id: 'm1', title: 'NumPy & Pandas', lessons: [{ id: 'l1', title: 'Pandas Basics', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' }] },
-    ],
-    resources: [{ title: 'Kaggle', link: 'https://kaggle.com' }],
-  },
-  {
-    id: 'ds-mlops',
-    title: 'MLOps Foundations',
-    category: 'Data Science',
-    level: 'Intermediate',
-    rating: 4.5,
-    students: 7111,
-    progress: 0,
-    durationMinutes: 360,
-    tags: ['mlops', 'ml', 'docker', 'cicd'],
-    prerequisites: ['python-basics'],
-    createdAt: '2024-03-30T00:00:00.000Z',
-    thumbnail: '/images/mlops.png',
-  },
-
-  // Cloud
-  {
-    id: 'cloud-aws-solutions',
-    title: 'AWS Solutions Architect',
-    category: 'Cloud',
-    level: 'Intermediate',
-    rating: 4.6,
-    students: 18900,
-    progress: 0,
-    durationMinutes: 720,
-    tags: ['aws', 'cloud', 'architecture'],
-    prerequisites: ['networking-basics'],
-    createdAt: '2024-01-10T00:00:00.000Z',
-    thumbnail: '/images/aws.png',
-  },
-  {
-    id: 'cloud-gcp-fundamentals',
-    title: 'GCP Fundamentals',
-    category: 'Cloud',
-    level: 'Beginner',
-    rating: 4.4,
-    students: 8400,
-    progress: 0,
-    durationMinutes: 240,
-    tags: ['gcp', 'cloud', 'compute'],
-    prerequisites: [],
-    createdAt: '2024-08-21T00:00:00.000Z',
-    thumbnail: '/images/gcp.png',
-  },
-
-  // DevOps
-  {
-    id: 'devops-kubernetes',
-    title: 'Kubernetes for DevOps',
-    category: 'DevOps',
-    level: 'Intermediate',
-    rating: 4.7,
-    students: 14700,
-    progress: 0,
-    durationMinutes: 400,
-    tags: ['kubernetes', 'containers', 'cloud-native'],
-    prerequisites: ['docker-basics'],
-    createdAt: '2024-09-02T00:00:00.000Z',
-    thumbnail: '/images/k8s.png',
-  },
-  {
-    id: 'devops-ci-cd',
-    title: 'CI/CD with GitHub Actions',
-    category: 'DevOps',
-    level: 'Beginner',
-    rating: 4.5,
-    students: 9100,
-    progress: 0,
-    durationMinutes: 180,
-    tags: ['cicd', 'github', 'automation'],
-    prerequisites: [],
-    createdAt: '2024-06-14T00:00:00.000Z',
-    thumbnail: '/images/cicd.png',
-  },
-
-  // Software Testing (with mock video lessons)
-  {
-    id: 'test-cypress',
-    title: 'Modern Web Testing with Cypress',
-    category: 'Software Testing',
-    level: 'Intermediate',
-    rating: 4.6,
-    students: 5600,
-    progress: 0,
-    durationMinutes: 210,
-    tags: ['cypress', 'testing', 'e2e'],
-    prerequisites: ['javascript'],
-    createdAt: '2024-04-05T00:00:00.000Z',
-    thumbnail: '/images/cypress.png',
-    modules: [
-      {
-        id: 'mt-mod-1',
-        title: 'Manual Testing Fundamentals',
-        lessons: [
-          { id: 'mt-vid-1', title: 'What is Software Testing?', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-          { id: 'mt-vid-2', title: 'Writing Effective Test Plans', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-        resources: [{ title: 'ISTQB Foundation Syllabus (PDF)', link: '#' }],
-      },
-      {
-        id: 'at-mod-1',
-        title: 'Automation with Selenium & Cypress',
-        lessons: [
-          { id: 'at-vid-1', title: 'Selenium WebDriver Setup', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-          { id: 'at-vid-2', title: 'Cypress Test Runner Overview', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-        resources: [{ title: 'Cypress Docs', link: 'https://docs.cypress.io' }],
-      },
-      {
-        id: 'ps-mod-1',
-        title: 'Performance & Security Basics',
-        lessons: [
-          { id: 'ps-vid-1', title: 'Getting Started with k6', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-        resources: [{ title: 'k6 Docs', link: 'https://k6.io/docs/' }],
-      },
-    ],
-  },
-  {
-    id: 'test-playwright',
-    title: 'Playwright End-to-End Testing',
-    category: 'Software Testing',
-    level: 'Advanced',
-    rating: 4.5,
-    students: 4800,
-    progress: 0,
-    durationMinutes: 260,
-    tags: ['playwright', 'testing', 'e2e'],
-    prerequisites: ['javascript'],
-    createdAt: '2024-10-01T00:00:00.000Z',
-    thumbnail: '/images/playwright.png',
-  },
-
-  // AI (with mock video lessons)
-  {
-    id: 'ai-llms-foundations',
-    title: 'LLMs Foundations & Prompting',
-    category: 'AI',
-    level: 'Intermediate',
-    rating: 4.7,
-    students: 13300,
-    progress: 0,
-    durationMinutes: 300,
-    tags: ['llm', 'prompting', 'nlp'],
-    prerequisites: ['python-basics'],
-    createdAt: '2024-07-30T00:00:00.000Z',
-    thumbnail: '/images/llm.png',
-    modules: [
-      {
-        id: 'aif-mod-1',
-        title: 'AI Foundations',
-        lessons: [
-          { id: 'ai-vid-1', title: 'Linear Algebra for ML', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-      },
-      {
-        id: 'dl-mod-1',
-        title: 'Deep Learning',
-        lessons: [
-          { id: 'dl-vid-1', title: 'Feedforward Networks', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-          { id: 'dl-vid-2', title: 'CNN Intuition', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-      },
-      {
-        id: 'gen-mod-1',
-        title: 'Generative AI & LLMs',
-        lessons: [
-          { id: 'gen-vid-1', title: 'Prompting Patterns', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-          { id: 'gen-vid-2', title: 'RAG System Overview', type: 'video', url: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'ai-computer-vision',
-    title: 'Computer Vision with PyTorch',
-    category: 'AI',
-    level: 'Intermediate',
-    rating: 4.4,
-    students: 7200,
-    progress: 0,
-    durationMinutes: 360,
-    tags: ['vision', 'pytorch', 'cnn'],
-    prerequisites: ['python-basics'],
-    createdAt: '2024-03-18T00:00:00.000Z',
-    thumbnail: '/images/cv.png',
-  },
-];
-
-export const sampleBreadcrumbs = (courseTitle) => ([
-  { label: 'Catalog', to: '/student/catalog' },
-  { label: courseTitle || 'Course', to: '#' },
-]);
-
-export const filterCoursesByCategory = (category) =>
-  mockCourses.filter(c => c.category === category);
 
 // PUBLIC_INTERFACE
-export const mockUserProfile = {
-  id: 'user-001',
-  name: 'Jane Student',
-  enrolledCategories: ['Data Science', 'DevOps'],
-  viewedCourseIds: ['ds-python-ml', 'devops-kubernetes'],
-  interests: ['python', 'kubernetes', 'ml', 'cicd'],
-};
+export const getMockStudentKPIs = () => ({
+  enrolled: 5,
+  inProgress: 3,
+  certificates: 1,
+});
 
 // PUBLIC_INTERFACE
-export function getRecommendedCourses(userProfile, courses = mockCourses, limit = 8) {
-  /**
-   * Simple rule-based recommendation:
-   * - Score by shared categories (enrolledCategories)
-   * - Score by overlapping tags with interests
-   * - Small boost for courses recently created
-   */
-  const now = Date.now();
-  const scored = courses.map(c => {
-    const catScore = (userProfile?.enrolledCategories || []).includes(c.category) ? 3 : 0;
-    const tagOverlap = (c.tags || []).filter(t => (userProfile?.interests || []).includes(t)).length;
-    const recencyDays = Math.max(1, Math.floor((now - new Date(c.createdAt || now).getTime()) / (1000 * 3600 * 24)));
-    const recencyScore = 2 / recencyDays; // newer -> higher
-    const score = catScore + tagOverlap + recencyScore;
-    return { course: c, score };
-  });
-  return scored
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(s => s.course);
-}
+export const getMockCatalog = () => [
+  { id: 'c1', title: 'Intro to Testing', rating: 4.5 },
+  { id: 'c2', title: 'React for Beginners', rating: 4.7 },
+];
+
+// PUBLIC_INTERFACE
+export const getMockRecommendations = () => [
+  { id: 'r1', title: 'Advanced React Patterns' },
+  { id: 'r2', title: 'API Testing with Postman' },
+];
+
+// PUBLIC_INTERFACE
+export const getMockInstructorCourses = () => [
+  { id: 'c1', title: 'Intro to Testing', status: 'Published', enrollments: 32 },
+  { id: 'c2', title: 'React for Beginners', status: 'Draft', enrollments: 0 },
+  { id: 'c3', title: 'DevOps Fundamentals', status: 'Published', enrollments: 52 },
+];
+
+// PUBLIC_INTERFACE
+export const getMockInstructorSubmissions = () => [
+  {
+    id: 's1',
+    studentName: 'Alice Johnson',
+    courseId: 'c1',
+    courseTitle: 'Intro to Testing',
+    lessonTitle: 'Assignment 1: Test Plan',
+    status: 'Submitted',
+  },
+  {
+    id: 's2',
+    studentName: 'Bob Smith',
+    courseId: 'c3',
+    courseTitle: 'DevOps Fundamentals',
+    lessonTitle: 'Assignment 2: CI Setup',
+    status: 'Graded',
+    grade: '88',
+  },
+  {
+    id: 's3',
+    studentName: 'Carol Jones',
+    courseId: 'c1',
+    courseTitle: 'Intro to Testing',
+    lessonTitle: 'Assignment 2: Test Cases',
+    status: 'Submitted',
+  },
+];

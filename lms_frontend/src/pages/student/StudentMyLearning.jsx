@@ -5,7 +5,36 @@ import Button from '../../components/ui/Button';
 import ProgressBar from '../../components/ui/ProgressBar';
 import EmptyState from '../../components/ui/EmptyState';
 import { Skeleton } from '../../components/ui/Skeleton';
-import { mockCourses } from '../../services/mockData';
+const mockCourses = [
+  {
+    id: 'fs-react-node',
+    title: 'Full-Stack React & Node.js',
+    category: 'Full-Stack',
+    level: 'Intermediate',
+    modules: [
+      { id: 'm1', lessons: [{ id: 'l1', title: 'Intro & Setup' }, { id: 'l2', title: 'Project Structure' }] },
+      { id: 'm2', lessons: [{ id: 'l3', title: 'Hooks Deep Dive' }] },
+    ],
+  },
+  {
+    id: 'devops-kubernetes',
+    title: 'Kubernetes for DevOps',
+    category: 'DevOps',
+    level: 'Intermediate',
+    modules: [
+      { id: 'm1', lessons: [{ id: 'k1', title: 'K8s Basics' }, { id: 'k2', title: 'Deployments' }] },
+    ],
+  },
+  {
+    id: 'ds-python-ml',
+    title: 'Python for Data Science & ML',
+    category: 'Data Science',
+    level: 'Beginner',
+    modules: [
+      { id: 'm1', lessons: [{ id: 'p1', title: 'Pandas Basics' }, { id: 'p2', title: 'NumPy Intro' }] },
+    ],
+  },
+];
 import '../../styles/theme.css';
 
 /**
