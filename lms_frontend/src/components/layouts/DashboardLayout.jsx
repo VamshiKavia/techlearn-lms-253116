@@ -24,12 +24,14 @@ export default function DashboardLayout() {
       { to: '/student/overview', label: 'Overview' },
       { to: '/student/learning', label: 'My Learning' },
       { to: '/student/catalog', label: 'Catalog' },
+      // Simple Paths
       { to: '/student/paths/full-stack', label: 'Full-Stack' },
       { to: '/student/paths/data-science', label: 'Data Science' },
       { to: '/student/paths/cloud', label: 'Cloud' },
       { to: '/student/paths/devops', label: 'DevOps' },
       { to: '/student/paths/testing', label: 'Software Testing', testId: 'nav-testing' },
       { to: '/student/paths/ai', label: 'AI', testId: 'nav-ai' },
+      // Keep essentials in student menu
       { to: '/student/reviews', label: 'Reviews' },
       { to: '/student/qna', label: 'Q&A' },
       { to: '/student/certificates', label: 'Certificates' },

@@ -8,7 +8,7 @@ import '../../styles/theme.css';
 
 /**
  * PUBLIC_INTERFACE
- * Course detail view using mock data.
+ * Minimal Course detail: overview header, progress with primary CTA, modules/lessons, and a minimal resources section heading.
  */
 export default function CourseDetail() {
   const [course, setCourse] = useState(null);
@@ -19,7 +19,7 @@ export default function CourseDetail() {
     const t = setTimeout(() => {
       setCourse(mockCourses[0]);
       setLoading(false);
-    }, 400);
+    }, 300);
     return () => clearTimeout(t);
   }, []);
 
@@ -38,6 +38,7 @@ export default function CourseDetail() {
           </>
         )}
       </div>
+
       <Card>
         {loading ? (
           <>
@@ -47,14 +48,14 @@ export default function CourseDetail() {
           </>
         ) : (
           <div className="flex items-center justify-between gap-4">
-            <ProgressBar value={course.progress || 12} />
-            <Button ariaLabel="Continue course">Continue</Button>
+            <ProgressBar value={course.progress || 0} />
+            <Button ariaLabel="Enroll or Continue">{(course.progress || 0) > 0 ? 'Continue' : 'Enroll'}</Button>
           </div>
         )}
       </Card>
 
       <div className="mt-6">
-        <h2 className="h2 mb-3">Modules</h2>
+        <h2 className="h2 mb-3">Modules & Lessons</h2>
         {loading ? (
           <>
             <Skeleton height={48} className="mb-2" />
@@ -70,6 +71,17 @@ export default function CourseDetail() {
               </Card>
             ))}
           </div>
+        )}
+      </div>
+
+      <div className="mt-6">
+        <h2 className="h2 mb-3">Resources</h2>
+        {loading ? (
+          <Skeleton height={36} />
+        ) : (
+          <Card className="p-4">
+            <div className="subtle text-sm">Minimal resources list (mock)</div>
+          </Card>
         )}
       </div>
     </div>

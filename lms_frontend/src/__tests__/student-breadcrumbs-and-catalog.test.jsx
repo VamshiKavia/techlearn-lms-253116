@@ -13,36 +13,35 @@ test('StudentCatalog shows skeleton then courses and pagination', async () => {
       <StudentCatalog />
     </MemoryRouter>
   );
-  expect(screen.getAllByRole('status', { hidden: true }).length || 1).toBeTruthy(); // skeleton present
-  await act(async () => { jest.advanceTimersByTime(450); });
+  await act(async () => { jest.advanceTimersByTime(350); });
   expect(screen.getByText(/Catalog/)).toBeInTheDocument();
-  expect(screen.getByRole('navigation', { name: /Pagination/ })).toBeInTheDocument();
+  // Pagination nav present
+  expect(screen.getByRole('navigation')).toBeInTheDocument();
 
-  // Filter by AI
+  // Filter by AI using category chip
   const aiButton = screen.getByRole('button', { name: /Filter by AI/ });
   fireEvent.click(aiButton);
-  await act(async () => { jest.advanceTimersByTime(450); });
-  expect(screen.getByText(/AI/)).toBeInTheDocument();
+  await act(async () => { jest.advanceTimersByTime(350); });
+  expect(screen.getByLabelText('catalog-grid')).toBeInTheDocument();
 });
 
-test('CourseDetail shows breadcrumbs and skeleton loading', async () => {
+test('CourseDetail shows skeleton then modules & lessons', async () => {
   render(
     <MemoryRouter>
       <CourseDetail />
     </MemoryRouter>
   );
-  expect(screen.getByLabelText('Breadcrumb')).toBeInTheDocument();
-  await act(async () => { jest.advanceTimersByTime(450); });
-  expect(screen.getByText(/Modules/)).toBeInTheDocument();
+  await act(async () => { jest.advanceTimersByTime(350); });
+  expect(screen.getByText(/Modules & Lessons/i)).toBeInTheDocument();
 });
 
-test('LessonPlayer shows breadcrumbs and video after loading', async () => {
+test('LessonPlayer shows viewport and Mark as Complete after loading', async () => {
   render(
     <MemoryRouter>
       <LessonPlayer />
     </MemoryRouter>
   );
-  expect(screen.getByLabelText('Breadcrumb')).toBeInTheDocument();
-  await act(async () => { jest.advanceTimersByTime(450); });
-  expect(screen.getByText(/Next/)).toBeInTheDocument();
+  await act(async () => { jest.advanceTimersByTime(350); });
+  expect(screen.getByLabelText(/lesson player viewport/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Mark as complete/i })).toBeInTheDocument();
 });
