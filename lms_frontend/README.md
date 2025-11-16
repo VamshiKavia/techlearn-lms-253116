@@ -1,82 +1,61 @@
-# Lightweight React Template for KAVIA
+# TechLearn LMS Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+Production-ready React shell following the "Ocean Professional" minimalist theme with role-based routing and basic auth flow.
 
-## Features
+## Stack
+- React 18 (CRA)
+- react-router-dom v6
+- Axios client with interceptors
+- Context-based Auth with JWT storage (localStorage)
+- Minimal design system (Button, Input, Card, Sidebar/Topbar)
+- ESLint + Prettier
+- Testing Library + Jest
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+## Structure
+- src/app (n/a)
+- src/components (layouts, ui)
+- src/pages (public + role dashboards)
+- src/routes (router + ProtectedRoute)
+- src/styles (theme.css)
+- src/hooks (useApi, useRequestId)
+- src/services (apiClient, authService, coursesService)
+- src/utils (sanitize)
 
 ## Getting Started
+1. Copy env file:
+   cp .env.example .env
+   Update REACT_APP_API_BASE_URL as needed (default http://localhost:3001).
 
-In the project directory, you can run:
+2. Install dependencies:
+   npm install
 
-### `npm start`
+3. Run dev server:
+   npm start
+   App runs at http://localhost:3000
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. Run tests:
+   npm test
 
-### `npm test`
+5. Build:
+   npm run build
 
-Launches the test runner in interactive watch mode.
+## Environment
+- REACT_APP_API_BASE_URL: Backend base URL (FastAPI default http://localhost:3001)
+- REACT_APP_ENABLE_MOCKS: When true, uses mock auth for UI flow
+- REACT_APP_APP_NAME: Application display name
 
-### `npm run build`
+## Auth
+- Simple mock login/signup persists token and user { email, role } to localStorage
+- Protected routes redirect to /login if unauthenticated
+- TODO: Integrate real backend endpoints for /auth/login, /auth/signup, /auth/me
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Security
+- No secrets committed
+- Inputs sanitized client-side (basic) to reduce XSS vectors
+- Sensitive data (passwords/tokens) not logged
 
-## Customization
+## Acceptance
+- Navigate to /login or /signup to authenticate with a role (admin/instructor/student)
+- After login, role dashboard renders under /admin, /instructor, or /student
+- Courses pages show placeholder data from services
 
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
