@@ -10,7 +10,7 @@ export default function DashboardLayout() {
 
   const navByRole = {
     admin: [
-      { to: '/admin', label: 'Overview' },
+      { to: '/admin/overview', label: 'Overview' },
       { to: '/admin/courses', label: 'Courses' },
       { to: '/admin/users', label: 'Users' },
     ],

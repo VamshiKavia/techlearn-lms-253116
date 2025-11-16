@@ -10,6 +10,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminCourses from '../pages/admin/AdminCourses';
+import AdminOverview from '../pages/admin/AdminOverview';
 
 import InstructorDashboard from '../pages/instructor/InstructorDashboard';
 import InstructorCourses from '../pages/instructor/InstructorCourses';
@@ -36,7 +37,8 @@ export default function AppRoutes() {
         {
           element: <DashboardLayout />,
           children: [
-            { path: '/admin', element: <AdminDashboard /> },
+            { path: '/admin', element: <AdminOverview /> },
+            { path: '/admin/overview', element: <AdminOverview /> },
             { path: '/admin/courses', element: <AdminCourses /> },
           ],
         },
