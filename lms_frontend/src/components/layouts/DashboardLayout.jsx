@@ -30,6 +30,8 @@ export default function DashboardLayout() {
       { to: '/student/paths/data-science', label: 'Data Science' },
       { to: '/student/paths/cloud', label: 'Cloud' },
       { to: '/student/paths/devops', label: 'DevOps' },
+      { to: '/student/paths/testing', label: 'Software Testing', testId: 'nav-testing' },
+      { to: '/student/paths/ai', label: 'AI', testId: 'nav-ai' },
     ],
   };
 
@@ -46,7 +48,7 @@ export default function DashboardLayout() {
         </div>
         <nav>
           {links.map((item) => (
-            <NavLink key={item.to} to={item.to} end>
+            <NavLink key={item.to} to={item.to} end data-testid={item.testId || undefined}>
               {item.label}
             </NavLink>
           ))}
