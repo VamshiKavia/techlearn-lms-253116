@@ -1,1 +1,2 @@
-/* Deprecated styles replaced by src/styles/theme.css */
+.App { text-align: left; }
+header { background: var(--gradient); }

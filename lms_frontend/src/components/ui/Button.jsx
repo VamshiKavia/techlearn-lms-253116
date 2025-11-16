@@ -1,10 +1,33 @@
 import React from 'react';
 
-// PUBLIC_INTERFACE
-export default function Button({ children, variant = 'primary', ...rest }) {
-  /** Minimal button using theme classes. */
-  const cls = ['btn', variant === 'secondary' ? 'secondary' : '', variant === 'ghost' ? 'ghost' : '']
-    .filter(Boolean)
-    .join(' ');
-  return <button className={cls} {...rest}>{children}</button>;
+/**
+ * PUBLIC_INTERFACE
+ * Accessible, themed Button with variants.
+ */
+export default function Button({
+  children,
+  variant = 'primary',
+  disabled = false,
+  ariaLabel,
+  className = '',
+  type = 'button',
+  onClick,
+  ...rest
+}) {
+  const cls = ['btn'];
+  if (variant === 'secondary') cls.push('secondary');
+  if (variant === 'ghost') cls.push('ghost');
+  const finalClass = cls.concat(className ? [className] : []).join(' ');
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={finalClass}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
 }

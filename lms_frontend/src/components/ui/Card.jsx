@@ -1,7 +1,13 @@
 import React from 'react';
 
-// PUBLIC_INTERFACE
-export default function Card({ children, style }) {
-  /** Minimal card container. */
-  return <div className="card" style={style}>{children}</div>;
+/**
+ * PUBLIC_INTERFACE
+ * Themed Card surface container.
+ */
+export default function Card({ children, className = '', style, role, onClick }) {
+  return (
+    <div className={`card ${className}`} style={style} role={role} onClick={onClick}>
+      {children}
+    </div>
+  );
 }
