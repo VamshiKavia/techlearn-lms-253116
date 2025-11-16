@@ -23,6 +23,8 @@ export default function DashboardLayout() {
       { to: '/student/overview', label: 'Overview' },
       { to: '/student/learning', label: 'My Learning' },
       { to: '/student/catalog', label: 'Catalog' },
+      { to: '/student/paths/full-stack', label: 'Full-Stack' },
+      { to: '/student/paths/data-science', label: 'Data Science' },
     ],
   };
 

@@ -26,6 +26,8 @@ import CourseDetail from '../pages/student/CourseDetail';
 import LessonPlayer from '../pages/student/LessonPlayer';
 import QuizAttempt from '../pages/student/QuizAttempt';
 import AssignmentSubmission from '../pages/student/AssignmentSubmission';
+import StudentFullStack from '../pages/student/StudentFullStack';
+import StudentDataScience from '../pages/student/StudentDataScience';
 
 // PUBLIC_INTERFACE
 export default function AppRoutes() {
@@ -77,6 +79,8 @@ export default function AppRoutes() {
             { path: '/student/courses', element: <StudentCourses /> },
             { path: '/student/learning', element: <StudentMyLearning /> },
             { path: '/student/catalog', element: <StudentCatalog /> },
+            { path: '/student/paths/full-stack', element: <StudentFullStack /> },
+            { path: '/student/paths/data-science', element: <StudentDataScience /> },
             { path: '/student/courses/:courseId', element: <CourseDetail /> },
             { path: '/student/courses/:courseId/lessons/:lessonId', element: <LessonPlayer /> },
             { path: '/student/courses/:courseId/quizzes/:quizId', element: <QuizAttempt /> },
