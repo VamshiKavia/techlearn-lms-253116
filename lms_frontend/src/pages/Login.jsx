@@ -25,9 +25,10 @@ export default function Login() {
         role: sanitizeString(role),
       };
       const user = await login(payload);
-      if (user.role === 'admin') navigate('/admin', { replace: true });
-      else if (user.role === 'instructor') navigate('/instructor', { replace: true });
-      else navigate('/student', { replace: true });
+      const role = (user.role || '').toLowerCase();
+      if (role === 'admin') navigate('/admin/overview', { replace: true });
+      else if (role === 'instructor') navigate('/instructor/overview', { replace: true });
+      else navigate('/student/overview', { replace: true });
     } catch (error) {
       setErr('Login failed. Please check your credentials.');
     }
