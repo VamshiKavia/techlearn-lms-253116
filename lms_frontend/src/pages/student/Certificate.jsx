@@ -1,13 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { certificates as mockCertificates } from '../../shared/mocks/certificates';
+import { CertificatePreview } from '../../components/common/CertificatePreview';
+import { exportNodeToPng, exportNodeToPdf } from '../../shared/utils/export';
 
 /**
  * PUBLIC_INTERFACE
  * Certificates: Student Certificates page rendering a grid/list of earned certificates.
- * Frontend-only with local mock data; provides actions to view/download and verify (placeholder).
+ * Frontend-only with local mock data; provides actions to preview and export as PNG/PDF.
  */
 export function Certificates() {
   const list = useMemo(() => mockCertificates, []);
+  const [previewCert, setPreviewCert] = useState(null);
+  const previewRef = useRef(null);
 
   const formatDate = (d) => {
     try {
@@ -22,10 +26,22 @@ export function Certificates() {
     }
   };
 
-  const onView = (url) => {
-    if (!url) return;
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleOpenPreview = (cert) => setPreviewCert(cert);
+  const handleClosePreview = () => setPreviewCert(null);
+
+  const handleDownloadPng = async () => {
+    if (!previewRef.current || !previewCert) return;
+    const filename = `${slugify(previewCert.courseTitle)}-${previewCert.id}.png`;
+    await exportNodeToPng(previewRef.current, { filename, pixelRatio: 2 });
   };
+
+  const handleDownloadPdf = async () => {
+    if (!previewRef.current || !previewCert) return;
+    const filename = `${slugify(previewCert.courseTitle)}-${previewCert.id}.pdf`;
+    await exportNodeToPdf(previewRef.current, { filename, orientation: 'landscape', pageSize: 'a4', pixelRatio: 2 });
+  };
+
+  const slugify = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   return (
     <div>
@@ -34,7 +50,7 @@ export function Certificates() {
         <div>
           <h1>Certificates</h1>
           <div className="subtitle">
-            View and manage your earned certificates. You can download issued certificates and verify credentials.
+            Preview and download your earned certificates. Exports are generated on-device as PNG or PDF.
           </div>
         </div>
         <div aria-hidden="true" />
@@ -121,22 +137,30 @@ export function Certificates() {
               <div style={{ display: 'flex', gap: 10, marginTop: 4, flexWrap: 'wrap' }}>
                 <button
                   className="btn btn-primary"
-                  onClick={() => onView(c.downloadUrl)}
-                  disabled={!c.downloadUrl}
-                  aria-disabled={!c.downloadUrl}
-                  title={c.downloadUrl ? 'View/Download certificate' : 'Download unavailable yet'}
+                  onClick={() => handleOpenPreview(c)}
+                  aria-label={`Preview certificate ${c.id}`}
+                  title="Preview certificate"
+                  disabled={!issued}
                 >
-                  {c.downloadUrl ? 'View / Download' : 'Download Unavailable'}
+                  Preview
                 </button>
                 <button
                   className="btn btn-outline"
-                  onClick={() => {
-                    // Placeholder verify action; will integrate later.
-                    // eslint-disable-next-line no-alert
-                    alert('Verify placeholder: integration to be added later.');
-                  }}
+                  onClick={() => handleOpenPreview(c)}
+                  aria-label={`Download PNG for certificate ${c.id}`}
+                  title="Download PNG"
+                  disabled={!issued}
                 >
-                  Verify
+                  Download PNG
+                </button>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => handleOpenPreview(c)}
+                  aria-label={`Download PDF for certificate ${c.id}`}
+                  title="Download PDF"
+                  disabled={!issued}
+                >
+                  Download PDF
                 </button>
               </div>
             </article>
@@ -155,6 +179,89 @@ export function Certificates() {
           }}
         >
           No certificates yet. Complete courses to earn certificates.
+        </div>
+      )}
+
+      {/* Modal for preview and export */}
+      {previewCert && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Certificate preview modal"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+            zIndex: 50,
+          }}
+          onClick={(e) => {
+            // close on clicking outside the panel
+            if (e.target === e.currentTarget) handleClosePreview();
+          }}
+        >
+          <div
+            className="card"
+            style={{
+              width: 'min(1080px, 96vw)',
+              maxHeight: '92vh',
+              background: 'var(--bg-panel)',
+              borderRadius: 12,
+              padding: 16,
+              display: 'grid',
+              gap: 12,
+              boxShadow: 'var(--shadow-lg)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 12,
+                flexWrap: 'wrap',
+              }}
+            >
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                Certificate Preview
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-outline" onClick={handleDownloadPng}>
+                  Download PNG
+                </button>
+                <button className="btn btn-outline" onClick={handleDownloadPdf}>
+                  Download PDF
+                </button>
+                <button className="btn btn-primary" onClick={handleClosePreview}>
+                  Close
+                </button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                overflow: 'auto',
+                padding: 8,
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 8,
+                background: 'var(--bg-subtle)',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <CertificatePreview
+                  ref={previewRef}
+                  studentName="Student Name"
+                  courseTitle={previewCert.courseTitle}
+                  issueDateFormatted={formatDate(previewCert.issuedOn)}
+                  certificateId={previewCert.id}
+                  credentialId={previewCert.credentialId}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
