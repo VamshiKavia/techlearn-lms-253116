@@ -9,6 +9,7 @@ import { CatalogPage } from './pages/common/CatalogPage';
 import { CategorySectionsPage } from './pages/common/CategorySectionsPage';
 import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider } from './core/auth/AuthContext';
+import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 
 /**
  * PUBLIC_INTERFACE
@@ -27,6 +28,7 @@ function App() {
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/:category" element={<CategorySectionsPage />} />
             <Route path="/player/:lessonId" element={<PlayerPage />} />
+            <Route path="/full-stack" element={<FullStackDevelopment />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/student/overview" replace />} />
