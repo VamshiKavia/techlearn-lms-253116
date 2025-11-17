@@ -10,6 +10,7 @@ import { CategorySectionsPage } from './pages/common/CategorySectionsPage';
 import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider } from './core/auth/AuthContext';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
+import { Reviews } from './pages/student/Reviews';
 
 /**
  * PUBLIC_INTERFACE
@@ -29,6 +30,7 @@ function App() {
             <Route path="/catalog/:category" element={<CategorySectionsPage />} />
             <Route path="/player/:lessonId" element={<PlayerPage />} />
             <Route path="/full-stack" element={<FullStackDevelopment />} />
+            <Route path="/reviews" element={<Reviews />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/student/overview" replace />} />

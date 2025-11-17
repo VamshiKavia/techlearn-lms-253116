@@ -14,6 +14,7 @@ export function Sidebar() {
     { label: 'Overview', to: '/student/overview' },
     { label: 'Catalog', to: '/catalog' },
     { label: 'Full Stack Development', to: '/full-stack' },
+    { label: 'Reviews', to: '/reviews' },
     { label: 'Data Science', to: '/catalog/data-science' },
     { label: 'Cloud', to: '/catalog/cloud' },
     { label: 'Software Testing', to: '/catalog/software-testing' },
