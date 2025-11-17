@@ -2,19 +2,23 @@ import React from 'react';
 import { overviewStats } from '../../shared/mocks/overviewStats';
 import { activities } from '../../shared/mocks/activity';
 import { tips } from '../../shared/mocks/tips';
+import { useAuth } from '../../core/auth/AuthContext';
 
 /**
  * PUBLIC_INTERFACE
  * StudentOverviewPage: Student dashboard with KPIs and panels (mock data)
  */
 export function StudentOverviewPage() {
+  const { user } = useAuth();
+  const greeting = user?.name ? `Welcome, ${user.name}!` : user?.email ? `Welcome, ${user.email}!` : 'Welcome!';
+
   return (
     <div>
       <div className="pageHeader">
         <div>
           <h1>Student Overview</h1>
           <div className="subtitle">
-            Track your learning at a glance and continue where you left off.
+            {greeting} Track your learning at a glance and continue where you left off.
           </div>
         </div>
         {/* Actions removed here; Topbar already provides Home and Logout */}

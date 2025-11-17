@@ -1,38 +1,69 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { getSupabaseClient } from '../clients/supabaseClient';
+import { findUserByCredentials } from '../../shared/mocks/users';
 
 const AuthCtx = createContext(null);
 
 /**
  * PUBLIC_INTERFACE
- * AuthProvider: Provides user session information for student-facing app.
- * Placeholder implementation; integrates with Supabase later.
+ * AuthProvider: Provides user session information and client-only login/logout.
+ * Notes:
+ * - No backend calls are made.
+ * - Optionally persists the authenticated user in localStorage under 'tl_auth_user'.
  */
 export function AuthProvider({ children }) {
-  const supabase = getSupabaseClient();
   const [user, setUser] = useState(null);
 
+  // Load user from localStorage on mount
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      const sessionUser = data?.session?.user || null;
-      setUser(sessionUser || { email: 'student@example.com' });
-    });
+    try {
+      const raw = localStorage.getItem('tl_auth_user');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.email) setUser(parsed);
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => {
-      listener?.subscription?.unsubscribe?.();
-    };
-  }, [supabase]);
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+  /**
+   * PUBLIC_INTERFACE
+   * signIn
+   * Authenticate against local mock users.
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<void>}
+   */
+  const signIn = async (email, password) => {
+    const matched = findUserByCredentials(email, password);
+    if (!matched) {
+      const err = new Error('Invalid email or password');
+      err.code = 'INVALID_CREDENTIALS';
+      throw err;
+    }
+    setUser(matched);
+    try {
+      localStorage.setItem('tl_auth_user', JSON.stringify(matched));
+    } catch {
+      // storage may be unavailable; proceed without persistence
+    }
   };
 
-  const value = useMemo(() => ({ user, signOut }), [user]);
+  /**
+   * PUBLIC_INTERFACE
+   * signOut
+   * Clear local user state and remove stored session.
+   */
+  const signOut = async () => {
+    setUser(null);
+    try {
+      localStorage.removeItem('tl_auth_user');
+    } catch {
+      // ignore
+    }
+  };
+
+  const value = useMemo(() => ({ user, signIn, signOut }), [user]);
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
