@@ -17,10 +17,8 @@ export function StudentOverviewPage() {
             Track your learning at a glance and continue where you left off.
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button className="btn btn-outline">Home</button>
-          <button className="btn btn-primary">Logout</button>
-        </div>
+        {/* Actions removed here; Topbar already provides Home and Logout */}
+        <div aria-hidden="true" />
       </div>
 
       <section className="statsGrid">

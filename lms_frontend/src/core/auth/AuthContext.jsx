@@ -5,19 +5,17 @@ const AuthCtx = createContext(null);
 
 /**
  * PUBLIC_INTERFACE
- * AuthProvider: Provides user session and role information to the app.
+ * AuthProvider: Provides user session information for student-facing app.
  * Placeholder implementation; integrates with Supabase later.
  */
 export function AuthProvider({ children }) {
   const supabase = getSupabaseClient();
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState('student'); // 'admin' | 'instructor' | 'student'
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       const sessionUser = data?.session?.user || null;
       setUser(sessionUser || { email: 'student@example.com' });
-      setRole('student');
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -32,10 +30,9 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    setRole('student');
   };
 
-  const value = useMemo(() => ({ user, role, setRole, signOut }), [user, role]);
+  const value = useMemo(() => ({ user, signOut }), [user]);
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
