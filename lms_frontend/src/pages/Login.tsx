@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+// Always import from the JS shim to ensure CRA env resolution in all bundlers
+import { supabase } from '../lib/supabaseClient.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { supabase, getEmailRedirectTo } from '../lib/supabaseClient';
+// Always import from the JS shim to ensure CRA env resolution in all bundlers
+import { supabase, getEmailRedirectTo } from '../lib/supabaseClient.js';
 
 export default function Register() {
   const [email, setEmail] = useState('');
