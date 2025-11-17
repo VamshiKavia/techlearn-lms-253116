@@ -1,29 +1,71 @@
+import { createClient } from '@supabase/supabase-js';
+
 /**
- * JS shim to re-export TS supabase client.
- * Logs a non-sensitive info line about env mode resolution and masked env presence.
- *
- * Note: This is the only import path JS/JSX files should use in CRA:
- *   import supabase, { getSupabaseEnvDiagnostics, getSupabaseOrNull } from '../lib/supabaseClient.js';
+ * Resolve Supabase URL/KEY from Vite or CRA environments without leaking secrets.
  */
-// Safe, non-secret diagnostics at module init
-(function logEnvPresence() {
+function resolveSupabaseEnv() {
+  // Prefer Vite env first, then CRA fallback
+  const vite = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};
+  const url =
+    (vite && (vite.VITE_SUPABASE_URL || vite.VITE_PUBLIC_SUPABASE_URL)) ||
+    (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_SUPABASE_URL || process.env.REACT_APP_PUBLIC_SUPABASE_URL)) ||
+    '';
+  const key =
+    (vite && (vite.VITE_SUPABASE_KEY || vite.VITE_PUBLIC_SUPABASE_KEY || vite.VITE_SUPABASE_ANON_KEY)) ||
+    (typeof process !== 'undefined' && process.env && (process.env.REACT_APP_SUPABASE_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY)) ||
+    '';
+  return { url: String(url || ''), key: String(key || '') };
+}
+
+/**
+ * Log a non-sensitive diagnostic for env presence.
+ */
+function logEnvPresenceSafe() {
   try {
-    const url = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SUPABASE_URL) || '';
-    const key = (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SUPABASE_KEY) || '';
-    const urlLen = url ? String(url).length : 0;
-    const keyLen = key ? String(key).length : 0;
+    const { url, key } = resolveSupabaseEnv();
     // eslint-disable-next-line no-console
     console.info('Supabase env resolver', {
-      envMode: 'REACT_APP',
+      mode: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE) || process.env?.NODE_ENV || 'development',
       urlPresent: !!url,
       keyPresent: !!key,
-      urlLen,
-      keyLen: keyLen > 0 ? 'set' : 0, // avoid leaking exact length if desired
     });
   } catch {
     // no-op
   }
-})();
+}
+logEnvPresenceSafe();
 
-export { default } from './supabaseClient.ts';
-export * from './supabaseClient.ts';
+let client = null;
+const { url: SB_URL, key: SB_KEY } = resolveSupabaseEnv();
+if (SB_URL && SB_KEY) {
+  client = createClient(SB_URL, SB_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * getSupabaseOrNull - returns initialized Supabase client or null if env missing.
+ */
+export function getSupabaseOrNull() {
+  /** Returns Supabase client if configured; otherwise null. */
+  return client;
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * getSupabaseEnvDiagnostics - lightweight info for UI diagnostics.
+ */
+export function getSupabaseEnvDiagnostics() {
+  /** Returns non-sensitive booleans about env presence. */
+  const { url, key } = resolveSupabaseEnv();
+  return { urlPresent: !!url, keyPresent: !!key };
+}
+
+/**
+ * Default export: Supabase client (may be null if not configured).
+ */
+export default client;
