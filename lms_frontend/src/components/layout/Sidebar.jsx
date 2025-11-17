@@ -19,6 +19,7 @@ export function Sidebar() {
     { label: 'Software Testing', to: '/catalog/software-testing' },
     { label: 'AI', to: '/catalog/ai' },
     { label: 'Reviews', to: '/reviews' },
+    { label: 'Certificates', to: '/certificates' },
   ];
 
   const isActive = (to) => location.pathname === to;

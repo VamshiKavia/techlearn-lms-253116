@@ -11,6 +11,7 @@ import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider } from './core/auth/AuthContext';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
+import { Certificates } from './pages/student/Certificate';
 
 /**
  * PUBLIC_INTERFACE
@@ -31,6 +32,7 @@ function App() {
             <Route path="/player/:lessonId" element={<PlayerPage />} />
             <Route path="/full-stack" element={<FullStackDevelopment />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/certificates" element={<Certificates />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/student/overview" replace />} />
