@@ -31,6 +31,7 @@ function App() {
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/:category" element={<CategorySectionsPage />} />
             <Route path="/player/:lessonId" element={<PlayerPage />} />
+            {/* Keep generic roles tabbed page for dev/demo access only (not linked from student UI) */}
             <Route path="/roles" element={<RolesTabbedPage />} />
 
             {/* Admin & Instructor dashboards - gated by role */}

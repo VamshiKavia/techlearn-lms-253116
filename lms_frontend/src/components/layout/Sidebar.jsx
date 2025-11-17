@@ -10,6 +10,8 @@ export function Sidebar() {
   const location = useLocation();
   const { user } = useAuth();
 
+  // Navigation intentionally excludes any non-admin Roles links from student area.
+  // Admin-specific links will be visible only when routed into /admin via gated routes.
   const navItems = [
     // Student area
     { label: 'Overview', to: '/student/overview' },
@@ -18,12 +20,7 @@ export function Sidebar() {
     { label: 'Cloud', to: '/catalog/cloud' },
     { label: 'Software Testing', to: '/catalog/software-testing' },
     { label: 'AI', to: '/catalog/ai' },
-
-    // Admin quick links
-    { label: 'Roles', to: '/admin/roles' },
-
-    // General roles info page
-    { label: 'Roles (Tabs)', to: '/roles' },
+    // Note: No direct "Roles" or "Roles (Tabs)" links here to keep student area clean.
   ];
 
   const isActive = (to) => location.pathname === to;
