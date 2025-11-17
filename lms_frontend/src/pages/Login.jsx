@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import { AuthContext } from '../providers/AuthProvider';
 import { sanitizeString } from '../utils/sanitize';
 import { useNavigate } from 'react-router-dom';
+import { EnvDiagnostics } from '../components/EnvDiagnostics';
 
 // PUBLIC_INTERFACE
 export default function Login() {
@@ -30,13 +31,14 @@ export default function Login() {
       else if (role === 'instructor') navigate('/instructor/overview', { replace: true });
       else navigate('/student/overview', { replace: true });
     } catch (error) {
-      setErr('Login failed. Please check your credentials.');
+      setErr(error?.message || 'Login failed. Please check your credentials.');
     }
   }
 
   return (
     <div style={{ maxWidth: 420, margin: '40px auto' }}>
       <h1>Login</h1>
+      <EnvDiagnostics lastError={err} />
       <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12 }}>
         <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <div style={{ display: 'grid', gap: 6 }}>

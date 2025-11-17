@@ -7,20 +7,18 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 function resolveEnv() {
   // Using optional chaining to avoid runtime errors when import.meta isn't present in CRA.
   const viteEnv = (typeof import.meta !== 'undefined' && (import.meta as any)?.env) || {};
-  const viteUrl = viteEnv?.VITE_SUPABASE_URL as string | undefined;
-  const viteKey = viteEnv?.VITE_SUPABASE_KEY as string | undefined;
-  const viteSiteUrl = viteEnv?.VITE_SITE_URL as string | undefined;
+  const viteUrl = (viteEnv?.VITE_SUPABASE_URL as string | undefined)?.trim();
+  const viteKey = (viteEnv?.VITE_SUPABASE_KEY as string | undefined)?.trim();
+  const viteSiteUrl = (viteEnv?.VITE_SITE_URL as string | undefined)?.trim();
 
   const craUrl = (typeof process !== 'undefined' ? process.env?.REACT_APP_SUPABASE_URL : undefined) as string | undefined;
   const craKey = (typeof process !== 'undefined' ? process.env?.REACT_APP_SUPABASE_KEY : undefined) as string | undefined;
   const craSiteUrl = (typeof process !== 'undefined' ? process.env?.REACT_APP_SITE_URL : undefined) as string | undefined;
 
-  const url = viteUrl || craUrl || '';
-  const key = viteKey || craKey || '';
+  const url = (viteUrl || craUrl || '').trim();
+  const key = (viteKey || craKey || '').trim();
   const siteUrl =
-    viteSiteUrl ||
-    craSiteUrl ||
-    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    (viteSiteUrl || craSiteUrl || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')).trim();
 
   const envOrigin =
     viteUrl || viteKey || viteSiteUrl
@@ -34,30 +32,46 @@ function resolveEnv() {
 
 const { url: SUPABASE_URL, key: SUPABASE_KEY, siteUrl: SITE_URL, envOrigin } = resolveEnv();
 
-// Safe diagnostics: do not leak secrets. Only log which env set is used and the redirect origin.
+/**
+ * Derive a normalized origin string for diagnostics and redirectTo.
+ */
+function safeOriginFrom(urlLike: string): string {
+  try {
+    return new URL(urlLike, urlLike).origin;
+  } catch {
+    if (typeof window !== 'undefined') return window.location.origin;
+    return 'http://localhost:3000';
+  }
+}
+
+// Safe diagnostics: do not leak secrets. Only log which env set is used and the redirect origin and basic validity.
 (function safeStartupLog() {
   try {
-    const isTest = String(
+    const mode =
+      (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.MODE) ||
       (typeof process !== 'undefined' && process.env?.NODE_ENV) ||
-        ((typeof import.meta !== 'undefined' && (import.meta as any)?.env?.MODE) as string) ||
-        ''
-    ).toLowerCase() === 'test';
+      '';
+    const isTest = String(mode).toLowerCase() === 'test';
+    const isDev =
+      (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
+      (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.DEV);
 
     if (typeof window !== 'undefined' && !isTest) {
+      const urlOk = !!SUPABASE_URL && /^https?:\/\//.test(SUPABASE_URL.trim());
+      const keyOk = !!SUPABASE_KEY && SUPABASE_KEY.trim().length > 20;
+      const diag = {
+        envOrigin,
+        supabaseUrl_present: !!SUPABASE_URL,
+        supabaseKey_present: !!SUPABASE_KEY,
+        supabaseUrl_valid: urlOk,
+        siteOrigin: safeOriginFrom(SITE_URL),
+      };
       // eslint-disable-next-line no-console
-      console.info(
-        `Supabase client initialized (env=${envOrigin}, emailRedirectOrigin=${new URL(
-          SITE_URL,
-          SITE_URL
-        ).origin})`
-      );
-      const isDev =
-        (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
-        (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.DEV);
-      if (isDev && (!SUPABASE_URL || !SUPABASE_KEY)) {
+      console.info('Supabase client init', diag);
+      if (isDev && (!urlOk || !keyOk)) {
         // eslint-disable-next-line no-console
         console.warn(
-          'Supabase config incomplete: set VITE_SUPABASE_URL/VITE_SUPABASE_KEY (preferred) or REACT_APP_SUPABASE_URL/REACT_APP_SUPABASE_KEY.'
+          'Supabase config may be invalid: ensure VITE_SUPABASE_URL/VITE_SUPABASE_KEY (preferred) or REACT_APP_SUPABASE_URL/REACT_APP_SUPABASE_KEY are set and valid.'
         );
       }
     }
@@ -86,12 +100,23 @@ export const supabase: SupabaseClient = (() => {
 // PUBLIC_INTERFACE
 export function getEmailRedirectTo(): string {
   /** Returns the origin to be used for Supabase auth email redirects. */
-  try {
-    // Ensure we return a clean origin (avoid trailing paths)
-    return new URL(SITE_URL, SITE_URL).origin;
-  } catch {
-    // Fallbacks
-    if (typeof window !== 'undefined') return window.location.origin;
-    return 'http://localhost:3000';
-  }
+  return safeOriginFrom(SITE_URL);
+}
+
+// PUBLIC_INTERFACE
+export function getSupabaseEnvDiagnostics(): {
+  /** Human-safe diagnostics about Supabase config for UI surfacing. */
+  envOrigin: string;
+  urlPresent: boolean;
+  keyPresent: boolean;
+  urlValid: boolean;
+  siteOrigin: string;
+} {
+  return {
+    envOrigin,
+    urlPresent: !!SUPABASE_URL,
+    keyPresent: !!SUPABASE_KEY,
+    urlValid: !!SUPABASE_URL && /^https?:\/\//.test(SUPABASE_URL.trim()),
+    siteOrigin: safeOriginFrom(SITE_URL),
+  };
 }

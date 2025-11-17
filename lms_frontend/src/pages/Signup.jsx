@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import { AuthContext } from '../providers/AuthProvider';
 import { sanitizeString } from '../utils/sanitize';
 import { useNavigate } from 'react-router-dom';
+import { EnvDiagnostics } from '../components/EnvDiagnostics';
 
 // PUBLIC_INTERFACE
 export default function Signup() {
@@ -28,14 +29,15 @@ export default function Signup() {
       if (user.role === 'admin') navigate('/admin', { replace: true });
       else if (user.role === 'instructor') navigate('/instructor', { replace: true });
       else navigate('/student', { replace: true });
-    } catch {
-      setErr('Signup failed.');
+    } catch (error) {
+      setErr(error?.message || 'Signup failed.');
     }
   }
 
   return (
     <div style={{ maxWidth: 420, margin: '40px auto' }}>
       <h1>Signup</h1>
+      <EnvDiagnostics lastError={err} />
       <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12 }}>
         <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <div style={{ display: 'grid', gap: 6 }}>
