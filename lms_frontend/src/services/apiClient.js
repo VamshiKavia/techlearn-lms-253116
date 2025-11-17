@@ -8,7 +8,8 @@ export function createApiClient(getToken, getRequestId) {
    * Handles 401 responses with a TODO for refresh flow.
    */
   const instance = axios.create({
-    baseURL: env.API_BASE_URL,
+    // All service calls target FastAPI under /api/v1
+    baseURL: `${env.API_BASE_URL}/api/v1`,
     timeout: 15000,
   });
 
@@ -31,7 +32,13 @@ export function createApiClient(getToken, getRequestId) {
         // TODO: implement token refresh using refresh token endpoint
         // For now, just propagate error
       }
-      return Promise.reject(error);
+      // Surface backend error if present to aid debugging CORS/mixed-content/misconfig
+      const msg =
+        error?.response?.data?.detail ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Request failed';
+      return Promise.reject(new Error(msg));
     }
   );
 

@@ -20,7 +20,7 @@ function resolveApiBase(): string {
   return craBase;
 }
 
-const BASE_URL = resolveApiBase();
+const BASE_URL = `${resolveApiBase().replace(/\/+$/, '')}/api/v1`;
 
 // PUBLIC_INTERFACE
 export const apiClient = {
