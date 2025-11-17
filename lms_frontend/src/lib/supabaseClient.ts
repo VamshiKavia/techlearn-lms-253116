@@ -5,10 +5,14 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
  * Reads REACT_APP_* variables and ignores any Vite/import.meta.env values.
  */
 function resolveCRAEnv() {
-  const url = ((typeof process !== 'undefined' ? process.env?.REACT_APP_SUPABASE_URL : undefined) as string | undefined)?.trim() || '';
-  const key = ((typeof process !== 'undefined' ? process.env?.REACT_APP_SUPABASE_KEY : undefined) as string | undefined)?.trim() || '';
+  const url =
+    ((typeof process !== 'undefined' ? (process.env as any)?.REACT_APP_SUPABASE_URL : undefined) as string | undefined)?.trim() ||
+    '';
+  const key =
+    ((typeof process !== 'undefined' ? (process.env as any)?.REACT_APP_SUPABASE_KEY : undefined) as string | undefined)?.trim() ||
+    '';
   const siteUrl =
-    ((typeof process !== 'undefined' ? process.env?.REACT_APP_SITE_URL : undefined) as string | undefined)?.trim() ||
+    ((typeof process !== 'undefined' ? (process.env as any)?.REACT_APP_SITE_URL : undefined) as string | undefined)?.trim() ||
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
   return { url, key, siteUrl };
 }
@@ -31,9 +35,9 @@ function safeOriginFrom(urlLike: string): string {
 // Safe diagnostics: do not leak secrets. Only log CRA mode and basic validity.
 (function safeStartupLog() {
   try {
-    const isTest = String((typeof process !== 'undefined' && process.env?.NODE_ENV) || '').toLowerCase() === 'test';
-    const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
-
+    const isTest = String((typeof process !== 'undefined' && (process.env as any)?.NODE_ENV) || '')
+      .toLowerCase()
+      .includes('test');
     if (typeof window !== 'undefined' && !isTest) {
       const urlOk = !!SUPABASE_URL && /^https?:\/\//.test(SUPABASE_URL.trim());
       const keyOk = !!SUPABASE_KEY && SUPABASE_KEY.trim().length > 0;
@@ -46,9 +50,11 @@ function safeOriginFrom(urlLike: string): string {
       };
       // eslint-disable-next-line no-console
       console.info('Supabase client init', diag);
-      if (isDev && (!urlOk || !keyOk)) {
+      if (!urlOk || !keyOk) {
         // eslint-disable-next-line no-console
-        console.warn('Supabase config may be invalid: ensure REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY are set.');
+        console.warn(
+          'Supabase config may be invalid: ensure REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY are set in lms_frontend/.env, then restart.'
+        );
       }
     }
   } catch {
@@ -56,23 +62,25 @@ function safeOriginFrom(urlLike: string): string {
   }
 })();
 
-// Keep a single instance
+// Keep a single instance and a captured init error (if any)
 let _client: SupabaseClient | null = null;
+let _initError: Error | null = null;
 
 /**
- * PUBLIC_INTERFACE
- * Supabase client singleton for the application (CRA-only env).
- * Throws a clear error if REACT_APP_SUPABASE_URL is missing/empty.
+ * Initialize the supabase client if possible, capturing init error instead of throwing.
  */
-export const supabase: SupabaseClient = (() => {
-  if (!_client) {
-    const url = SUPABASE_URL || '';
-    const key = SUPABASE_KEY || '';
-    if (!url) {
-      throw new Error(
-        'Supabase configuration error: REACT_APP_SUPABASE_URL is required but was not provided. Set it in your environment.'
-      );
-    }
+function initClientIfPossible() {
+  if (_client || _initError) return;
+  const url = SUPABASE_URL || '';
+  const key = SUPABASE_KEY || '';
+  if (!url) {
+    _initError = new Error(
+      'Supabase configuration error: REACT_APP_SUPABASE_URL is missing. Add it to lms_frontend/.env and restart the dev server.'
+    );
+    _client = null;
+    return;
+  }
+  try {
     _client = createClient(url, key, {
       auth: {
         persistSession: true,
@@ -80,9 +88,43 @@ export const supabase: SupabaseClient = (() => {
         detectSessionInUrl: true,
       },
     });
+  } catch (e: any) {
+    _initError = e instanceof Error ? e : new Error(String(e ?? 'Unknown Supabase init error'));
+    _client = null;
   }
-  return _client!;
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * Supabase client singleton for the application (CRA-only env).
+ * Backwards-compatible default export. May throw if accessed when URL is missing.
+ */
+export const supabase: SupabaseClient = (() => {
+  initClientIfPossible();
+  if (_client) return _client;
+  // keep legacy behavior for code that directly imports `supabase`
+  throw _initError || new Error('Supabase is not configured.');
 })();
+
+/**
+ * PUBLIC_INTERFACE
+ * getSupabaseOrNull
+ * Returns the supabase client if configured; otherwise null (no throw).
+ */
+export function getSupabaseOrNull(): SupabaseClient | null {
+  initClientIfPossible();
+  return _client;
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * getSupabaseInitError
+ * Returns the initialization error if client could not be created (e.g., URL missing); otherwise null.
+ */
+export function getSupabaseInitError(): Error | null {
+  initClientIfPossible();
+  return _initError;
+}
 
 /**
  * PUBLIC_INTERFACE

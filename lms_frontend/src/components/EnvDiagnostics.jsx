@@ -31,9 +31,16 @@ export function EnvDiagnostics({ lastError }) {
     hints.push('Client init failed due to missing REACT_APP_SUPABASE_URL. Add it to your .env and rebuild.');
   }
 
+  const showMissingUrlCallout = !diag.urlValid;
+
   return (
     <div style={{ background: '#FFF8E1', border: '1px solid #FDE68A', color: '#92400E', padding: '8px 12px', borderRadius: 6, margin: '8px 0' }}>
       <div style={{ fontWeight: 600, marginBottom: 4 }}>Auth Diagnostics (envMode={diag.envMode})</div>
+      {showMissingUrlCallout && (
+        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#B91C1C', padding: '6px 8px', borderRadius: 6, margin: '6px 0' }}>
+          Supabase URL is not configured. Set REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY in lms_frontend/.env, then restart the dev server.
+        </div>
+      )}
       <div style={{ fontSize: 12 }}>
         <div>supabaseUrl (masked origin): {diag.url || 'n/a'}</div>
         <div>urlValid: {String(diag.urlValid)}, keyPresent: {String(diag.keyPresent)}</div>

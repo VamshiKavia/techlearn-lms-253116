@@ -2,7 +2,7 @@ import { z } from 'zod';
 import axios from 'axios';
 // Import diagnostics helper from the centralized Supabase client module
 // Use JS shim for stable CRA resolution
-import { getSupabaseEnvDiagnostics } from '../lib/supabaseClient.js';
+import { getSupabaseEnvDiagnostics, getSupabaseOrNull } from '../lib/supabaseClient.js';
 
 // Basic shapes for runtime validation
 const userSchema = z.object({
