@@ -1,5 +1,6 @@
 import React from 'react';
-import { getSupabaseEnvDiagnostics } from '../lib/supabaseClient';
+// Import diagnostics helper from the centralized Supabase client module (JS shim for CRA resolution)
+import { getSupabaseEnvDiagnostics } from '../lib/supabaseClient.js';
 
 // PUBLIC_INTERFACE
 export function EnvDiagnostics({ lastError }) {

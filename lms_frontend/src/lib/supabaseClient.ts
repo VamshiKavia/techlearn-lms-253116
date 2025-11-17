@@ -83,7 +83,9 @@ function safeOriginFrom(urlLike: string): string {
 // Keep a single instance
 let _client: SupabaseClient | null = null;
 
-// PUBLIC_INTERFACE
+/** PUBLIC_INTERFACE: Supabase client singleton for the application.
+ * Provides a single shared SupabaseClient instance configured from env.
+ */
 export const supabase: SupabaseClient = (() => {
   if (!_client) {
     _client = createClient(SUPABASE_URL || '', SUPABASE_KEY || '', {
@@ -97,15 +99,19 @@ export const supabase: SupabaseClient = (() => {
   return _client!;
 })();
 
-// PUBLIC_INTERFACE
+/** PUBLIC_INTERFACE
+ * getEmailRedirectTo
+ * Returns the origin to be used for Supabase auth email redirects.
+ */
 export function getEmailRedirectTo(): string {
-  /** Returns the origin to be used for Supabase auth email redirects. */
   return safeOriginFrom(SITE_URL);
 }
 
-// PUBLIC_INTERFACE
+/** PUBLIC_INTERFACE
+ * getSupabaseEnvDiagnostics
+ * Returns human-safe diagnostics about Supabase config for UI surfacing.
+ */
 export function getSupabaseEnvDiagnostics(): {
-  /** Human-safe diagnostics about Supabase config for UI surfacing. */
   envOrigin: string;
   urlPresent: boolean;
   keyPresent: boolean;
@@ -120,3 +126,6 @@ export function getSupabaseEnvDiagnostics(): {
     siteOrigin: safeOriginFrom(SITE_URL),
   };
 }
+
+// Also export a default for consumers that prefer default import style
+export default supabase;
