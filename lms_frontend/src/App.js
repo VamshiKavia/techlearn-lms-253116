@@ -35,7 +35,7 @@ function App() {
 
             {/* Admin & Instructor dashboards - gated by role */}
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <RequireRole roles={['admin']}>
                   <AdminDashboard />

@@ -1,19 +1,20 @@
 import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { RoleManagement } from './RoleManagement';
 
 /**
  * PUBLIC_INTERFACE
- * AdminDashboard: Placeholder for Admin role.
+ * AdminDashboard: Root container for Admin routes.
+ * Default page is Roles (/admin/roles).
  */
 export function AdminDashboard() {
   return (
-    <div>
-      <div className="pageHeader">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <div className="subtitle">Manage platform settings, users, and global content.</div>
-        </div>
-      </div>
-      <div className="card panel">Admin features coming soon.</div>
-    </div>
+    <Routes>
+      {/* Default redirect to roles */}
+      <Route index element={<Navigate to="roles" replace />} />
+      <Route path="roles" element={<RoleManagement />} />
+      {/* Future admin routes can be added here */}
+      <Route path="*" element={<Navigate to="roles" replace />} />
+    </Routes>
   );
 }

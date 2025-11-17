@@ -11,13 +11,19 @@ export function Sidebar() {
   const { user } = useAuth();
 
   const navItems = [
+    // Student area
     { label: 'Overview', to: '/student/overview' },
     { label: 'Catalog', to: '/catalog' },
     { label: 'Data Science', to: '/catalog/data-science' },
     { label: 'Cloud', to: '/catalog/cloud' },
     { label: 'Software Testing', to: '/catalog/software-testing' },
     { label: 'AI', to: '/catalog/ai' },
-    { label: 'Roles', to: '/roles' }
+
+    // Admin quick links
+    { label: 'Roles', to: '/admin/roles' },
+
+    // General roles info page
+    { label: 'Roles (Tabs)', to: '/roles' },
   ];
 
   const isActive = (to) => location.pathname === to;
