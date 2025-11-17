@@ -12,13 +12,10 @@ export default function ProtectedRoute({ children, roles }) {
   }
 
   if (Array.isArray(roles) && roles.length > 0) {
-    const userRole = (user.role || '').toLowerCase();
-    const normalizedRoles = roles.map((r) => (r || '').toLowerCase());
-    const allowed = normalizedRoles.includes(userRole);
+    const allowed = roles.includes(user.role);
     if (!allowed) {
-      if (userRole === 'instructor') return <Navigate to="/instructor/overview" replace />;
-      if (userRole === 'student') return <Navigate to="/student/overview" replace />;
-      if (userRole === 'admin') return <Navigate to="/admin/overview" replace />;
+      if (user.role === 'Instructor') return <Navigate to="/instructor/overview" replace />;
+      if (user.role === 'Student') return <Navigate to="/student/overview" replace />;
       return <Navigate to="/" replace />;
     }
   }
