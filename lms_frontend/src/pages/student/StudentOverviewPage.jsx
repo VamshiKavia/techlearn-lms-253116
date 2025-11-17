@@ -1,0 +1,86 @@
+import React from 'react';
+import { overviewStats } from '../../shared/mocks/overviewStats';
+import { activities } from '../../shared/mocks/activity';
+import { tips } from '../../shared/mocks/tips';
+
+/**
+ * PUBLIC_INTERFACE
+ * StudentOverviewPage: Student dashboard with KPIs and panels (mock data)
+ */
+export function StudentOverviewPage() {
+  return (
+    <div>
+      <div className="pageHeader">
+        <div>
+          <h1>Student Overview</h1>
+          <div className="subtitle">
+            Track your learning at a glance and continue where you left off.
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button className="btn btn-outline">Home</button>
+          <button className="btn btn-primary">Logout</button>
+        </div>
+      </div>
+
+      <section className="statsGrid">
+        {overviewStats.map((s) => (
+          <div key={s.label} className="card statCard">
+            <div className="statLabel">{s.label}</div>
+            <div className={`statValue ${s.tone === 'accent' ? 'accent' : ''}`}>{s.value}</div>
+            {s.subtext && <div className="statSub">{s.subtext}</div>}
+          </div>
+        ))}
+      </section>
+
+      <hr className="divider" />
+
+      <section className="detailsGrid">
+        <div className="card panel" style={{ gridColumn: '1 / span 1' }}>
+          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Progress Trend</div>
+          <div style={{
+            height: 240,
+            borderRadius: 8,
+            border: '1px dashed var(--border-subtle)',
+            background: 'repeating-linear-gradient(to bottom, #fff, #fff 39px, #f3f4f6 40px)'
+          }} />
+          <div style={{ marginTop: 12, fontSize: 12, color: 'var(--text-muted)' }}>Last 12 Weeks</div>
+        </div>
+
+        <div className="card panel">
+          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Career Distribution</div>
+          <div style={{ display: 'grid', gap: 12 }}>
+            {['WebDev', 'Data', 'Cloud', 'AI'].map((cat, idx) => (
+              <div key={cat} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 12, alignItems: 'center' }}>
+                <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{cat}</div>
+                <div style={{ height: 10, background: '#E5E7EB', borderRadius: 9999 }}>
+                  <div style={{ width: `${20 + idx * 15}%`, height: 10, background: '#0b1220', borderRadius: 9999 }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card panel" style={{ gridColumn: '1 / span 1' }}>
+          <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Recent Activity</div>
+          <div>
+            {activities.map((a) => (
+              <div key={a.title} className="lessonRow">
+                <div style={{ fontWeight: 500 }}>{a.title}</div>
+                <div className="lessonDuration">{a.timeAgo}</div>
+                <button className="lessonPlay" onClick={() => { /* route later */ }}>Open</button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card panel">
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>Tips</div>
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {tips.map((t, idx) => <li key={idx} style={{ marginBottom: 6 }}>{t}</li>)}
+          </ul>
+        </div>
+      </section>
+    </div>
+  );
+}
