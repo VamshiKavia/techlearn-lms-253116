@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import supabase from "../lib/supabaseClient.js";
+import { apiGet } from "../lib/api.js";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState(null);
@@ -14,12 +15,7 @@ export default function Dashboard() {
         return;
       }
       try {
-        const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
-        const res = await fetch(`${base}/api/v1/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-        const me = await res.json();
+        const me = await apiGet("/auth/me", token);
         setProfile(me);
       } catch (e) {
         setError("Failed to load profile.");

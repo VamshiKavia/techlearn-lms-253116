@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../lib/supabase";
-import { apiPost } from "../lib/api";
+import supabase from "../lib/supabaseClient.js";
+import { apiPost } from "../lib/api.js";
 
 export default function CreateCourse() {
   const [title, setTitle] = useState("");

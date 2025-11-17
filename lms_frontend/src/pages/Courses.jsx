@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "../lib/supabase";
-import { apiGet } from "../lib/api";
+import supabase from "../lib/supabaseClient.js";
+import { apiGet } from "../lib/api.js";
 
 export default function Courses() {
   const [items, setItems] = useState([]);
