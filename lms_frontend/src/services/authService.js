@@ -66,7 +66,7 @@ export function createAuthService(api) {
         const diag = getSupabaseEnvDiagnostics();
         const message =
           translated ||
-          `Login failed. ${supaMsg ? `Reason: ${supaMsg}` : ''} [env=${diag.envOrigin}, urlValid=${diag.urlValid}]`;
+          `Login failed. ${supaMsg ? `Reason: ${supaMsg}` : ''} [envMode=${diag.envMode}, urlValid=${diag.urlValid}]`;
         throw new Error(message.trim());
       }
     },
@@ -99,7 +99,7 @@ export function createAuthService(api) {
         const diag = getSupabaseEnvDiagnostics();
         const message =
           translated ||
-          `Signup failed. ${supaMsg ? `Reason: ${supaMsg}` : ''} [env=${diag.envOrigin}, urlValid=${diag.urlValid}]`;
+          `Signup failed. ${supaMsg ? `Reason: ${supaMsg}` : ''} [envMode=${diag.envMode}, urlValid=${diag.urlValid}]`;
         throw new Error(message.trim());
       }
     },
@@ -107,7 +107,7 @@ export function createAuthService(api) {
       // Implement real call when backend issues tokens; for now, throw with guidance.
       const diag = getSupabaseEnvDiagnostics();
       throw new Error(
-        `Not implemented. Ensure Supabase login issues a session and call /api/v1/auth/me with bearer token. [env=${diag.envOrigin}]`
+        `Not implemented. Ensure Supabase login issues a session and call /api/v1/auth/me with bearer token. [envMode=${diag.envMode}]`
       );
     },
     // PUBLIC_INTERFACE

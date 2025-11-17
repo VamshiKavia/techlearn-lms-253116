@@ -11,12 +11,13 @@ export function EnvDiagnostics({ lastError }) {
   if (!show) return null;
 
   const hints = [];
-  if (!diag.urlPresent || !diag.keyPresent) {
-    hints.push(
-      'Supabase env missing. Set VITE_SUPABASE_URL/VITE_SUPABASE_KEY (preferred) or REACT_APP_SUPABASE_URL/REACT_APP_SUPABASE_KEY.'
-    );
-  } else if (!diag.urlValid) {
-    hints.push('Supabase URL looks invalid. Ensure it starts with https:// and has no trailing spaces.');
+  if (!diag.keyPresent || !diag.urlValid) {
+    if (!diag.keyPresent) {
+      hints.push('Supabase anon key missing. Set REACT_APP_SUPABASE_KEY in your environment.');
+    }
+    if (!diag.urlValid) {
+      hints.push('Supabase URL missing/invalid. Set REACT_APP_SUPABASE_URL (should start with https://).');
+    }
   }
 
   const lower = String(lastError || '').toLowerCase();
@@ -26,13 +27,16 @@ export function EnvDiagnostics({ lastError }) {
   if (lower.includes('401') || lower.includes('invalid token') || lower.includes('jwt')) {
     hints.push('Auth 401 detected. Verify the anon/public key is correct and not expired in your .env.');
   }
+  if (lower.includes('supabase configuration error') || lower.includes('react_app_supabase_url is required')) {
+    hints.push('Client init failed due to missing REACT_APP_SUPABASE_URL. Add it to your .env and rebuild.');
+  }
 
   return (
     <div style={{ background: '#FFF8E1', border: '1px solid #FDE68A', color: '#92400E', padding: '8px 12px', borderRadius: 6, margin: '8px 0' }}>
-      <div style={{ fontWeight: 600, marginBottom: 4 }}>Auth Diagnostics (env={diag.envOrigin})</div>
+      <div style={{ fontWeight: 600, marginBottom: 4 }}>Auth Diagnostics (envMode={diag.envMode})</div>
       <div style={{ fontSize: 12 }}>
-        <div>siteOrigin: {diag.siteOrigin}</div>
-        <div>supabaseUrlPresent: {String(diag.urlPresent)}, keyPresent: {String(diag.keyPresent)}, urlValid: {String(diag.urlValid)}</div>
+        <div>supabaseUrl (masked origin): {diag.url || 'n/a'}</div>
+        <div>urlValid: {String(diag.urlValid)}, keyPresent: {String(diag.keyPresent)}</div>
         {lastError ? <div style={{ marginTop: 4 }}>Last error: {String(lastError)}</div> : null}
         {hints.length > 0 ? (
           <ul style={{ marginTop: 6, marginBottom: 0, paddingLeft: 18 }}>
