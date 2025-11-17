@@ -13,20 +13,26 @@ export default function Login() {
     e.preventDefault();
     setErr(null);
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      setErr(error.message);
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        // Common Supabase messages are user-friendly; add fallback
+        setErr(error.message || "Login failed. Please check your credentials.");
+        return;
+      }
+      // Determine role from JWT/app_metadata
+      const role =
+        (data.session?.user?.app_metadata as any)?.role ||
+        (data.session?.user?.user_metadata as any)?.role ||
+        "student";
+      if (role === "admin") nav("/admin/overview", { replace: true });
+      else if (role === "instructor") nav("/instructor/overview", { replace: true });
+      else nav("/student/overview", { replace: true });
+    } catch (ex: any) {
+      setErr(ex?.message || "Unexpected error during login.");
+    } finally {
+      setLoading(false);
     }
-    // Determine role from JWT
-    const role =
-      (data.session?.user?.app_metadata as any)?.role ||
-      (data.session?.user?.user_metadata as any)?.role ||
-      "student";
-    if (role === "admin") nav("/admin/overview");
-    else if (role === "instructor") nav("/instructor/overview");
-    else nav("/student/overview");
   };
 
   return (
@@ -35,14 +41,14 @@ export default function Login() {
       <form onSubmit={onSubmit}>
         <div>
           <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" autoComplete="email" />
         </div>
         <div>
           <label>Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" />
+          <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" autoComplete="current-password" />
         </div>
         {err && <p style={{ color: "red" }}>{err}</p>}
-        <button disabled={loading} type="submit">{loading ? "..." : "Login"}</button>
+        <button disabled={loading} type="submit">{loading ? "Signing in..." : "Login"}</button>
       </form>
     </div>
   );

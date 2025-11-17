@@ -1,16 +1,31 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl =
+/**
+ * Create a singleton Supabase client using environment variables.
+ * Supports both Vite (VITE_*) and CRA (REACT_APP_*) env names.
+ */
+const SUPABASE_URL =
   (import.meta as any)?.env?.VITE_SUPABASE_URL ||
   process.env.REACT_APP_SUPABASE_URL;
 
-const supabaseKey =
+const SUPABASE_KEY =
   (import.meta as any)?.env?.VITE_SUPABASE_KEY ||
   process.env.REACT_APP_SUPABASE_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  // eslint-disable-next-line no-console
-  console.warn("Supabase env vars not set. Set SUPABASE_URL and SUPABASE_KEY.");
+let client: ReturnType<typeof createClient> | null = null;
+
+function ensureClient() {
+  if (!client) {
+    if (!SUPABASE_URL || !SUPABASE_KEY) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "Supabase env vars not set. Please set SUPABASE_URL and SUPABASE_KEY in your .env file."
+      );
+    }
+    client = createClient(SUPABASE_URL || "", SUPABASE_KEY || "");
+  }
+  return client;
 }
 
-export const supabase = createClient(supabaseUrl || "", supabaseKey || "");
+// PUBLIC_INTERFACE
+export const supabase = ensureClient();

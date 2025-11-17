@@ -13,21 +13,28 @@ export default function Register() {
     e.preventDefault();
     setErr(null);
     setMsg(null);
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, role },
-        emailRedirectTo:
-          (import.meta as any)?.env?.VITE_SITE_URL ||
-          process.env.REACT_APP_SITE_URL ||
-          window.location.origin,
-      },
-    });
-    if (error) {
-      setErr(error.message);
-    } else {
-      setMsg("Check your email to confirm your account.");
+    try {
+      const siteUrl =
+        (import.meta as any)?.env?.VITE_SITE_URL ||
+        process.env.REACT_APP_SITE_URL ||
+        window.location.origin;
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name, role },
+          emailRedirectTo: siteUrl,
+        },
+      });
+
+      if (error) {
+        setErr(error.message || "Registration failed.");
+      } else {
+        setMsg("Account created. Please check your email inbox to confirm your account.");
+      }
+    } catch (ex: any) {
+      setErr(ex?.message || "Unexpected error during registration.");
     }
   };
 
@@ -48,11 +55,11 @@ export default function Register() {
         </div>
         <div>
           <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" autoComplete="email" />
         </div>
         <div>
           <label>Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" />
+          <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" autoComplete="new-password" />
         </div>
         {err && <p style={{ color: "red" }}>{err}</p>}
         {msg && <p>{msg}</p>}
