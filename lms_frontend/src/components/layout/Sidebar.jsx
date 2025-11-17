@@ -16,7 +16,8 @@ export function Sidebar() {
     { label: 'Data Science', to: '/catalog/data-science' },
     { label: 'Cloud', to: '/catalog/cloud' },
     { label: 'Software Testing', to: '/catalog/software-testing' },
-    { label: 'AI', to: '/catalog/ai' }
+    { label: 'AI', to: '/catalog/ai' },
+    { label: 'Roles', to: '/roles' }
   ];
 
   const isActive = (to) => location.pathname === to;

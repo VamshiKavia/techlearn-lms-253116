@@ -12,6 +12,7 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { InstructorDashboard } from './pages/instructor/InstructorDashboard';
 import { AuthProvider } from './core/auth/AuthContext';
 import { RequireRole } from './core/auth/RequireRole';
+import { RolesTabbedPage } from './pages/common/RolesTabbedPage';
 
 /**
  * PUBLIC_INTERFACE
@@ -30,6 +31,7 @@ function App() {
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/:category" element={<CategorySectionsPage />} />
             <Route path="/player/:lessonId" element={<PlayerPage />} />
+            <Route path="/roles" element={<RolesTabbedPage />} />
 
             {/* Admin & Instructor dashboards - gated by role */}
             <Route
