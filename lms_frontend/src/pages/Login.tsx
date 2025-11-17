@@ -16,8 +16,18 @@ export default function Login() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        // Common Supabase messages are user-friendly; add fallback
-        setErr(error.message || "Login failed. Please check your credentials.");
+        const code = (error as any)?.status || (error as any)?.code;
+        let message = error.message || "Login failed. Please check your credentials.";
+        // Map common Supabase error patterns to user-friendly messages
+        if (typeof message === "string") {
+          if (message.toLowerCase().includes("invalid login") || message.toLowerCase().includes("invalid credentials")) {
+            message = "Invalid credentials. Please check your email and password.";
+          }
+          if (message.toLowerCase().includes("email not confirmed")) {
+            message = "Email not confirmed. Please verify your email before logging in.";
+          }
+        }
+        setErr(message);
         return;
       }
       // Determine role from JWT/app_metadata

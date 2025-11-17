@@ -19,7 +19,7 @@ export default function Register() {
         process.env.REACT_APP_SITE_URL ||
         window.location.origin;
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -29,9 +29,16 @@ export default function Register() {
       });
 
       if (error) {
-        setErr(error.message || "Registration failed.");
+        const msg = error.message || "Registration failed.";
+        setErr(msg);
       } else {
-        setMsg("Account created. Please check your email inbox to confirm your account.");
+        // If email confirmations are enabled, Supabase may not create a session.
+        const needsConfirm = !data.session;
+        setMsg(
+          needsConfirm
+            ? "Account created. Please check your email to confirm your account before logging in."
+            : "Account created successfully."
+        );
       }
     } catch (ex: any) {
       setErr(ex?.message || "Unexpected error during registration.");
