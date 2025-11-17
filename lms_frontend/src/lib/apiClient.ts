@@ -1,32 +1,49 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from './supabaseClient';
 
-const baseUrl =
-  (import.meta as any)?.env?.VITE_API_BASE_URL ||
-  process.env.REACT_APP_API_BASE_URL ||
-  "http://localhost:3001";
-if (import.meta && (import.meta as any).env && (import.meta as any).env.DEV) {
-  // eslint-disable-next-line no-console
-  console.info("[api] base URL:", baseUrl);
+function resolveApiBase(): string {
+  const viteEnv = (typeof import.meta !== 'undefined' && (import.meta as any)?.env) || {};
+  const viteBase = viteEnv?.VITE_API_BASE_URL as string | undefined;
+  const craBase = (typeof process !== 'undefined' ? process.env?.REACT_APP_API_BASE_URL : undefined) as
+    | string
+    | undefined;
+  const base = viteBase || craBase || '';
+
+  const isDev =
+    (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') ||
+    (typeof import.meta !== 'undefined' && (import.meta as any)?.env?.DEV);
+
+  if (isDev && typeof window !== 'undefined' && String(process?.env?.NODE_ENV).toLowerCase() !== 'test') {
+    const envOrigin = viteBase ? 'Vite' : craBase ? 'CRA' : 'unknown';
+    // eslint-disable-next-line no-console
+    console.info(`API client base URL using ${envOrigin} env`);
+    if (!base) {
+      // eslint-disable-next-line no-console
+      console.warn('API base URL not set (VITE_API_BASE_URL or REACT_APP_API_BASE_URL). Some requests may fail.');
+    }
+  }
+
+  return base;
 }
 
-export async function apiFetch(input: string, init: RequestInit = {}) {
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
+const BASE_URL = resolveApiBase();
 
-  const headers = new Headers(init.headers || {});
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-  headers.set("Content-Type", "application/json");
+// PUBLIC_INTERFACE
+export const apiClient = {
+  /** Perform a GET request against the configured API base URL. */
+  async get(path: string, options: RequestInit = {}) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
 
-  const res = await fetch(`${baseUrl}${input}`, { ...init, headers });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`API error ${res.status}: ${text}`);
-  }
-  const contentType = res.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) {
+    const headers = new Headers(options.headers || {});
+    headers.set('Content-Type', 'application/json');
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+
+    const res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      method: 'GET',
+      headers,
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
     return res.json();
-  }
-  return res.text();
-}
+  },
+};

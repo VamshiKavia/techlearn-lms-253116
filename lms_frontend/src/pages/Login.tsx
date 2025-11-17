@@ -1,64 +1,71 @@
-import React, { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const nav = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErr(null);
+    setErrorMsg(null);
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        const code = (error as any)?.status || (error as any)?.code;
-        let message = error.message || "Login failed. Please check your credentials.";
-        // Map common Supabase error patterns to user-friendly messages
-        if (typeof message === "string") {
-          if (message.toLowerCase().includes("invalid login") || message.toLowerCase().includes("invalid credentials")) {
-            message = "Invalid credentials. Please check your email and password.";
-          }
-          if (message.toLowerCase().includes("email not confirmed")) {
-            message = "Email not confirmed. Please verify your email before logging in.";
-          }
+        let message = error.message || 'Login failed. Please check your credentials.';
+        if (error?.code === 'email_not_confirmed' || /email not confirmed/i.test(message)) {
+          message += ' Please confirm your email address, then try again.';
         }
-        setErr(message);
+        setErrorMsg(message);
         return;
       }
-      // Determine role from JWT/app_metadata
+
       const role =
         (data.session?.user?.app_metadata as any)?.role ||
         (data.session?.user?.user_metadata as any)?.role ||
-        "student";
-      if (role === "admin") nav("/admin/overview", { replace: true });
-      else if (role === "instructor") nav("/instructor/overview", { replace: true });
-      else nav("/student/overview", { replace: true });
+        'student';
+      if (role === 'admin') navigate('/admin/overview', { replace: true });
+      else if (role === 'instructor') navigate('/instructor/overview', { replace: true });
+      else navigate('/student/overview', { replace: true });
     } catch (ex: any) {
-      setErr(ex?.message || "Unexpected error during login.");
+      setErrorMsg(ex?.message || 'Unexpected error during login.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 360, margin: "4rem auto" }}>
-      <h2>Login</h2>
+    <div className="auth-page" style={{ maxWidth: 420, margin: '4rem auto' }}>
+      <h1>Login</h1>
       <form onSubmit={onSubmit}>
-        <div>
-          <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" autoComplete="email" />
-        </div>
-        <div>
-          <label>Password</label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" autoComplete="current-password" />
-        </div>
-        {err && <p style={{ color: "red" }}>{err}</p>}
-        <button disabled={loading} type="submit">{loading ? "Signing in..." : "Login"}</button>
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          autoComplete="current-password"
+        />
+        {errorMsg && (
+          <div className="error" role="alert" style={{ color: 'red', marginTop: 8 }}>
+            {errorMsg}
+          </div>
+        )}
+        <button type="submit" disabled={loading} style={{ marginTop: 12 }}>
+          {loading ? 'Signing in…' : 'Login'}
+        </button>
       </form>
     </div>
   );
