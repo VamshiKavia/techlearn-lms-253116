@@ -2,7 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * CRA-only environment resolution for Supabase.
- * Reads REACT_APP_* variables and ignores any Vite/import.meta.env values.
+ * Reads REACT_APP_* variables and ensures no Vite/import.meta.env references are used.
  */
 function resolveCRAEnv() {
   const url =
@@ -32,24 +32,27 @@ function safeOriginFrom(urlLike: string): string {
   }
 }
 
-// Safe diagnostics: do not leak secrets. Only log CRA mode and basic validity.
+// Safe diagnostics: do not leak secrets. Only log CRA mode and presence/length at module init.
 (function safeStartupLog() {
   try {
     const isTest = String((typeof process !== 'undefined' && (process.env as any)?.NODE_ENV) || '')
       .toLowerCase()
       .includes('test');
+    const urlLen = (SUPABASE_URL || '').length;
+    const keyLen = (SUPABASE_KEY || '').length;
     if (typeof window !== 'undefined' && !isTest) {
       const urlOk = !!SUPABASE_URL && /^https?:\/\//.test(SUPABASE_URL.trim());
       const keyOk = !!SUPABASE_KEY && SUPABASE_KEY.trim().length > 0;
-      const diag = {
-        envMode: ENV_MODE,
-        supabaseUrl_present: !!SUPABASE_URL,
-        supabaseKey_present: !!SUPABASE_KEY,
-        supabaseUrl_valid: urlOk,
-        siteOrigin: safeOriginFrom(SITE_URL),
-      };
       // eslint-disable-next-line no-console
-      console.info('Supabase client init', diag);
+      console.info('Supabase client init', {
+        envMode: ENV_MODE,
+        urlPresent: !!SUPABASE_URL,
+        keyPresent: !!SUPABASE_KEY,
+        urlLen,
+        keyLen: keyLen > 0 ? 'set' : 0,
+        urlValid: urlOk,
+        siteOrigin: safeOriginFrom(SITE_URL),
+      });
       if (!urlOk || !keyOk) {
         // eslint-disable-next-line no-console
         console.warn(
@@ -68,6 +71,7 @@ let _initError: Error | null = null;
 
 /**
  * Initialize the supabase client if possible, capturing init error instead of throwing.
+ * Ensures createClient is called with CRA-provided values.
  */
 function initClientIfPossible() {
   if (_client || _initError) return;
