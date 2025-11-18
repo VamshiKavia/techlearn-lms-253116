@@ -51,6 +51,15 @@
   /* Transitions */
   --transition-fast: 120ms ease;
   --transition-base: 200ms ease;
+  --transition-slow: 340ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Motion tokens */
+  --motion-duration-1: 160ms;
+  --motion-duration-2: 220ms;
+  --motion-duration-3: 360ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-in: cubic-bezier(0.32, 0, 0.67, 0);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.06);
@@ -97,6 +106,80 @@
   --card-hover-border: rgba(17, 24, 39, 0.18);
   /* Shadow/glow intensity increased one notch (spread and opacity) */
   --card-hover-shadow: 0 7px 20px rgba(2, 6, 23, 0.12);
+}
+
+/* ========== Global Motion Keyframes & Utilities ========== */
+
+/* Fades and slides use transform/opacity only for performance */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes slide-down {
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes scale-in {
+  from { transform: scale(0.98); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+/* Subtle glow pulse with brand color */
+@keyframes glow-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(84, 17, 97, 0.0), var(--edge-light); }
+  50%  { box-shadow: 0 6px 18px rgba(84, 17, 97, 0.22), var(--edge-light); }
+  100% { box-shadow: 0 0 0 0 rgba(84, 17, 97, 0.0), var(--edge-light); }
+}
+
+/* Page/section entrance helpers */
+.motion-page-enter {
+  animation: fade-in var(--motion-duration-3) var(--motion-ease-out) both,
+             slide-up var(--motion-duration-3) var(--motion-ease-out) both;
+  will-change: opacity, transform;
+}
+.motion-section-enter {
+  animation: fade-in var(--motion-duration-2) var(--motion-ease-out) both,
+             slide-up var(--motion-duration-2) var(--motion-ease-out) both;
+  will-change: opacity, transform;
+}
+
+/* Card hover transitions (used in layout.css too) */
+.motion-card {
+  transition:
+    transform var(--motion-duration-2) var(--motion-ease-out),
+    box-shadow var(--motion-duration-2) var(--motion-ease-out),
+    background-color var(--motion-duration-2) var(--motion-ease-out),
+    border-color var(--motion-duration-2) var(--motion-ease-out);
+  will-change: transform, box-shadow;
+}
+.motion-card:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+/* Stagger helpers for grids: apply to container, children get delays */
+.stagger-children > * {
+  animation-name: fade-in, slide-up;
+  animation-duration: var(--motion-duration-2), var(--motion-duration-2);
+  animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
+  animation-fill-mode: both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 40ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 90ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 140ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 190ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 290ms; }
+
+/* Reduced motion: disable animations while retaining structure */
+@media (prefers-reduced-motion: reduce) {
+  .motion-page-enter,
+  .motion-section-enter,
+  .stagger-children > * {
+    animation: none !important;
+  }
 }
 
 :root[data-theme='dark'] {
@@ -250,6 +333,15 @@ a:active { color: var(--color-primary-active); }
 .btn-ghost:hover { background: var(--color-surface); color: var(--color-text); }
 .btn-chip { border-radius: 9999px; padding: 6px 12px; }
 .btn-chip.active { background: var(--color-primary); color: var(--color-primary-contrast); border-color: transparent; box-shadow: 0 0 0 1px rgba(84, 17, 97, 0.25); }
+
+/* Global focus ring pulse (accessible, subtle) */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  animation: focus-pulse var(--motion-duration-3) var(--motion-ease-out);
+}
+@keyframes focus-pulse {
+  0%   { box-shadow: var(--focus-ring-neon); }
+  100% { box-shadow: var(--focus-ring); }
+}
 
 /* Focus visibility */
 [tabindex]:focus-visible,

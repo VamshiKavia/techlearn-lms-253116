@@ -17,8 +17,10 @@ export function AppShell({ children }) {
       <header className="topbar">
         <Topbar />
       </header>
-      <main className="main" id="content">
-        {children}
+      <main className="main motion-page-enter" id="content">
+        <div className="motion-section-enter">
+          {children}
+        </div>
       </main>
     </div>
   );

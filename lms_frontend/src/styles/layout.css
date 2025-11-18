@@ -53,9 +53,14 @@
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast), text-shadow var(--transition-fast);
+  transition:
+    background var(--motion-duration-1) var(--motion-ease-out),
+    color var(--motion-duration-1) var(--motion-ease-out),
+    text-shadow var(--motion-duration-1) var(--motion-ease-out),
+    transform var(--motion-duration-1) var(--motion-ease-out);
+  will-change: transform;
 }
-.navItem:hover { background: var(--color-surface); color: var(--color-text); text-shadow: 0 0 8px rgba(84, 17, 97, 0.25); }
+.navItem:hover { background: var(--color-surface); color: var(--color-text); text-shadow: 0 0 8px rgba(84, 17, 97, 0.25); transform: translateX(1px); }
 .navItem.active {
   background: #faf5fb; /* light plum-tinted background */
   color: var(--color-text);
@@ -82,6 +87,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-4);
+  animation: fade-in var(--motion-duration-2) var(--motion-ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pageHeader { animation: none; }
 }
 
 .pageHeader h1 {
@@ -128,13 +137,16 @@ a:active {
 
   /* Smooth transitions including hover tokens */
   transition:
-    background-color var(--transition-base),
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
+    background-color var(--motion-duration-2) var(--motion-ease-out),
+    border-color var(--motion-duration-2) var(--motion-ease-out),
+    box-shadow var(--motion-duration-2) var(--motion-ease-out),
+    transform var(--motion-duration-2) var(--motion-ease-out);
 
   /* Maintain readable text color tokens */
   color: var(--text-primary);
+
+  /* Motion utility for cards */
+  will-change: transform, box-shadow;
 }
 
 /* Subtle hover/focus background using theme tokens */
@@ -145,6 +157,18 @@ a:active {
   background-color: var(--card-hover-bg);
   border-color: var(--card-hover-border);
   box-shadow: var(--card-hover-shadow), var(--edge-light);
+  transform: translateY(-2px) scale(1.005);
+}
+
+.card:focus-visible,
+[data-card]:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-neon), var(--edge-light);
+  animation: focus-pulse var(--motion-duration-3) var(--motion-ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card:focus-visible,
+  [data-card]:focus-visible { animation: none; }
 }
 
 /* Ensure internal interactive elements retain contrast */
@@ -250,6 +274,25 @@ a:active {
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: var(--space-6);
 }
+.courseGrid.stagger-children > * { /* allow opt-in via class on container */ }
+
+/* Default apply stagger subtly to course grids */
+.courseGrid > * {
+  animation-name: fade-in, slide-up;
+  animation-duration: var(--motion-duration-2), var(--motion-duration-2);
+  animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
+  animation-fill-mode: both;
+}
+.courseGrid > *:nth-child(1) { animation-delay: 40ms; }
+.courseGrid > *:nth-child(2) { animation-delay: 90ms; }
+.courseGrid > *:nth-child(3) { animation-delay: 140ms; }
+.courseGrid > *:nth-child(4) { animation-delay: 190ms; }
+.courseGrid > *:nth-child(5) { animation-delay: 240ms; }
+.courseGrid > *:nth-child(6) { animation-delay: 290ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .courseGrid > * { animation: none !important; }
+}
 @media (max-width: 1023px) { .courseGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 639px)  { .courseGrid { grid-template-columns: 1fr; } }
 
@@ -264,6 +307,21 @@ a:active {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: var(--space-6);
+}
+.topicGrid > * {
+  animation-name: fade-in, slide-up;
+  animation-duration: var(--motion-duration-2), var(--motion-duration-2);
+  animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
+  animation-fill-mode: both;
+}
+.topicGrid > *:nth-child(1) { animation-delay: 40ms; }
+.topicGrid > *:nth-child(2) { animation-delay: 90ms; }
+.topicGrid > *:nth-child(3) { animation-delay: 140ms; }
+.topicGrid > *:nth-child(4) { animation-delay: 190ms; }
+.topicGrid > *:nth-child(5) { animation-delay: 240ms; }
+.topicGrid > *:nth-child(6) { animation-delay: 290ms; }
+@media (prefers-reduced-motion: reduce) {
+  .topicGrid > * { animation: none !important; }
 }
 @media (max-width: 1023px) { .topicGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 639px)  { .topicGrid { grid-template-columns: 1fr; } }
