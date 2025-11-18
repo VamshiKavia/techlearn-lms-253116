@@ -1,5 +1,6 @@
 @import url('./styles/theme.css');
 @import url('./styles/layout.css');
+@import url('./styles/card-regression.css');
 
 html, body, #root {
   min-height: 100vh;
