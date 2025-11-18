@@ -13,7 +13,7 @@ import { StarRating } from './StarRating';
  */
 export function CourseCard({ title, rating, students, duration, onView }) {
   return (
-    <div className="card card--interactive courseCard" data-card role="article">
+    <div className="card card--interactive courseCard" data-card role="article" aria-label="Course card">
       <div className="courseTitle">{title}</div>
       <div className="metaRow">
         <StarRating value={rating} />
