@@ -1,0 +1,84 @@
+.overview-page {
+  /* Turn off any automatic entrance animations or transitions within this page scope */
+}
+.overview-page *,
+.overview-page *::before,
+.overview-page *::after {
+  /* Neutralize animations and transitions applied by global utilities while scoped to this page */
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Disable reveal/stagger utilities inside this page */
+.overview-page .reveal,
+.overview-page .reveal-on-appear,
+.overview-page .reveal-stagger > *,
+.overview-page .stagger-children > * {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Disable card hover lift/scale, shadow expansion, and shine within this page */
+.overview-page .card,
+.overview-page [data-card] {
+  transform: none !important;
+  box-shadow: var(--card-shadow, none) !important;
+}
+
+.overview-page .card:hover,
+.overview-page .card:focus-within,
+.overview-page [data-card]:hover,
+.overview-page [data-card]:focus-within {
+  transform: none !important;
+  box-shadow: var(--card-shadow, none) !important;
+  border-color: var(--card-border, var(--border-subtle)) !important;
+  background-color: inherit !important;
+  animation: none !important;
+}
+
+/* Remove glow and light sweep pseudo elements within this page */
+.overview-page .card::before,
+.overview-page .card::after,
+.overview-page [data-card]::before,
+.overview-page [data-card]::after {
+  display: none !important;
+  content: none !important;
+  animation: none !important;
+  opacity: 1 !important; /* ensure no fade behavior triggers */
+}
+
+/* Page header: ensure no entrance animation */
+.overview-page .pageHeader {
+  animation: none !important;
+}
+
+/* Lists/grids that had staggered reveals globally */
+.overview-page .statsGrid > *,
+.overview-page .courseGrid > *,
+.overview-page .topicGrid > * {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Buttons/links inside the page: avoid hover transform/glow changes */
+.overview-page a,
+.overview-page button,
+.overview-page .btn,
+.overview-page .lessonPlay {
+  transition: none !important;
+  transform: none !important;
+  text-shadow: none !important;
+  box-shadow: var(--shadow-sm, none) !important;
+}
+.overview-page a:hover,
+.overview-page button:hover,
+.overview-page .btn:hover,
+.overview-page .lessonPlay:hover {
+  transform: none !important;
+  text-decoration: none; /* keep calm behavior, no underline flicker via transition */
+  box-shadow: var(--shadow-sm, none) !important;
+}
+
+/* Keep respects for global reduced-motion outside this page; this is scoped only here */
