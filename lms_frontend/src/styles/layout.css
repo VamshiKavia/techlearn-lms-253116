@@ -7,6 +7,62 @@
   background: transparent !important; /* allow global canvas */
 }
 
+/* Sidebar panel with slide animation */
+.sidebar-panel {
+  grid-row: 1 / span 2;
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
+  box-shadow: none;
+  padding: var(--space-4);
+  color: var(--color-text);
+
+  /* Off-canvas default on mobile; desktop handled via media query */
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+  will-change: transform;
+}
+
+/* Reduced motion: disable transform transitions */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-panel { transition: none; transform: none !important; }
+}
+
+/* Root states control transform */
+.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
+.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
+
+/* Overlay scrim for mobile when sidebar open */
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease-in-out;
+  border: none;
+}
+.scrim.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Desktop behavior: sidebar always visible; scrim hidden */
+@media (min-width: 1024px) {
+  .app {
+    grid-template-columns: 240px 1fr;
+  }
+  .sidebar-panel {
+    transform: translateX(0);
+    position: relative;
+  }
+  .scrim { display: none; }
+}
+
+/* Ensure original .sidebar rules still apply to inner content container (brand, list, etc.) */
+
 .sidebar {
   grid-row: 1 / span 2;
 
@@ -35,6 +91,12 @@
   justify-content: space-between;
   padding: 0 var(--space-5);
   color: var(--color-text);
+}
+
+/* Topbar menu button visibility */
+.topbar-menu { display: inline-flex; }
+@media (min-width: 1024px) {
+  .topbar-menu { display: none; }
 }
 
 .brand {
@@ -103,6 +165,20 @@
   grid-column: 2;
   padding: var(--space-6) 32px;
   background: transparent;
+}
+
+/* When sidebar is off-canvas on mobile, main spans full width */
+@media (max-width: 1023px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .topbar {
+    grid-column: 1;
+  }
+  .main {
+    grid-column: 1;
+  }
 }
 
 .pageHeader {

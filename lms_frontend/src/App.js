@@ -4,6 +4,7 @@ import './styles/layout.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
 import { ThemeProvider } from './core/theme/ThemeContext';
+import { UIProvider } from './core/ui/UIContext';
 import { AppShell } from './components/layout/AppShell';
 import { StudentOverviewPage } from './pages/student/StudentOverviewPage';
 import { CatalogPage } from './pages/common/CatalogPage';
@@ -87,11 +88,12 @@ function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <Router>
-          {/* Dev-only Supabase health check: logs to console without UI changes */}
-          <SupabaseDevHealthCheck />
-          <AppShell>
-            <Routes>
+        <UIProvider>
+          <Router>
+            {/* Dev-only Supabase health check: logs to console without UI changes */}
+            <SupabaseDevHealthCheck />
+            <AppShell>
+              <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/auth" element={<LoginRegister />} />
@@ -188,6 +190,7 @@ function App() {
           </Routes>
         </AppShell>
         </Router>
+        </UIProvider>
       </ThemeProvider>
     </AuthProvider>
   );

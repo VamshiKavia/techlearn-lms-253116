@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../core/auth/AuthContext';
+import { useUI } from '../../core/ui/UIContext';
 
 /**
  * PUBLIC_INTERFACE
@@ -9,6 +10,7 @@ import { useAuth } from '../../core/auth/AuthContext';
 export function Sidebar() {
   const location = useLocation();
   const { user } = useAuth();
+  const { closeSidebar } = useUI();
 
   const navItems = [
     { label: 'Overview', to: '/student/overview' },
@@ -35,6 +37,7 @@ export function Sidebar() {
               to={item.to}
               className={`navItem ${isActive(item.to) ? 'active' : ''}`}
               aria-current={isActive(item.to) ? 'page' : undefined}
+              onClick={closeSidebar}
             >
               {item.label}
             </NavLink>

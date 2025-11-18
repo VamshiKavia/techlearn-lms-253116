@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
+import { useUI } from '../../core/ui/UIContext';
 
 /**
  * PUBLIC_INTERFACE
@@ -9,11 +10,25 @@ import { Topbar } from './Topbar';
  * @param {React.ReactNode} props.children - Main content
  */
 export function AppShell({ children }) {
+  const { isSidebarOpen, closeSidebar } = useUI();
+
+  // Root classes toggle a modifier for CSS to slide the sidebar and show overlay on mobile
+  const rootClass = `app ${isSidebarOpen ? 'is-sidebar-open' : 'is-sidebar-closed'}`;
+
   return (
-    <div className="app">
-      <aside className="sidebar" role="navigation" aria-label="Primary">
+    <div className={rootClass}>
+      <aside className="sidebar-panel" role="navigation" aria-label="Primary" aria-hidden={!isSidebarOpen}>
         <Sidebar />
       </aside>
+
+      {/* Scrim overlay for mobile. Click to close. Hidden on desktop via CSS. */}
+      <button
+        type="button"
+        className={`scrim ${isSidebarOpen ? 'visible' : ''}`}
+        aria-label="Close sidebar"
+        onClick={closeSidebar}
+      />
+
       <header className="topbar">
         <Topbar />
       </header>
