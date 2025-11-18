@@ -30,6 +30,7 @@
   /* Status */
   --success: #10B981;           /* emerald-500 */
   --warning: #F59E0B;           /* amber-500 */
+  --error: #EF4444;             /* red-500 */
   --info: #3B82F6;              /* blue-500 */
 
   /* Chips/Pills */
@@ -48,6 +49,24 @@
   --shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.06);
   --shadow-md: 0 2px 8px rgba(2, 6, 23, 0.08);
   --shadow-lg: 0 8px 24px rgba(2, 6, 23, 0.10);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  /* Transitions */
+  --easing: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --transition-fast: 120ms var(--easing);
+  --transition-base: 200ms var(--easing);
 }
 
 html, body, #root {
@@ -60,12 +79,114 @@ body {
   color: var(--text-primary);
   background: var(--bg-canvas);
   line-height: 1.5;
+  text-rendering: optimizeLegibility;
 }
 
-a { color: var(--text-link); text-decoration: none; }
+a { color: var(--text-link); text-decoration: none; transition: color var(--transition-fast); }
 a:hover { text-decoration: underline; }
 
 :focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+
+/* Inputs and controls reset aligning to theme */
+input, select, textarea, button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Generic control styles (used by SearchInput and others) */
+.ui-input, .ui-select, .ui-textarea {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+.ui-input:focus, .ui-select:focus, .ui-textarea:focus {
+  border-color: #93C5FD;
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.6);
+  background: var(--bg-canvas);
+}
+
+/* Buttons base + variants */
+.btn {
+  border-radius: var(--radius-md);
+  line-height: 1;
+  padding: 8px 14px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  min-height: 36px;
+  min-width: 36px; /* hit area */
+}
+.btn:active { transform: translateY(0.5px); }
+.btn:focus-visible { box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.6); }
+
+.btn-primary { background: var(--primary); color: var(--primary-contrast); }
+.btn-primary:hover { background: var(--primary-600); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.btn-outline:hover { background: var(--bg-subtle); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+.btn-ghost:hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+.btn-chip { border-radius: 9999px; padding: 6px 12px; }
+.btn-chip.active { background: var(--chip-bg); color: var(--chip-text); border-color: transparent; }
+
+/* Card */
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table thead th {
+  text-align: left;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 12px;
+}
+.table tbody td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.table tbody tr:hover {
+  background: var(--bg-subtle);
+}
+
+/* Alert/Toast */
+.alert {
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  background: #F8FAFF;
+  color: var(--text-secondary);
+}
+.alert--success { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
+.alert--info    { background: #EFF6FF; border-color: #BFDBFE; color: #1E3A8A; }
+.alert--warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
+.alert--error   { background: #FEF2F2; border-color: #FCA5A5; color: #991B1B; }

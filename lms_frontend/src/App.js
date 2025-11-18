@@ -1,4 +1,6 @@
 import React from 'react';
+import './styles/theme.css';
+import './styles/layout.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
 import './styles/theme.css';

@@ -11,7 +11,7 @@
   grid-row: 1 / span 2;
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border-subtle);
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .topbar {
@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 var(--space-5);
 }
 
 .brand {
@@ -39,7 +39,7 @@
 }
 
 .navList {
-  margin-top: 16px;
+  margin-top: var(--space-4);
   list-style: none;
   padding: 0;
 }
@@ -48,10 +48,11 @@
   display: flex;
   align-items: center;
   height: 40px;
-  padding: 0 12px;
-  border-radius: 8px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .navItem:hover { background: var(--bg-subtle); color: var(--text-primary); }
@@ -72,14 +73,14 @@
 
 .main {
   grid-column: 2;
-  padding: 24px 32px;
+  padding: var(--space-6) 32px;
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .pageHeader h1 {
@@ -95,39 +96,21 @@
   font-size: 14px;
 }
 
-.btn {
-  border-radius: 8px;
-  line-height: 1;
-  padding: 8px 14px;
-  font-size: 14px;
-  border: 1px solid transparent;
-  cursor: pointer;
-}
+/* Buttons moved to theme.css to centralize variants */
 
-.btn-primary { background: var(--primary); color: var(--primary-contrast); }
-.btn-primary:hover { background: var(--primary-600); }
-
-.btn-outline {
-  background: transparent;
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-}
-.btn-outline:hover { background: var(--bg-subtle); }
-
-.btn-chip { border-radius: 9999px; padding: 6px 12px; }
-.btn-chip.active { background: var(--chip-bg); color: var(--chip-text); border-color: transparent; }
-
+/* Card */
 .card {
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
+/* Grids and panels */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-4);
 }
 @media (max-width: 1279px) {
   .statsGrid { grid-template-columns: repeat(3, 1fr); }
@@ -136,7 +119,7 @@
   .statsGrid { grid-template-columns: 1fr; }
 }
 
-.statCard { padding: 16px; }
+.statCard { padding: var(--space-4); }
 .statLabel {
   text-transform: uppercase;
   font-size: 12px;
@@ -156,18 +139,18 @@
 .detailsGrid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  margin-top: 24px;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
 }
 @media (max-width: 1023px) { .detailsGrid { grid-template-columns: 1fr; } }
 
-.panel { padding: 16px; }
+.panel { padding: var(--space-4); }
 
-.filters { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 16px; }
+.filters { display: flex; gap: var(--space-3); flex-wrap: wrap; margin: 12px 0 16px; }
 .courseGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 24px;
+  gap: var(--space-6);
 }
 @media (max-width: 1023px) {
   .courseGrid { grid-template-columns: repeat(2, 1fr); }
@@ -175,48 +158,51 @@
 @media (max-width: 639px) {
   .courseGrid { grid-template-columns: 1fr; }
 }
-.courseCard { padding: 16px; }
-.courseTitle { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-.metaRow { display: flex; gap: 12px; color: var(--text-muted); font-size: 14px; align-items: center; }
-.viewBtn { margin-top: 12px; height: 32px; }
+.courseCard { padding: var(--space-4); transition: box-shadow var(--transition-base); }
+.courseCard:hover { box-shadow: var(--shadow-md); }
+.courseTitle { font-size: 18px; font-weight: 600; margin-bottom: var(--space-2); }
+.metaRow { display: flex; gap: var(--space-3); color: var(--text-muted); font-size: 14px; align-items: center; }
+.viewBtn { margin-top: var(--space-3); height: 32px; }
 
 .topicGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 24px;
+  gap: var(--space-6);
 }
 @media (max-width: 1023px) { .topicGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 639px) { .topicGrid { grid-template-columns: 1fr; } }
-.topicPanel { padding: 16px; }
+.topicPanel { padding: var(--space-4); }
 .topicHeader {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);
 }
 .progressLabel {
-  font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px;
+  font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: var(--space-2);
 }
 .progressTrack { height: 6px; background: var(--progress-track); border-radius: 9999px; }
 .progressFill { height: 6px; background: var(--progress-fill); border-radius: 9999px; width: var(--progress, 40%); }
 
-.videoLessonsTitle { margin-top: 12px; font-size: 14px; font-weight: 600; }
+.videoLessonsTitle { margin-top: var(--space-3); font-size: 14px; font-weight: 600; }
 .lessonRow {
-  display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center;
+  display: grid; grid-template-columns: 1fr auto auto; gap: var(--space-3); align-items: center;
   padding: 10px 0; border-bottom: 1px solid var(--border-subtle);
 }
 .lessonRow:last-child { border-bottom: none; }
 .lessonDuration { color: var(--text-muted); font-size: 14px; }
-.lessonPlay { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-link); font-weight: 600; cursor: pointer; border-radius: 8px; padding: 6px 10px; }
+.lessonPlay { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-link); font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px; transition: background var(--transition-fast); }
+.lessonPlay:hover { background: var(--bg-subtle); }
 
-.divider { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+.divider { border: none; border-top: 1px solid var(--border-subtle); margin: var(--space-6) 0; }
 
 /* Minimal tabs styling aligned with Ocean Professional theme */
-.tabs { display: flex; gap: 8px; }
+.tabs { display: flex; gap: var(--space-2); }
 .tab {
   background: transparent;
   border: none;
   padding: 10px 12px;
   color: var(--text-secondary);
   cursor: pointer;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 .tab:hover { background: var(--bg-subtle); color: var(--text-primary); }
 .tab--active {

@@ -28,7 +28,7 @@ export function Sidebar() {
     <div>
       <div className="brand">TechLearn</div>
       <div className="userEmail" aria-label="user-email">{user?.email || 'guest@techlearn'}</div>
-      <ul className="navList">
+      <ul className="navList" role="list">
         {navItems.map((item) => (
           <li key={item.to}>
             <NavLink
