@@ -22,18 +22,36 @@
 
   /* Closed by default in narrow view; desktop handled below */
   transform: translateX(-100%);
-  transition: transform 300ms ease-in-out;
+  transition: transform 300ms ease-in-out, visibility 0s linear 300ms;
   will-change: transform;
 }
 
 /* Reduced motion: disable transform transitions */
 @media (prefers-reduced-motion: reduce) {
-  .sidebar-panel { transition: none; transform: none !important; }
+  .sidebar-panel {
+    transition: none !important;
+    transform: none !important;
+  }
+  /* When reduced motion is preferred, rely on instant visibility toggle */
+  .app.is-sidebar-closed .sidebar-panel {
+    visibility: hidden !important;
+  }
+  .app.is-sidebar-open .sidebar-panel {
+    visibility: visible !important;
+  }
 }
 
 /* Root states control transform */
-.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
-.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
+.app.is-sidebar-open .sidebar-panel {
+  transform: translateX(0);
+  /* Ensure visible when open */
+  visibility: visible;
+}
+.app.is-sidebar-closed .sidebar-panel {
+  transform: translateX(-100%);
+  /* Hidden and non-interactive when closed; inline styles and aria-hidden also applied in JSX */
+  visibility: hidden;
+}
 
 /* Overlay scrim for mobile when sidebar open */
 .scrim {
@@ -71,6 +89,8 @@
 .sidebar {
   grid-row: 1 / span 2;
 
+  /* When sidebar is closed, ensure all descendants are not interactive via CSS fallback */
+  pointer-events: auto;
   /* Fully transparent: inherit global page/canvas background with no glass/blur */
   background: transparent !important;
   -webkit-backdrop-filter: none !important;
@@ -187,6 +207,14 @@
   .main {
     grid-column: 1;
     min-height: calc(100vh - 56px);
+  }
+
+  /* For small screens, after slide-out, fully remove content from layout to avoid virtual keyboard/focus traps */
+  .app.is-sidebar-closed .sidebar-content {
+    display: none;
+  }
+  .app.is-sidebar-open .sidebar-content {
+    display: block;
   }
 }
 

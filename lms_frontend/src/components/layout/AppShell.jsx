@@ -26,8 +26,19 @@ export function AppShell({ children }) {
         role="navigation"
         aria-label="Primary"
         aria-hidden={!isSidebarOpen}
+        // When closed, prevent interaction and hide from screen readers and focus navigation
+        style={{
+          visibility: isSidebarOpen ? 'visible' : 'hidden',
+          pointerEvents: isSidebarOpen ? 'auto' : 'none',
+        }}
       >
-        <Sidebar />
+        {/* Mark inner content region so CSS can optionally set display:none at small breakpoints post-transition */}
+        <div
+          className="sidebar-content"
+          aria-hidden={!isSidebarOpen}
+        >
+          <Sidebar />
+        </div>
       </aside>
 
       {/* Mobile scrim appears when sidebar is open; hidden on desktop */}

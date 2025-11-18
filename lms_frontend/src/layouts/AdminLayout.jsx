@@ -32,51 +32,62 @@ export function AdminLayout({ children }) {
   return (
     <div className={rootClass}>
       {/* Admin Sidebar */}
-      <aside className="sidebar-panel" role="navigation" aria-label="Admin" aria-hidden={!isSidebarOpen}>
-        <div className="brand">TechLearn Admin</div>
-        <div className="userEmail" aria-label="user-email">{user?.email || 'unknown@techlearn'}</div>
-        <ul className="navList">
-          <li>
-            <NavLink
-              to="/admin"
-              className={`navItem ${isActive('/admin') ? 'active' : ''}`}
-              aria-current={isActive('/admin') ? 'page' : undefined}
-              onClick={closeSidebar}
-            >
-              Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/admin/courses"
-              className={`navItem ${isActive('/admin/courses') ? 'active' : ''}`}
-              aria-current={isActive('/admin/courses') ? 'page' : undefined}
-              onClick={closeSidebar}
-            >
-              Courses
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/admin/courses/new"
-              className={`navItem ${isActive('/admin/courses/new') ? 'active' : ''}`}
-              aria-current={isActive('/admin/courses/new') ? 'page' : undefined}
-              onClick={closeSidebar}
-            >
-              New Course
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/account"
-              className={`navItem ${isActive('/account') ? 'active' : ''}`}
-              aria-current={isActive('/account') ? 'page' : undefined}
-              onClick={closeSidebar}
-            >
-              Account
-            </NavLink>
-          </li>
-        </ul>
+      <aside
+        className="sidebar-panel"
+        role="navigation"
+        aria-label="Admin"
+        aria-hidden={!isSidebarOpen}
+        style={{
+          visibility: isSidebarOpen ? 'visible' : 'hidden',
+          pointerEvents: isSidebarOpen ? 'auto' : 'none',
+        }}
+      >
+        <div className="sidebar-content" aria-hidden={!isSidebarOpen}>
+          <div className="brand">TechLearn Admin</div>
+          <div className="userEmail" aria-label="user-email">{user?.email || 'unknown@techlearn'}</div>
+          <ul className="navList">
+            <li>
+              <NavLink
+                to="/admin"
+                className={`navItem ${isActive('/admin') ? 'active' : ''}`}
+                aria-current={isActive('/admin') ? 'page' : undefined}
+                onClick={closeSidebar}
+              >
+                Dashboard
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/courses"
+                className={`navItem ${isActive('/admin/courses') ? 'active' : ''}`}
+                aria-current={isActive('/admin/courses') ? 'page' : undefined}
+                onClick={closeSidebar}
+              >
+                Courses
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/admin/courses/new"
+                className={`navItem ${isActive('/admin/courses/new') ? 'active' : ''}`}
+                aria-current={isActive('/admin/courses/new') ? 'page' : undefined}
+                onClick={closeSidebar}
+              >
+                New Course
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/account"
+                className={`navItem ${isActive('/account') ? 'active' : ''}`}
+                aria-current={isActive('/account') ? 'page' : undefined}
+                onClick={closeSidebar}
+              >
+                Account
+              </NavLink>
+            </li>
+          </ul>
+        </div>
       </aside>
 
       {/* Scrim overlay for mobile */}
