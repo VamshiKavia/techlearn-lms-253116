@@ -9,6 +9,7 @@ import { CatalogPage } from './pages/common/CatalogPage';
 import { CategorySectionsPage } from './pages/common/CategorySectionsPage';
 import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider, useAuth } from './core/auth/AuthContext';
+import { SupabaseDevHealthCheck } from './lib/SupabaseDevHealthCheck';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
 import { Certificates } from './pages/student/Certificate';
@@ -48,6 +49,8 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        {/* Dev-only Supabase health check: logs to console without UI changes */}
+        <SupabaseDevHealthCheck />
         <AppShell>
           <Routes>
             {/* Public routes */}
