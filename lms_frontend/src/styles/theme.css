@@ -71,6 +71,10 @@
     color-mix(in srgb, var(--color-elevated) 92%, var(--neon-accent) 8%)
   );
   --neon-card-bg-fallback: linear-gradient(180deg, rgba(139,92,246,0.08), rgba(196,181,253,0.08));
+
+  /* Canvas tokens for unified page background (optional in light mode) */
+  --bg-canvas: var(--color-background);
+  --bg-canvas-gradient: var(--color-background);
 }
 
 :root[data-theme='dark'] {
@@ -131,15 +135,16 @@
 
   /* Canvas background tokens for global dark canvas only */
   --bg-canvas: #0b0b0f; /* static near-black fallback per requirements */
-  /* Use a simple purple → black linear-gradient and keep it tokenized */
+  /* Unified linear gradient across the whole page (single paint) */
   --bg-canvas-gradient: linear-gradient(
     135deg,
-    var(--violet-700, #6D28D9) 0%,
+    #6D28D9 0%,
+    #0b0b0f 40%,
     #000000 100%
   );
 }
 
-/* Base document using new tokens */
+/* Base document using new tokens (no split/stacked backgrounds) */
 html, body, #root {
   height: 100%;
 }
@@ -148,10 +153,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   color: var(--color-text);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(139, 92, 246, 0.06), transparent 40%),
-    radial-gradient(900px 480px at 100% 0%, rgba(196, 181, 253, 0.05), transparent 45%),
-    var(--color-background);
+  /* Avoid painting additional body layers; canvas gradient is applied from index.css to html/body/#root */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

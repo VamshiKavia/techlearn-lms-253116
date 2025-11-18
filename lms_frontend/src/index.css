@@ -12,22 +12,28 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* Light mode remains unchanged: use existing base background tokens */
-  background: var(--color-background);
+  /* Important: do not set a separate body background; allow unified canvas gradient to paint */
   color: var(--color-text);
 }
 
-/* Dark mode: apply subtle purple-to-black canvas gradient at document/root level only */
+/* Dark mode unified background: single canvas gradient applied once */
 :root[data-theme='dark'] html,
 :root[data-theme='dark'] body,
 :root[data-theme='dark'] #root {
-  /* Solid fallback first for broader compatibility */
-  background: var(--bg-canvas);
-  /* Preferred gradient per requirement */
+  background: var(--bg-canvas); /* solid fallback first */
   background: var(--bg-canvas-gradient);
   background-attachment: fixed;
   background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Optional: keep light mode single paint using tokens if already themed */
+:root[data-theme='light'] html,
+:root[data-theme='light'] body,
+:root[data-theme='light'] #root {
+  background: var(--bg-canvas); /* defaults to var(--color-background) via theme.css */
+  background-attachment: scroll;
+  background-size: auto;
   background-repeat: no-repeat;
 }
 
