@@ -20,14 +20,6 @@ export function Sidebar() {
     { label: 'AI', to: '/catalog/ai' },
     { label: 'Reviews', to: '/reviews' },
     { label: 'Certificates', to: '/certificates' },
-    // Temporary: Admin links visible to any signed-in user; TODO RBAC check when roles available
-    ...(user
-      ? [
-          { label: 'Admin', to: '/admin' },
-          { label: '• Courses', to: '/admin/courses' },
-          { label: '• New Course', to: '/admin' }, // create form is on Admin landing for now
-        ]
-      : []),
   ];
 
   const isActive = (to) => location.pathname === to;

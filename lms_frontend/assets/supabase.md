@@ -192,9 +192,10 @@ create policy "admin_delete"
   using ((auth.jwt() ->> 'role') = 'admin');
 ```
 
-Client-side guard:
-- Frontend currently allows any signed-in user to access `/admin/*`.
-- TODO: Once roles are available in Supabase JWT (e.g., `user.app_metadata.role`), update the AdminProtectedRoute in `src/App.js` to enforce admin-only UI access.
+Client-side guard and admin layout:
+- Admin has a dedicated layout and navigation separate from student UI.
+- All `/admin/*` routes render inside `src/layouts/AdminLayout.jsx`.
+- Guard: any signed-in user can access admin for now (placeholder). Once roles are available in Supabase JWT (e.g., `user.app_metadata.role`), update the AdminProtectedRoute in `src/App.js` to enforce admin-only access.
 
 Error handling:
 - The service normalizes common Supabase errors:

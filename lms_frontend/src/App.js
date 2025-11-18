@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from './core/auth/AuthContext';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CourseList from './pages/admin/CourseList';
 import CourseEdit from './pages/admin/CourseEdit';
+import CourseNew from './pages/admin/CourseNew';
 import { SupabaseDevHealthCheck } from './lib/SupabaseDevHealthCheck';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
@@ -19,6 +20,7 @@ import { Certificates } from './pages/student/Certificate';
 import { Login } from './pages/auth/Login';
 import { LoginRegister } from './pages/auth/LoginRegister';
 import { Account } from './pages/account/Account';
+import { AdminLayout } from './layouts/AdminLayout';
 
 /**
  * ProtectedRoute: Guards child element behind auth; redirects to /auth with return path.
@@ -160,27 +162,21 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* Admin routes (separate layout). Guard applied at the layout level. */}
             <Route
-              path="/admin"
+              path="/admin/*"
               element={
                 <AdminProtectedRoute>
-                  <AdminDashboard />
-                </AdminProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/courses"
-              element={
-                <AdminProtectedRoute>
-                  <CourseList />
-                </AdminProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/courses/:id/edit"
-              element={
-                <AdminProtectedRoute>
-                  <CourseEdit />
+                  <AdminLayout>
+                    <Routes>
+                      <Route path="" element={<AdminDashboard />} />
+                      <Route path="courses" element={<CourseList />} />
+                      <Route path="courses/new" element={<CourseNew />} />
+                      <Route path="courses/:id/edit" element={<CourseEdit />} />
+                      {/* Fallback inside admin to dashboard */}
+                      <Route path="*" element={<Navigate to="/admin" replace />} />
+                    </Routes>
+                  </AdminLayout>
                 </AdminProtectedRoute>
               }
             />
