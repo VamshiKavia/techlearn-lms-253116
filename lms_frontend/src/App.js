@@ -10,6 +10,8 @@ import { CategorySectionsPage } from './pages/common/CategorySectionsPage';
 import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider, useAuth } from './core/auth/AuthContext';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import CourseList from './pages/admin/CourseList';
+import CourseEdit from './pages/admin/CourseEdit';
 import { SupabaseDevHealthCheck } from './lib/SupabaseDevHealthCheck';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
@@ -163,6 +165,22 @@ function App() {
               element={
                 <AdminProtectedRoute>
                   <AdminDashboard />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/courses"
+              element={
+                <AdminProtectedRoute>
+                  <CourseList />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/courses/:id/edit"
+              element={
+                <AdminProtectedRoute>
+                  <CourseEdit />
                 </AdminProtectedRoute>
               }
             />

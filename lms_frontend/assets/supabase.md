@@ -108,3 +108,95 @@ Production Role-Based Access:
 Notes:
 - Avoid hardcoding secrets. REACT_APP_SUPABASE_KEY must be the public anon key.
 - Do not log access tokens or PII.
+
+---
+
+## Admin Courses – Frontend CRUD Integration
+
+New admin pages were added under `/admin` routes:
+
+- /admin/courses → CourseList.jsx
+  - Uses courseService.listCourses({ search, status, page, pageSize })
+  - Displays id, title, status, created_at, created_by
+  - Simple search by title (ILIKE), filter by status, sort by created_at desc
+  - Actions: Edit, View (opens catalog for now), Delete (with confirm)
+- /admin/courses/:id/edit → CourseEdit.jsx
+  - Loads a single course by id via courseService.getCourseById(id)
+  - Editable fields: title, subtitle, category, level, price, is_free, description, thumbnail_url, status
+  - Save → courseService.updateCourse(id, payload)
+  - Delete → courseService.deleteCourse(id)
+
+Service layer (src/core/services/courseService.js) now includes:
+- listCourses(supabase, { search, status, page, pageSize })
+- getCourseById(supabase, id)
+- updateCourse(supabase, id, payload)
+- deleteCourse(supabase, id)
+
+These use `supabase.from('courses')` with appropriate filters, order, and pagination (range + count).
+
+### Recommended DB Schema Enhancements
+
+Add helpful indexes for admin queries:
+
+```sql
+-- if not already present
+create index if not exists courses_created_at_idx on public.courses (created_at desc);
+create index if not exists courses_status_idx on public.courses (status);
+create index if not exists courses_title_trgm_idx on public.courses using gin (title gin_trgm_ops);
+
+-- denormalized audit
+create index if not exists courses_created_by_idx on public.courses (created_by);
+```
+
+Recommended to enable the pg_trgm extension for case-insensitive search performance:
+
+```sql
+create extension if not exists pg_trgm;
+```
+
+Consider using an enum for status:
+
+```sql
+do $$ begin
+  create type course_status as enum ('draft', 'published');
+exception
+  when duplicate_object then null;
+end $$;
+
+alter table public.courses
+  alter column status type course_status using status::course_status;
+```
+
+### RLS Considerations (Admin-only CRUD)
+
+Enable RLS and create specific policies for admins:
+
+- For read (list/get): allow if role is admin.
+- For update/delete: only admin.
+- For insert: only admin (already in this file above).
+
+Example policy sketches (adjust to your JWT claims model):
+
+```sql
+-- Replace with your actual JWT claim or mapping table lookup
+create policy "admin_select"
+  on public.courses for select
+  using ((auth.jwt() ->> 'role') = 'admin');
+
+create policy "admin_update"
+  on public.courses for update
+  using ((auth.jwt() ->> 'role') = 'admin');
+
+create policy "admin_delete"
+  on public.courses for delete
+  using ((auth.jwt() ->> 'role') = 'admin');
+```
+
+Client-side guard:
+- Frontend currently allows any signed-in user to access `/admin/*`.
+- TODO: Once roles are available in Supabase JWT (e.g., `user.app_metadata.role`), update the AdminProtectedRoute in `src/App.js` to enforce admin-only UI access.
+
+Error handling:
+- The service normalizes common Supabase errors:
+  - Missing table → instructs to create using SQL in this document.
+  - RLS/permission issues → guides to configure policies for Admin role.
