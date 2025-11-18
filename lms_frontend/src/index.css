@@ -8,9 +8,36 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Subtle neon ambient gradients that are very low opacity to keep minimalism */
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(34, 211, 238, 0.06), transparent 40%),
+    radial-gradient(900px 480px at 100% 0%, rgba(167, 139, 250, 0.05), transparent 45%),
+    var(--bg-canvas);
+  color: var(--text-primary);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Minimal divider accents */
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.25), transparent);
+}
+
+/* Table focus outlines non-intrusive */
+table:focus-within {
+  box-shadow: var(--focus-ring-neon);
+  border-radius: var(--radius-sm);
+}
+
+/* Reduce motion: remove ambient neon background blends */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    background: var(--bg-canvas);
+  }
 }

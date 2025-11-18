@@ -1,4 +1,4 @@
-/* App shell layout and UI utilities (from student_css_snippets with Ocean Professional mapping) */
+﻿/* App shell layout and UI utilities (Ocean Professional with subtle Neon accents) */
 .app {
   display: grid;
   grid-template-columns: 240px 1fr;
@@ -52,10 +52,10 @@
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), text-shadow var(--transition-fast);
 }
 
-.navItem:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.navItem:hover { background: var(--bg-subtle); color: var(--text-primary); text-shadow: 0 0 8px rgba(96, 165, 250, 0.25); }
 .navItem.active {
   background: #EFF6FF; /* blue-50 */
   color: var(--text-primary);
@@ -96,19 +96,17 @@
   font-size: 14px;
 }
 
-/* Buttons moved to theme.css to centralize variants */
-
 /* Card */
 .card {
   background: var(--bg-panel);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm), var(--edge-light);
   transition: box-shadow var(--transition-base), transform var(--transition-base);
   will-change: box-shadow, transform;
 }
-.card--elevated { box-shadow: var(--shadow-md); }
-.card--interactive:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.card--elevated { box-shadow: var(--shadow-md), var(--edge-light); }
+.card--interactive:hover { box-shadow: var(--shadow-md), var(--glow-sm); transform: translateY(-1px); }
 
 /* Modal primitives */
 .modalOverlay {
@@ -127,7 +125,7 @@
   color: var(--text-primary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), var(--glow-sm);
   width: min(640px, 94vw);
   max-height: 90vh;
   overflow: hidden;
@@ -139,16 +137,9 @@
   padding: 14px 18px;
   border-bottom: 1px solid var(--border-subtle);
 }
-.modalHeader {
-  display: flex; align-items: center; justify-content: space-between;
-}
-.modalTitle {
-  font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0;
-}
-.modalBody {
-  padding: 16px 18px;
-  overflow: auto;
-}
+.modalHeader { display: flex; align-items: center; justify-content: space-between; }
+.modalTitle { font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.modalBody { padding: 16px 18px; overflow: auto; }
 .modalFooter {
   border-bottom: none;
   border-top: 1px solid var(--border-subtle);
@@ -161,12 +152,8 @@
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-4);
 }
-@media (max-width: 1279px) {
-  .statsGrid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 767px)  {
-  .statsGrid { grid-template-columns: 1fr; }
-}
+@media (max-width: 1279px) { .statsGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 767px)  { .statsGrid { grid-template-columns: 1fr; } }
 
 .statCard { padding: var(--space-4); }
 .statLabel {
@@ -177,11 +164,7 @@
   letter-spacing: 0.04em;
   margin-bottom: 6px;
 }
-.statValue {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
+.statValue { font-size: 26px; font-weight: 700; color: var(--text-primary); }
 .statValue.accent { color: var(--primary); }
 .statSub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
 
@@ -196,40 +179,37 @@
 .panel { padding: var(--space-4); }
 
 .filters { display: flex; gap: var(--space-3); flex-wrap: wrap; margin: 12px 0 16px; }
+
 .courseGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: var(--space-6);
 }
-@media (max-width: 1023px) {
-  .courseGrid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 639px) {
-  .courseGrid { grid-template-columns: 1fr; }
-}
+@media (max-width: 1023px) { .courseGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px)  { .courseGrid { grid-template-columns: 1fr; } }
+
 .courseCard { padding: var(--space-4); transition: box-shadow var(--transition-base); }
-.courseCard:hover { box-shadow: var(--shadow-md); }
+.courseCard:hover { box-shadow: var(--shadow-md), var(--glow-sm); }
 .courseTitle { font-size: 18px; font-weight: 600; margin-bottom: var(--space-2); }
 .metaRow { display: flex; gap: var(--space-3); color: var(--text-muted); font-size: 14px; align-items: center; }
 .viewBtn { margin-top: var(--space-3); height: 32px; }
 
+/* Topics */
 .topicGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
   gap: var(--space-6);
 }
 @media (max-width: 1023px) { .topicGrid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 639px) { .topicGrid { grid-template-columns: 1fr; } }
+@media (max-width: 639px)  { .topicGrid { grid-template-columns: 1fr; } }
+
 .topicPanel { padding: var(--space-4); }
-.topicHeader {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);
-}
-.progressLabel {
-  font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: var(--space-2);
-}
+.topicHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+.progressLabel { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: var(--space-2); }
 .progressTrack { height: 6px; background: var(--progress-track); border-radius: 9999px; }
 .progressFill { height: 6px; background: var(--progress-fill); border-radius: 9999px; width: var(--progress, 40%); }
 
+/* Lessons */
 .videoLessonsTitle { margin-top: var(--space-3); font-size: 14px; font-weight: 600; }
 .lessonRow {
   display: grid; grid-template-columns: 1fr auto auto; gap: var(--space-3); align-items: center;
@@ -237,12 +217,17 @@
 }
 .lessonRow:last-child { border-bottom: none; }
 .lessonDuration { color: var(--text-muted); font-size: 14px; }
-.lessonPlay { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-link); font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px; transition: background var(--transition-fast); }
-.lessonPlay:hover { background: var(--bg-subtle); }
+.lessonPlay {
+  background: transparent; border: 1px solid var(--border-subtle); color: var(--text-link);
+  font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.lessonPlay:hover { background: var(--bg-subtle); border-color: rgba(34, 211, 238, 0.35); }
+.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring-neon); }
 
 .divider { border: none; border-top: 1px solid var(--border-subtle); margin: var(--space-6) 0; }
 
-/* Minimal tabs styling aligned with Ocean Professional theme */
+/* Tabs */
 .tabs { display: flex; gap: var(--space-2); }
 .tab {
   background: transparent;
@@ -251,9 +236,9 @@
   color: var(--text-secondary);
   cursor: pointer;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
 }
-.tab:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.tab:hover { background: var(--bg-subtle); color: var(--text-primary); box-shadow: inset 0 -2px 0 rgba(34, 211, 238, 0.35); }
 .tab--active {
   color: var(--text-primary);
   position: relative;
@@ -265,4 +250,40 @@
   height: 2px;
   background: #1D4ED8;
   border-radius: 2px;
+}
+
+/* Topbar primary actions get soft glow */
+.topbar .action-primary,
+.topbar .btn-primary {
+  box-shadow: var(--glow-sm);
+  border-color: rgba(34, 211, 238, 0.35);
+}
+
+/* Sidebar links neon hover */
+.sidebar .nav-link:hover,
+.sidebar a:hover {
+  color: var(--neon-blue);
+  text-shadow: 0 0 8px rgba(96, 165, 250, 0.35);
+}
+.sidebar .nav-link:focus-visible,
+.sidebar a:focus-visible {
+  box-shadow: var(--focus-ring-neon);
+  border-radius: var(--radius-sm);
+}
+
+/* Dialog containers (if present) */
+.dialog-container .dialog,
+.modal-container .modal {
+  box-shadow: var(--shadow-lg), var(--glow-sm);
+}
+
+/* Reduced motion: remove neon glows while retaining structure */
+@media (prefers-reduced-motion: reduce) {
+  .navItem:hover,
+  .courseCard:hover,
+  .card--interactive:hover {
+    box-shadow: var(--shadow-md);
+    text-shadow: none;
+    transform: none;
+  }
 }
