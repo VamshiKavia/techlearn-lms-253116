@@ -166,7 +166,8 @@ a:active {
     background-color var(--motion-duration-2) var(--motion-ease-out),
     border-color var(--motion-duration-2) var(--motion-ease-out),
     box-shadow var(--motion-duration-2) var(--motion-ease-out),
-    transform var(--motion-duration-2) var(--motion-ease-out);
+    transform var(--motion-duration-2) var(--motion-ease-out),
+    opacity var(--motion-duration-2) var(--motion-ease-out);
 
   /* Clean typography adjustments */
   color: var(--text-primary);
@@ -176,9 +177,10 @@ a:active {
   /* Balanced padding defaults for generic cards (specific components may override) */
   padding: clamp(14px, 2.4vw, 18px);
 
-  will-change: transform, box-shadow;
+  will-change: transform, box-shadow, opacity;
   position: relative; /* required for shine effect */
   overflow: hidden;   /* clip shine */
+  z-index: 0; /* ensure content stacking context above ::before with z-index:-1 */
 }
 
 /* Shine sweep element */
@@ -194,6 +196,10 @@ a:active {
   transform: translateX(-120%) skewX(-12deg);
   pointer-events: none;
   opacity: 0;
+  z-index: -1; /* keep shine behind all card content */
+  mix-blend-mode: normal; /* avoid blend modes that can create transparency */
+  -webkit-mask: none;
+  mask: none;
 }
 
 /* Subtle hover/focus background using theme tokens */
@@ -209,13 +215,18 @@ a:active {
     var(--edge-light);
   transform: translateY(-3px) scale(1.01);
   animation: shadow-expand var(--motion-duration-2) var(--motion-ease-out) both;
+  opacity: 1; /* ensure visible */
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* Trigger shine sweep on hover only */
 .card:hover::before,
 [data-card]:hover::before {
   animation: light-sweep 900ms var(--motion-ease-out);
+  animation-fill-mode: forwards; /* keep transform outside view without affecting content */
   opacity: 1;
+  will-change: transform, opacity;
 }
 
 .card:focus-visible,
@@ -232,6 +243,12 @@ a:active {
   [data-card]:focus-visible { animation: none; }
   .card::before,
   [data-card]::before { display: none !important; }
+  .card,
+  [data-card] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
 }
 
 /* Ensure internal interactive elements retain contrast */

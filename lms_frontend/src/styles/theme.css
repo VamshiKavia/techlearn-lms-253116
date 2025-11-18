@@ -119,6 +119,16 @@
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+/* Ensure elements are interactive after reveal; applied via :where selector when animation has completed (fallback) */
+.reveal,
+.reveal-stagger > *,
+.stagger-children > * {
+  animation-fill-mode: both;
+}
+.reveal[style], .reveal-stagger > *[style], .stagger-children > *[style] { /* non-invasive fallback */
+  opacity: 1;
+  pointer-events: auto;
+}
 @keyframes slide-up {
   from { transform: translateY(10px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
@@ -178,12 +188,14 @@
   animation: fade-in var(--motion-duration-2) var(--motion-ease-out) forwards,
              slide-up var(--motion-duration-2) var(--motion-ease-out) forwards;
   will-change: opacity, transform;
+  pointer-events: none; /* during initial reveal */
 }
 .reveal-stagger > * {
   opacity: 0;
   transform: translateY(8px);
   animation: fade-in var(--motion-duration-2) var(--motion-ease-out) forwards,
              slide-up var(--motion-duration-2) var(--motion-ease-out) forwards;
+  pointer-events: none; /* during initial reveal */
 }
 .reveal-stagger > *:nth-child(1) { animation-delay: 40ms; }
 .reveal-stagger > *:nth-child(2) { animation-delay: 90ms; }
@@ -211,6 +223,7 @@
   animation-duration: var(--motion-duration-2), var(--motion-duration-2);
   animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
   animation-fill-mode: both;
+  pointer-events: none; /* during initial reveal */
 }
 .stagger-children > *:nth-child(1) { animation-delay: 40ms; }
 .stagger-children > *:nth-child(2) { animation-delay: 90ms; }

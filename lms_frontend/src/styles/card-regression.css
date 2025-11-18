@@ -1,0 +1,23 @@
+:root {
+  /* helper only for manual QA; not used by runtime */
+}
+.qa-card-demo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.qa-card-demo .card {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qa-toggle {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
