@@ -56,7 +56,7 @@ export function StudentOverviewPage() {
               <div key={cat} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: 12, alignItems: 'center' }}>
                 <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{cat}</div>
                 <div style={{ height: 10, background: '#E5E7EB', borderRadius: 9999 }}>
-                  <div style={{ width: `${20 + idx * 15}%`, height: 10, background: '#0b1220', borderRadius: 9999 }} />
+                  <div style={{ width: `${20 + idx * 15}%`, height: 10, background: 'var(--color-primary)', borderRadius: 9999 }} />
                 </div>
               </div>
             ))}

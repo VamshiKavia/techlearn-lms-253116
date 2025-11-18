@@ -26,14 +26,31 @@
   --color-info: #8b5cf6;
   --color-accent: #c4b5fd;      /* violet-300 */
 
+  /* Aliases (compat for existing layout tokens) */
+  --primary: var(--color-primary);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --bg-panel: var(--color-elevated);
+  --bg-subtle: var(--color-surface);
+  --border-subtle: var(--color-border);
+  --progress-track: #ede9fe; /* violet-100 */
+  --progress-fill: var(--color-primary);
+  --rating-star: #f59e0b; /* amber for stars */
+
   /* Sidebar/Topbar bindings to variables (map from previous file tokens) */
   --sidebar-bg: var(--color-elevated);
   --header-bg: var(--color-elevated);
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.06);
   --shadow-md: 0 4px 12px rgba(2, 6, 23, 0.08);
   --shadow-lg: 0 12px 28px rgba(2, 6, 23, 0.12);
+  --edge-light: inset 0 1px 0 rgba(255,255,255,0.6);
 
   /* Neon accents (light) */
   --neon-primary: #8b5cf6;
@@ -49,6 +66,7 @@
 
   /* Focus ring */
   --focus-ring: 0 0 0 3px rgba(196, 181, 253, 0.6);
+  --focus-ring-neon: 0 0 0 3px rgba(196, 181, 253, 0.45), 0 0 0 6px rgba(139, 92, 246, 0.25);
 
   /* Radii */
   --radius-sm: 6px;
@@ -103,14 +121,31 @@
   --color-info: #c4b5fd;
   --color-accent: #c4b5fd;
 
+  /* Aliases */
+  --primary: var(--color-primary);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --bg-panel: var(--color-elevated);
+  --bg-subtle: #0b1220;
+  --border-subtle: var(--color-border);
+  --progress-track: rgba(192, 132, 252, 0.18); /* subtle violet for contrast on dark */
+  --progress-fill: var(--color-primary);
+  --rating-star: #fbbf24;
+
   /* Sidebar/Topbar background should be transparent so the unified canvas shows through */
   --sidebar-bg: transparent;
   --header-bg: transparent;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
 
   /* Softer shadows in dark */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
   --shadow-lg: 0 12px 28px rgba(0,0,0,0.5);
+  --edge-light: inset 0 1px 0 rgba(255,255,255,0.06);
 
   /* Neon accents (toned down for dark) */
   --neon-primary: #c084fc;
@@ -125,6 +160,7 @@
   --glow-lg: 0 0 12px var(--neon-violet-28), 0 0 24px rgba(192,132,252,0.22), 0 0 36px rgba(221,214,254,0.18);
 
   --focus-ring: 0 0 0 3px rgba(192, 132, 252, 0.4);
+  --focus-ring-neon: 0 0 0 3px rgba(192,132,252,0.35), 0 0 0 6px rgba(192,132,252,0.18);
 
   /* Card background neon blend for dark (softer) */
   --neon-card-bg: linear-gradient(

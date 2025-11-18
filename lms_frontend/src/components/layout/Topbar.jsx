@@ -24,7 +24,7 @@ export function Topbar() {
 
   return (
     <>
-      <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>TechLearn LMS</div>
+      <div style={{ color: 'var(--color-text-muted)', fontSize: 12 }}>TechLearn LMS</div>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <ThemeToggle />
         <button className="btn btn-outline" onClick={onHome} aria-label="Go to Home">Home</button>

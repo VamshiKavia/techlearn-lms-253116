@@ -76,7 +76,7 @@ export function AdminLayout({ children }) {
 
       {/* Admin Topbar */}
       <header className="topbar">
-        <div style={{ color: '#64748B', fontSize: 12 }}>Admin Console</div>
+        <div style={{ color: 'var(--color-text-muted)', fontSize: 12 }}>Admin Console</div>
         <div style={{ display: 'flex', gap: 12 }}>
           <button className="btn btn-outline" onClick={handleHome}>Student Home</button>
           {user ? (

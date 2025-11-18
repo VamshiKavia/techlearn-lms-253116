@@ -62,7 +62,7 @@
 .navItem:hover { background: var(--color-surface); color: var(--color-text); text-shadow: 0 0 8px rgba(139, 92, 246, 0.25); }
 .navItem.active {
   background: #F5F3FF; /* violet-50 */
-  color: var(--text-primary);
+  color: var(--color-text);
   position: relative;
   border: 1px solid #EDE9FE; /* violet-100 */
 }
@@ -71,7 +71,7 @@
   position: absolute;
   left: 0; top: 8px; bottom: 8px;
   width: 3px;
-  background: var(--primary);
+  background: var(--color-primary);
   border-radius: 3px;
 }
 
@@ -249,10 +249,10 @@
 .lessonPlay {
   background: transparent; border: 1px solid var(--color-border); color: var(--color-link);
   font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px;
-  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
 }
-.lessonPlay:hover { background: var(--color-surface); border-color: rgba(139, 92, 246, 0.35); }
-.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.lessonPlay:hover { background: var(--color-surface); border-color: rgba(139, 92, 246, 0.35); color: var(--color-primary); }
+.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring); border-color: rgba(139, 92, 246, 0.45); }
 
 .divider { border: none; border-top: 1px solid var(--border-subtle); margin: var(--space-6) 0; }
 
