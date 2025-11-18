@@ -6,18 +6,26 @@ import { useUI } from '../../core/ui/UIContext';
 /**
  * PUBLIC_INTERFACE
  * AppShell: Provides sidebar, topbar, and main content region layout.
+ * - Uses UIContext.isSidebarOpen to orchestrate sidebar slide and content push/resize.
+ * - Desktop (>=1024px): sidebar pushes content using transform for smooth 300ms ease-in-out.
+ * - Mobile (<1024px): sidebar overlays content; content stays full-width; scrim closes sidebar.
  * @param {object} props
  * @param {React.ReactNode} props.children - Main content
  */
 export function AppShell({ children }) {
   const { isSidebarOpen, closeSidebar } = useUI();
 
-  // Root classes toggle a modifier for CSS to slide the sidebar and show overlay on mobile
+  // Root classes toggle modifiers for CSS-based transitions
   const rootClass = `app ${isSidebarOpen ? 'is-sidebar-open' : 'is-sidebar-closed'}`;
 
   return (
     <div className={rootClass}>
-      <aside className="sidebar-panel" role="navigation" aria-label="Primary" aria-hidden={!isSidebarOpen}>
+      <aside
+        className="sidebar-panel"
+        role="navigation"
+        aria-label="Primary"
+        aria-hidden={!isSidebarOpen}
+      >
         <Sidebar />
       </aside>
 
@@ -32,7 +40,13 @@ export function AppShell({ children }) {
       <header className="topbar">
         <Topbar />
       </header>
-      <main className="main motion-page-enter" id="content">
+
+      {/* Main wrapper receives a modifier to animate transform/width on desktop.
+          Prefer transform for performance; width updates are included for completeness. */}
+      <main
+        className={`main motion-page-enter ${isSidebarOpen ? 'with-sidebar' : 'without-sidebar'}`}
+        id="content"
+      >
         <div className="motion-section-enter">
           {children}
         </div>

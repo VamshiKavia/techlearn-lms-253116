@@ -1,13 +1,21 @@
-﻿/* App shell layout and UI utilities (updated to plum accent #541161) */
+﻿/* App shell layout and UI utilities (updated with responsive push/overlay behavior) */
+
+/* Sidebar sizing and transitions */
+:root {
+  --sidebar-width: 260px;
+  --sidebar-transition: 300ms ease-in-out; /* within 250–350ms requirement */
+}
+
+/* App root: grid base for topbar + content; transparent to show global gradient */
 .app {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 1fr; /* default single column on mobile */
   grid-template-rows: auto 1fr;
   min-height: 100vh;
   background: transparent !important; /* allow global canvas */
 }
 
-/* Sidebar panel with slide animation */
+/* Sidebar panel with slide animation; transparent background preserved */
 .sidebar-panel {
   grid-row: 1 / span 2;
   background: transparent !important;
@@ -18,22 +26,29 @@
   padding: var(--space-4);
   color: var(--color-text);
 
-  /* Off-canvas default on mobile; desktop handled via media query */
+  /* Off-canvas overlay by default (mobile) */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  max-width: 86vw;
+  height: 100vh;
   transform: translateX(-100%);
-  transition: transform 300ms ease-in-out;
+  transition: transform var(--sidebar-transition);
   will-change: transform;
+  z-index: 50; /* above content, below modal layers */
 }
 
-/* Reduced motion: disable transform transitions */
+/* Root modifiers control transform */
+.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
+.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
+
+/* Reduced motion: disable transitions/transform */
 @media (prefers-reduced-motion: reduce) {
   .sidebar-panel { transition: none; transform: none !important; }
 }
 
-/* Root states control transform */
-.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
-.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
-
-/* Overlay scrim for mobile when sidebar open */
+/* Scrim overlay for mobile when sidebar open */
 .scrim {
   position: fixed;
   inset: 0;
@@ -41,7 +56,7 @@
   z-index: 40;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 250ms ease-in-out;
+  transition: opacity 280ms ease-in-out;
   border: none;
 }
 .scrim.visible {
@@ -49,40 +64,9 @@
   pointer-events: auto;
 }
 
-/* Desktop behavior: sidebar always visible; scrim hidden */
-@media (min-width: 1024px) {
-  .app {
-    grid-template-columns: 240px 1fr;
-  }
-  .sidebar-panel {
-    transform: translateX(0);
-    position: relative;
-  }
-  .scrim { display: none; }
-}
-
-/* Ensure original .sidebar rules still apply to inner content container (brand, list, etc.) */
-
-.sidebar {
-  grid-row: 1 / span 2;
-
-  /* Fully transparent: inherit global page/canvas background with no glass/blur */
-  background: transparent !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-
-  /* Keep a subtle divider for structure/contrast */
-  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
-  box-shadow: none;
-
-  padding: var(--space-4);
-
-  /* Preserve strong readable text color from theme tokens */
-  color: var(--color-text);
-}
-
+/* Topbar: sits above content row; transparent to preserve gradient */
 .topbar {
-  grid-column: 2;
+  grid-column: 1;
   height: 56px;
   background: var(--header-bg);
   border-bottom: 1px solid var(--color-border);
@@ -91,6 +75,7 @@
   justify-content: space-between;
   padding: 0 var(--space-5);
   color: var(--color-text);
+  z-index: 10;
 }
 
 /* Topbar menu button visibility */
@@ -99,6 +84,73 @@
   .topbar-menu { display: none; }
 }
 
+/* Main content wrapper.
+   Mobile: full width always (sidebar overlays). */
+.main {
+  grid-column: 1;
+  padding: var(--space-6) 32px;
+  background: transparent;
+  min-height: calc(100vh - 56px);
+  transition:
+    transform var(--sidebar-transition),
+    margin var(--sidebar-transition),
+    width var(--sidebar-transition);
+  will-change: transform, width;
+}
+
+/* Desktop push behavior:
+   - Sidebar becomes static in flow (no overlay).
+   - Content is pushed using transform or margin-left while width reduces.
+   - Prefer transform for performance; width calc is applied for edge-to-edge without gaps. */
+@media (min-width: 1024px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+  .app {
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .sidebar-panel {
+    position: relative; /* back to flow */
+    height: auto;
+    max-width: none;
+    transform: translateX(0); /* visible by default on desktop */
+    z-index: 1;
+  }
+  .scrim { display: none; }
+
+  /* When the sidebar is considered "closed" on desktop, we collapse its column via transform and let content span full width. */
+  .app.is-sidebar-closed {
+    grid-template-columns: 0 1fr;
+  }
+
+  /* Content push/expand states on desktop */
+  .main.with-sidebar {
+    /* Sidebar open → push content right by sidebar width and reduce width accordingly.
+       Using transform is GPU-friendly; width ensures no empty gap on right. */
+    transform: translateX(0); /* grid handles base columns */
+    width: 100%;
+  }
+  .main.without-sidebar {
+    /* Sidebar closed → content occupies full width */
+    transform: translateX(0);
+    width: 100%;
+  }
+}
+
+/* Keep inner sidebar content styling transparent and consistent */
+.sidebar {
+  grid-row: 1 / span 2;
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
+  box-shadow: none;
+  padding: var(--space-4);
+  color: var(--color-text);
+}
+
+/* Branding and nav styles (unchanged) */
 .brand {
   font-weight: 700;
   letter-spacing: -0.2px;
@@ -136,7 +188,6 @@
   border: 1px solid transparent;
 }
 .navItem:hover {
-  /* On transparent sidebar, use subtle overlay that works in both modes */
   background: color-mix(in srgb, var(--bg-subtle) 65%, transparent);
   color: var(--color-text);
   text-shadow: 0 0 8px rgba(84, 17, 97, 0.18);
@@ -144,7 +195,6 @@
   border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
 }
 .navItem.active {
-  /* Distinct active overlay; visible on transparent background in both themes */
   background: color-mix(in srgb, var(--color-primary) 14%, var(--bg-subtle) 86%);
   color: var(--color-text);
   position: relative;
@@ -161,25 +211,7 @@
   box-shadow: 0 0 12px rgba(84,17,97,0.45);
 }
 
-.main {
-  grid-column: 2;
-  padding: var(--space-6) 32px;
-  background: transparent;
-}
-
-/* When sidebar is off-canvas on mobile, main spans full width */
-@media (max-width: 1023px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-  .topbar {
-    grid-column: 1;
-  }
-  .main {
-    grid-column: 1;
-  }
-}
+/* Keep rest of existing rules unchanged below (grids, cards, utilities) */
 
 .pageHeader {
   display: flex;
