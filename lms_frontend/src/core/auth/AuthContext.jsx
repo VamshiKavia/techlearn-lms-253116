@@ -1,75 +1,108 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { findUserByCredentials } from '../../shared/mocks/users';
+import { getSupabaseClient } from '../clients/supabaseClient';
 
 const AuthCtx = createContext(null);
 
 /**
  * PUBLIC_INTERFACE
- * AuthProvider: Provides user session information and client-only login/logout.
+ * AuthProvider
+ * Provides user and session from Supabase. Persists session via supabase-js.
+ * Exposes signIn(email, password) and signOut().
+ *
  * Notes:
- * - No backend calls are made.
- * - Optionally persists the authenticated user in localStorage under 'tl_auth_user'.
+ * - Requires env vars REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY
+ * - No secrets are hardcoded.
  */
 export function AuthProvider({ children }) {
+  const supabase = getSupabaseClient();
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
+  const [initializing, setInitializing] = useState(true);
 
-  // Load user from localStorage on mount
+  // Initialize from existing session and subscribe to changes
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem('tl_auth_user');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.email) setUser(parsed);
+    let mounted = true;
+
+    const init = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (!mounted) return;
+        if (error) {
+          // Fallback to null user
+          setUser(null);
+          setSession(null);
+        } else {
+          setSession(data?.session ?? null);
+          setUser(data?.session?.user ?? null);
+        }
+      } finally {
+        if (mounted) setInitializing(false);
       }
-    } catch {
-      // ignore parse errors
-    }
-  }, []);
+    };
+
+    init();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+    });
+
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe?.();
+    };
+  }, [supabase]);
 
   /**
    * PUBLIC_INTERFACE
    * signIn
-   * Authenticate against local mock users.
+   * Authenticate via Supabase email/password.
    * @param {string} email
    * @param {string} password
    * @returns {Promise<void>}
    */
   const signIn = async (email, password) => {
-    const matched = findUserByCredentials(email, password);
-    if (!matched) {
-      const err = new Error('Invalid email or password');
-      err.code = 'INVALID_CREDENTIALS';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      const err = new Error(error.message || 'Unable to sign in');
+      err.code = error.status || 'AUTH_SIGNIN_FAILED';
       throw err;
     }
-    setUser(matched);
-    try {
-      localStorage.setItem('tl_auth_user', JSON.stringify(matched));
-    } catch {
-      // storage may be unavailable; proceed without persistence
-    }
+    // State will be updated by onAuthStateChange, but ensure immediate UI update:
+    setSession(data.session);
+    setUser(data.user);
   };
 
   /**
    * PUBLIC_INTERFACE
    * signOut
-   * Clear local user state and remove stored session.
+   * Signs out from Supabase and clears local state.
    */
   const signOut = async () => {
-    setUser(null);
-    try {
-      localStorage.removeItem('tl_auth_user');
-    } catch {
-      // ignore
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      const err = new Error(error.message || 'Unable to sign out');
+      err.code = error.status || 'AUTH_SIGNOUT_FAILED';
+      throw err;
     }
+    setSession(null);
+    setUser(null);
   };
 
-  const value = useMemo(() => ({ user, signIn, signOut }), [user]);
+  const value = useMemo(
+    () => ({ user, session, initializing, signIn, signOut }),
+    [user, session, initializing]
+  );
+
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
 /**
  * PUBLIC_INTERFACE
- * useAuth: Access auth context
+ * useAuth
+ * Access auth context
  */
 export function useAuth() {
   const ctx = useContext(AuthCtx);

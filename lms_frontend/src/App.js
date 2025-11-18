@@ -18,8 +18,20 @@ import { Login } from './pages/auth/Login';
  * ProtectedRoute: Guards child element behind auth; redirects to /login with return path.
  */
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, initializing } = useAuth();
   const location = useLocation();
+
+  // Avoid redirecting while we are still checking existing session
+  if (initializing) {
+    return (
+      <div style={{ padding: 24 }}>
+        <div className="card" style={{ padding: 16, borderRadius: 12 }}>
+          Checking session…
+        </div>
+      </div>
+    );
+  }
+
   if (!user) {
     const ret = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/login?redirect=${ret}`} replace />;

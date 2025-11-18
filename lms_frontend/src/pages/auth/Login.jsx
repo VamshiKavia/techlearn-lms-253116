@@ -4,13 +4,14 @@ import { useAuth } from '../../core/auth/AuthContext';
 
 /**
  * PUBLIC_INTERFACE
- * Login: Frontend-only login form that authenticates against local mock users.
- * No backend calls are made. On success, navigates to redirect path or '/'.
+ * Login
+ * Email/password login using Supabase. On success, redirects to requested path
+ * or to the Student dashboard (/student/overview).
  */
 export function Login() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { user, signIn } = useAuth();
+  const { user, initializing, signIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,14 +19,15 @@ export function Login() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  const redirectTo = params.get('redirect') || '/';
+  // prefer student dashboard as landing page; allow deep-link redirect param
+  const redirectTo = params.get('redirect') || '/student/overview';
 
+  // if already authenticated, redirect out of login page
   useEffect(() => {
-    if (user) {
-      // If already logged in, go where requested
-      navigate(redirectTo || '/', { replace: true });
+    if (!initializing && user) {
+      navigate(redirectTo, { replace: true });
     }
-  }, [user, navigate, redirectTo]);
+  }, [user, initializing, navigate, redirectTo]);
 
   const validate = () => {
     const e = email.trim();
@@ -50,7 +52,7 @@ export function Login() {
     setSubmitting(true);
     try {
       await signIn(email, password);
-      navigate(redirectTo || '/', { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err?.message || 'Invalid email or password');
     } finally {
@@ -136,12 +138,7 @@ export function Login() {
         </form>
 
         <div style={{ marginTop: 16, fontSize: 12, color: 'var(--text-muted)' }}>
-          Demo users:
-          <ul style={{ marginTop: 6, marginBottom: 0, paddingLeft: 18 }}>
-            <li>student1@example.com / password123</li>
-            <li>student2@example.com / password123</li>
-            <li>instructor@example.com / teach123</li>
-          </ul>
+          Use your registered email and password. Contact support if you need access.
         </div>
       </div>
     </div>
