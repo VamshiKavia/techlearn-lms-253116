@@ -3,7 +3,7 @@ import { StarRating } from './StarRating';
 
 /**
  * PUBLIC_INTERFACE
- * CourseCard: Displays course info and CTA in a neutral card.
+ * CourseCard: Displays course info and CTA
  * @param {object} props
  * @param {string} props.title
  * @param {number} props.rating
@@ -22,13 +22,20 @@ export function CourseCard({ title, rating, students, duration, onView }) {
         <span>{duration}</span>
       </div>
       <button
-        className="btn-primary viewBtn"
+        className="btn btn-primary viewBtn"
         onClick={onView}
         aria-label={`View ${title}`}
         style={{ alignSelf: 'flex-start' }}
       >
         View
       </button>
+      <div style={{
+        height: '2px',
+        background: 'linear-gradient(90deg, var(--neon-primary), var(--neon-accent))',
+        opacity: 0.9,
+        marginTop: '0.75rem',
+        borderRadius: '2px'
+      }} />
     </div>
   );
 }
