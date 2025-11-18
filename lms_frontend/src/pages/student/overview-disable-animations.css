@@ -21,20 +21,25 @@
 
 /* Disable card hover lift/scale, shadow expansion, and shine within this page */
 .overview-page .card,
-.overview-page [data-card] {
+.overview-page [data-card],
+.overview-page .courseCard {
   transform: none !important;
   box-shadow: var(--card-shadow, none) !important;
+  filter: none !important;
 }
 
 .overview-page .card:hover,
 .overview-page .card:focus-within,
 .overview-page [data-card]:hover,
-.overview-page [data-card]:focus-within {
+.overview-page [data-card]:focus-within,
+.overview-page .courseCard:hover,
+.overview-page .courseCard:focus-within {
   transform: none !important;
   box-shadow: var(--card-shadow, none) !important;
   border-color: var(--card-border, var(--border-subtle)) !important;
   background-color: inherit !important;
   animation: none !important;
+  filter: none !important;
 }
 
 /* Remove glow and light sweep pseudo elements within this page */

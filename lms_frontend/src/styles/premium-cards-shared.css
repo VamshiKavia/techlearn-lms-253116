@@ -1,0 +1,119 @@
+:root {
+  /* Theme-friendly tokens, leveraging existing theme where possible */
+  --card-hover-duration: 320ms; /* within 250–400ms window */
+  --card-hover-timing: ease-in-out; /* smooth premium feel */
+  --card-hover-translate: -4px; /* between -3px and -5px */
+  --card-hover-scale: 1.02; /* subtle upscale */
+  --card-hover-shadow-color: 84, 17, 97; /* #541161 -> rgb(84,17,97) */
+  --card-hover-shadow-alpha: 0.18; /* faint glow */
+  --card-hover-shadow: 0 8px 24px rgba(var(--card-hover-shadow-color), var(--card-hover-shadow-alpha));
+  --card-rest-shadow-alpha: 0.08;
+  --card-rest-shadow: 0 2px 10px rgba(var(--card-hover-shadow-color), var(--card-rest-shadow-alpha));
+}
+
+/* Base reset for all card-like components
+   Targets: .card, [data-card], .courseCard and variations */
+.card,
+[data-card],
+.courseCard,
+.card:hover,
+[data-card]:hover,
+.courseCard:hover,
+.card:focus-within,
+[data-card]:focus-within,
+.courseCard:focus-within {
+  /* Ensure no visibility changes that could cause flicker or content loss */
+  opacity: 1;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Establish smooth transition baseline and a subtle resting shadow */
+.card,
+[data-card],
+.courseCard {
+  /* Avoid sudden jumps by transitioning both transform and shadow */
+  transition:
+    transform var(--card-hover-duration) var(--card-hover-timing),
+    box-shadow var(--card-hover-duration) var(--card-hover-timing),
+    filter var(--card-hover-duration) var(--card-hover-timing);
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  transform: translateY(0) scale(1);
+  box-shadow: var(--card-rest-shadow);
+  /* Ensure backgrounds remain compatible with existing transparent sidebar and theme tokens */
+  background-clip: padding-box;
+}
+
+/* Hover/Focus lift + subtle scale + faint purple glow */
+.card:hover,
+[data-card]:hover,
+.courseCard:hover,
+.card:focus-visible,
+[data-card]:focus-visible,
+.courseCard:focus-visible,
+.card:focus-within,
+[data-card]:focus-within,
+.courseCard:focus-within {
+  transform: translateY(var(--card-hover-translate)) scale(var(--card-hover-scale));
+  box-shadow: var(--card-hover-shadow);
+  /* very subtle highlight without masking/overlay */
+  filter: saturate(1.02);
+  outline: none;
+}
+
+/* Keyboard accessibility: apply the same premium treatment when focusing via keyboard */
+.card:focus-visible,
+[data-card]:focus-visible,
+.courseCard:focus-visible {
+  /* Keep a minimal outline for accessibility while relying on gentle glow */
+  outline: 2px solid rgba(var(--card-hover-shadow-color), 0.22);
+  outline-offset: 2px;
+}
+
+/* Motion safety: respect reduced-motion users with static styles */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  [data-card],
+  .courseCard {
+    transition: none;
+    transform: none !important;
+    box-shadow: var(--card-rest-shadow);
+    filter: none;
+  }
+
+  .card:hover,
+  [data-card]:hover,
+  .courseCard:hover,
+  .card:focus-visible,
+  [data-card]:focus-visible,
+  .courseCard:focus-visible,
+  .card:focus-within,
+  [data-card]:focus-within,
+  .courseCard:focus-within {
+    transform: none !important;
+    box-shadow: var(--card-rest-shadow);
+    filter: none;
+  }
+}
+
+/* Guard against jerky/sudden jumps when cards are inside grids that reflow */
+.card,
+[data-card],
+.courseCard {
+  /* Avoid layout shifts on hover by reserving space */
+  contain: layout paint style;
+}
+
+/* Optional fine-tuning for nested interactive elements so inner buttons/links don't interrupt the smoothness */
+.card a,
+[data-card] a,
+.courseCard a,
+.card button,
+[data-card] button,
+.courseCard button {
+  transition: color var(--card-hover-duration) var(--card-hover-timing), background-color var(--card-hover-duration) var(--card-hover-timing), border-color var(--card-hover-duration) var(--card-hover-timing);
+}
+
+/* Maintain compatibility with any 'cards-no-animations.css' or regression styles by applying a lower precedence selector there.
+   If those files disable animations via stronger specificity or !important, they will still win intentionally. */

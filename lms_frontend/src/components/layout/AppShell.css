@@ -1,3 +1,5 @@
+@import url('../../styles/premium-cards-shared.css');
+
 .app-shell {
   display: flex;
   min-height: 100vh;

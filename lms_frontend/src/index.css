@@ -2,6 +2,7 @@
 @import url('./styles/layout.css');
 @import url('./styles/premium-cards.css');
 @import url('./styles/cards-no-animations.css');
+@import url('./styles/premium-cards-shared.css');
 
 html, body, #root {
   min-height: 100vh;
