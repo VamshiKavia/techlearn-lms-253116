@@ -97,16 +97,40 @@
 }
 
 /* Card */
-.card {
-  background: var(--bg-panel);
+/* Shared card base: class and data attribute so any component can opt-in */
+.card,
+[data-card] {
+  /* Use neon background token with graceful fallback for older browsers */
+  background: var(--neon-card-bg, var(--neon-card-bg-fallback));
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
+  /* Keep soft depth and subtle edge light */
   box-shadow: var(--shadow-sm), var(--edge-light);
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  transition: box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base);
   will-change: box-shadow, transform;
+  /* Ensure adequate contrast for typical text inside cards */
+  color: var(--text-primary);
 }
-.card--elevated { box-shadow: var(--shadow-md), var(--edge-light); }
-.card--interactive:hover { box-shadow: var(--shadow-md), var(--glow-sm); transform: translateY(-1px); }
+
+.card--elevated,
+[data-card].card--elevated {
+  box-shadow: var(--shadow-md), var(--edge-light);
+}
+
+.card--interactive:hover,
+[data-card].card--interactive:hover {
+  box-shadow: var(--shadow-md), var(--glow-sm);
+  transform: translateY(-1px);
+}
+
+/* Reduced motion: keep minimalist background to reduce flicker */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  [data-card] {
+    background: var(--bg-panel);
+    transform: none;
+  }
+}
 
 /* Modal primitives */
 .modalOverlay {

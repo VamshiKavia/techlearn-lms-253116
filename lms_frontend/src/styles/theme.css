@@ -87,6 +87,20 @@
   --neon-pink-20: rgba(244, 114, 182, 0.2);
   --neon-blue-25: rgba(96, 165, 250, 0.25);
 
+  /* Subtle neon card background token (very low contrast to keep minimalism) */
+  --neon-card-bg: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-panel) 92%, var(--neon-primary) 8%),
+      color-mix(in srgb, var(--bg-panel) 92%, var(--neon-accent) 8%)
+    );
+
+  /* Fallback for environments without color-mix support */
+  --neon-card-bg-fallback: linear-gradient(
+      180deg,
+      rgba(34, 211, 238, 0.06),
+      rgba(167, 139, 250, 0.06)
+    );
+
   /* Glow/Elevation scales */
   --glow-sm: 0 0 6px var(--neon-cyan-20), 0 0 10px var(--neon-cyan-20);
   --glow-md: 0 0 6px var(--neon-cyan-35), 0 0 16px var(--neon-cyan-20);
@@ -227,6 +241,22 @@ input, select, textarea, button { font: inherit; color: inherit; }
   transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 .card:hover { box-shadow: var(--shadow-md), var(--glow-sm); }
+
+/* Optional high-contrast helpers for card content */
+.card .muted,
+[data-card] .muted { color: var(--text-muted); }
+
+@media (prefers-color-scheme: dark) {
+  .card,
+  [data-card] {
+    /* Slightly reduce neon in dark to preserve readability */
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-panel) 94%, var(--neon-primary) 6%),
+      color-mix(in srgb, var(--bg-panel) 94%, var(--neon-accent) 6%)
+    );
+  }
+}
 
 /* Table styles */
 .table {

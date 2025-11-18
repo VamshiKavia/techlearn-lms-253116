@@ -22,6 +22,7 @@ export const CertificatePreview = forwardRef(function CertificatePreview(
     <div
       ref={ref}
       role="img"
+      data-card
       aria-label={`Certificate preview for ${studentName} - ${courseTitle}`}
       style={{
         width: 960,
