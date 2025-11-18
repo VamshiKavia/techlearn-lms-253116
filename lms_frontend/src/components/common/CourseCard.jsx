@@ -29,13 +29,6 @@ export function CourseCard({ title, rating, students, duration, onView }) {
       >
         View
       </button>
-      <div style={{
-        height: '2px',
-        background: 'linear-gradient(90deg, var(--neon-primary), var(--neon-accent))',
-        opacity: 0.9,
-        marginTop: '0.75rem',
-        borderRadius: '2px'
-      }} />
     </div>
   );
 }
