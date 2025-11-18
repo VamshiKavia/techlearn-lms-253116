@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../../core/auth/AuthContext';
 import ThemeToggle from '../common/ThemeToggle';
 import { useUI } from '../../core/ui/UIContext';
@@ -48,6 +48,14 @@ export function Topbar() {
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <ThemeToggle />
         <button className="btn btn-outline" onClick={onHome} aria-label="Go to Home">Home</button>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) => `btn btn-ghost${isActive ? ' active' : ''}`}
+          aria-label="Go to Profile"
+          style={{ textDecoration: 'none' }}
+        >
+          Profile
+        </NavLink>
         {user ? (
           <button className="btn btn-primary" onClick={onLogout} aria-label="Logout">Logout</button>
         ) : (

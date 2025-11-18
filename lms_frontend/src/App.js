@@ -23,6 +23,7 @@ import { Login } from './pages/auth/Login';
 import { LoginRegister } from './pages/auth/LoginRegister';
 import { Account } from './pages/account/Account';
 import { AdminLayout } from './layouts/AdminLayout';
+import Profile from './pages/account/Profile';
 
 /**
  * ProtectedRoute: Guards child element behind auth; redirects to /auth with return path.
@@ -163,6 +164,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Account />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

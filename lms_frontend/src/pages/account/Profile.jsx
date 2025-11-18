@@ -1,197 +1,211 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../core/auth/AuthContext';
-import { getSupabaseClient } from '../../core/clients/supabaseClient';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { useSupabaseClient } from '../../hooks/useSupabaseClient';
 
 /**
- * PUBLIC_INTERFACE
- * Profile
- * Allows the authenticated user to view and update their Display Name stored in Supabase user_metadata.display_name.
- * - Loads current value from session user metadata
- * - Updates via supabase.auth.updateUser({ data: { display_name } })
- * - Shows non-intrusive toasts for success/error
- * - Respects reduced motion
+ * Profile page for viewing and editing user's Display Name stored in Supabase user_metadata.
+ * The page is protected and requires authentication via AuthContext.
+ * Users can update their display name using supabase.auth.updateUser({ data: { display_name } }).
+ *
+ * Accessibility:
+ * - Proper labels for form fields
+ * - ARIA live regions for status messages
+ * - Keyboard accessible buttons and inputs
+ * - High color contrast respecting theme
  */
-export function Profile() {
-  const { user, initializing } = useAuth();
-  const supabase = useMemo(() => getSupabaseClient(), []);
+const Profile = () => {
+  const { user, loading: authLoading } = useAuth();
+  const supabase = useSupabaseClient();
+
   const [displayName, setDisplayName] = useState('');
-  const [originalName, setOriginalName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
 
-  // Toast state
-  const [toast, setToast] = useState({ type: '', message: '' });
-
+  // Prefill display name from user.user_metadata.display_name
   useEffect(() => {
-    if (user) {
-      const name =
-        user?.user_metadata?.display_name ||
-        user?.user_metadata?.name ||
-        '';
-      setDisplayName(name);
-      setOriginalName(name);
+    if (user?.user_metadata) {
+      setDisplayName(user.user_metadata.display_name || '');
     }
   }, [user]);
 
-  // Reduced motion check
-  const prefersReducedMotion = typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const showToast = (type, message) => {
-    setToast({ type, message });
-    // Auto-dismiss after 3s (6s on error), avoid if reduced motion is set? We still auto-dismiss for usability.
-    const timeout = type === 'error' ? 6000 : 3000;
-    window.setTimeout(() => setToast({ type: '', message: '' }), timeout);
-  };
-
-  const onSave = async (e) => {
-    e?.preventDefault?.();
-    if (!user) return;
-    // Light client-side validation: trim and length check
-    const val = (displayName || '').trim();
-    if (val.length > 80) {
-      showToast('error', 'Display Name must be 80 characters or fewer.');
-      return;
-    }
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.updateUser({
-        data: { display_name: val },
-      });
-      if (error) throw new Error(error.message || 'Unable to update profile');
-      // Optionally refresh local user via getUser() so other components reflect changes
-      try {
-        await supabase.auth.getUser();
-      } catch {
-        // best-effort; context subscription should update eventually
-      }
-      setOriginalName(val);
-      showToast('success', 'Display Name saved.');
-    } catch (ex) {
-      showToast('error', ex?.message || 'Failed to save Display Name.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onReset = () => {
-    setDisplayName(originalName || '');
-  };
-
-  if (initializing) {
+  if (authLoading) {
     return (
-      <div className="card" style={{ padding: 16, borderRadius: 12 }}>
-        Loading profile…
+      <div style={{ padding: '1.5rem' }}>
+        <p>Loading profile…</p>
       </div>
     );
   }
+
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    // Protected route: if not authenticated, show a simple notice.
+    return (
+      <div style={{ padding: '1.5rem' }}>
+        <h1 style={{ marginBottom: '0.5rem' }}>Profile</h1>
+        <p>You need to be signed in to view this page.</p>
+      </div>
+    );
   }
 
-  const isDirty = (displayName || '').trim() !== (originalName || '').trim();
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage(null);
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        data: { display_name: displayName?.trim() || '' },
+      });
+      if (error) {
+        throw error;
+      }
+      // Set local confirmation
+      setMessage({ type: 'success', text: 'Display Name updated successfully.' });
+      // Optionally, you can also refresh local state from returned data.user
+      // But AuthContext may update automatically; still, ensure field is updated.
+      if (data?.user?.user_metadata?.display_name !== undefined) {
+        setDisplayName(data.user.user_metadata.display_name);
+      }
+    } catch (err) {
+      setMessage({
+        type: 'error',
+        text: err?.message || 'Failed to update Display Name. Please try again.',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Theme-aware styles using existing minimalist style and #541161 accents
+  const styles = {
+    container: {
+      padding: '1.5rem',
+      maxWidth: 720,
+      margin: '0 auto',
+    },
+    card: {
+      background: 'var(--surface, #F9FAFB)',
+      border: '1px solid rgba(0,0,0,0.06)',
+      borderRadius: 12,
+      padding: '1.25rem',
+      boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+    },
+    heading: {
+      marginBottom: '0.75rem',
+      fontSize: '1.5rem',
+      lineHeight: 1.25,
+      color: 'var(--text, #111827)',
+    },
+    subtext: {
+      color: 'var(--secondary, #6B7280)',
+      marginBottom: '1rem',
+    },
+    label: {
+      display: 'block',
+      fontWeight: 600,
+      marginBottom: '0.5rem',
+      color: 'var(--text, #111827)',
+    },
+    input: {
+      width: '100%',
+      padding: '0.625rem 0.75rem',
+      borderRadius: 8,
+      border: '1px solid rgba(0,0,0,0.15)',
+      background: 'var(--background, #FFFFFF)',
+      color: 'var(--text, #111827)',
+      outline: 'none',
+    },
+    actions: {
+      marginTop: '1rem',
+      display: 'flex',
+      gap: '0.75rem',
+      alignItems: 'center',
+    },
+    button: {
+      backgroundColor: '#541161',
+      color: '#FFFFFF',
+      border: 'none',
+      padding: '0.6rem 1rem',
+      borderRadius: 8,
+      cursor: 'pointer',
+      fontWeight: 600,
+    },
+    buttonDisabled: {
+      opacity: 0.7,
+      cursor: 'not-allowed',
+    },
+    message: {
+      marginTop: '0.5rem',
+      fontSize: '0.95rem',
+    },
+    success: {
+      color: '#10B981',
+    },
+    error: {
+      color: '#EF4444',
+    },
+    fieldset: {
+      border: 'none',
+      padding: 0,
+      margin: 0,
+    },
+  };
+
+  const canSave = displayName !== undefined && displayName !== null;
 
   return (
-    <div>
-      <div className="pageHeader">
-        <div>
-          <h1>Profile</h1>
-          <div className="subtitle">Manage your display name used across the app.</div>
-        </div>
-        <div aria-hidden="true" />
-      </div>
+    <div style={styles.container}>
+      <div style={styles.card} role="region" aria-labelledby="profile-heading">
+        <h1 id="profile-heading" style={styles.heading}>Profile</h1>
+        <p style={styles.subtext}>
+          Update your public display name. This may be visible on certificates, reviews, and community features.
+        </p>
 
-      {/* Toasts - non-intrusive, top-right in content area */}
-      {toast.message && (
-        <div
-          role={toast.type === 'error' ? 'alert' : 'status'}
-          aria-live="polite"
-          style={{
-            position: 'sticky',
-            top: 0,
-            marginBottom: 12,
-            zIndex: 1,
-          }}
-        >
-          <div
-            style={{
-              background:
-                toast.type === 'error' ? '#FEF2F2' : '#ECFDF5',
-              border: `1px solid ${toast.type === 'error' ? '#FECACA' : '#D1FAE5'}`,
-              color: toast.type === 'error' ? '#7F1D1D' : '#065F46',
-              padding: '8px 10px',
-              borderRadius: 8,
-              boxShadow: 'var(--shadow-sm)',
-              transition: prefersReducedMotion ? 'none' : 'transform var(--transition-base), opacity var(--transition-base)',
-              transform: 'translateY(0)',
-              opacity: 1,
-            }}
-          >
-            {toast.message}
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={onSave} noValidate>
-        <div className="card" style={{ padding: 16, borderRadius: 12, display: 'grid', gap: 12, maxWidth: 520 }}>
-          <div style={{ display: 'grid', gap: 6 }}>
-            <label htmlFor="displayName" style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>
+        <form onSubmit={onSubmit} aria-describedby="profile-status">
+          <fieldset style={styles.fieldset}>
+            <label htmlFor="displayName" style={styles.label}>
               Display Name
             </label>
             <input
               id="displayName"
+              name="displayName"
               type="text"
-              className="ui-input"
-              placeholder="e.g., Alex Johnson"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              aria-label="Display Name"
-              aria-describedby="displayNameHelp"
-              maxLength={120}
-              style={{ height: 40 }}
+              style={styles.input}
+              placeholder="e.g., Alex Johnson"
+              aria-required="true"
             />
-            <div id="displayNameHelp" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              This name appears on your certificates and public pages.
-            </div>
-          </div>
+          </fieldset>
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={styles.actions}>
             <button
               type="submit"
-              className="btn btn-primary"
-              disabled={loading || !isDirty}
-              aria-busy={loading ? 'true' : 'false'}
+              style={{
+                ...styles.button,
+                ...(saving || !canSave ? styles.buttonDisabled : {}),
+              }}
+              disabled={saving || !canSave}
+              aria-disabled={saving || !canSave}
             >
-              {loading ? 'Saving…' : 'Save'}
+              {saving ? 'Saving…' : 'Save'}
             </button>
-            <button
-              type="button"
-              className="btn btn-outline"
-              onClick={onReset}
-              disabled={loading || !isDirty}
+
+            <div
+              id="profile-status"
+              role="status"
+              aria-live="polite"
+              style={{
+                ...styles.message,
+                ...(message?.type === 'success' ? styles.success : {}),
+                ...(message?.type === 'error' ? styles.error : {}),
+              }}
             >
-              Reset
-            </button>
-          </div>
-
-          <hr className="divider" />
-
-          <div style={{ display: 'grid', gap: 6 }}>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>
-              Account Email
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>
-              {user?.email || 'Unknown'}
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              Email changes must be done via your account settings or contact support.
+              {message?.text}
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
-}
+};
 
 export default Profile;
