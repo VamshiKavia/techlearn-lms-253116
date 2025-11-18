@@ -5,23 +5,32 @@ import { useUI } from '../../core/ui/UIContext';
 
 /**
  * PUBLIC_INTERFACE
- * AppShell: Provides sidebar, topbar, and main content region layout.
+ * AppShell: Provides the responsive app layout with a sidebar, topbar, and main content area.
+ * When the sidebar is closed, the main content expands to full viewport width/height.
+ * When open, the sidebar occupies a fixed width and the main uses the remaining space.
+ *
  * @param {object} props
- * @param {React.ReactNode} props.children - Main content
+ * @param {React.ReactNode} props.children - Main content to render inside the layout
  */
 export function AppShell({ children }) {
   const { isSidebarOpen, closeSidebar } = useUI();
 
-  // Root classes toggle a modifier for CSS to slide the sidebar and show overlay on mobile
+  // Root state class controls CSS grid, transforms, and transitions
   const rootClass = `app ${isSidebarOpen ? 'is-sidebar-open' : 'is-sidebar-closed'}`;
 
   return (
     <div className={rootClass}>
-      <aside className="sidebar-panel" role="navigation" aria-label="Primary" aria-hidden={!isSidebarOpen}>
+      {/* Sidebar container stays transparent and inherits page background */}
+      <aside
+        className="sidebar-panel"
+        role="navigation"
+        aria-label="Primary"
+        aria-hidden={!isSidebarOpen}
+      >
         <Sidebar />
       </aside>
 
-      {/* Scrim overlay for mobile. Click to close. Hidden on desktop via CSS. */}
+      {/* Mobile scrim appears when sidebar is open; hidden on desktop */}
       <button
         type="button"
         className={`scrim ${isSidebarOpen ? 'visible' : ''}`}
@@ -29,10 +38,13 @@ export function AppShell({ children }) {
         onClick={closeSidebar}
       />
 
-      <header className="topbar">
+      {/* Topbar placed in the grid second column on desktop, first on mobile */}
+      <header className="topbar" role="banner">
         <Topbar />
       </header>
-      <main className="main motion-page-enter" id="content">
+
+      {/* Main always present. On mobile with sidebar closed, spans full width (100vw x 100vh by grid sizing). */}
+      <main className="main motion-page-enter" id="content" role="main" tabIndex={-1}>
         <div className="motion-section-enter">
           {children}
         </div>

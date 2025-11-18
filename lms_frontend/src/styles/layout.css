@@ -1,13 +1,15 @@
 ﻿/* App shell layout and UI utilities (updated to plum accent #541161) */
 .app {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  /* Desktop default: sidebar + main columns; 260px fixed for sidebar */
+  grid-template-columns: 260px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
+  min-width: 100vw;
   background: transparent !important; /* allow global canvas */
 }
 
-/* Sidebar panel with slide animation */
+/* Sidebar panel with slide animation (off-canvas on mobile/closed state) */
 .sidebar-panel {
   grid-row: 1 / span 2;
   background: transparent !important;
@@ -18,7 +20,7 @@
   padding: var(--space-4);
   color: var(--color-text);
 
-  /* Off-canvas default on mobile; desktop handled via media query */
+  /* Closed by default in narrow view; desktop handled below */
   transform: translateX(-100%);
   transition: transform 300ms ease-in-out;
   will-change: transform;
@@ -49,20 +51,23 @@
   pointer-events: auto;
 }
 
-/* Desktop behavior: sidebar always visible; scrim hidden */
+/* Desktop behavior: when open, sidebar visible; when closed, main should occupy full width */
 @media (min-width: 1024px) {
   .app {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 260px 1fr;
+  }
+  /* When closed on desktop, effectively collapse the sidebar column so main becomes full width */
+  .app.is-sidebar-closed {
+    grid-template-columns: 0 1fr;
   }
   .sidebar-panel {
-    transform: translateX(0);
     position: relative;
+    /* Keep transform as-is for consistency, but ensure no overlap when closed */
   }
   .scrim { display: none; }
 }
 
 /* Ensure original .sidebar rules still apply to inner content container (brand, list, etc.) */
-
 .sidebar {
   grid-row: 1 / span 2;
 
@@ -127,11 +132,11 @@
   color: color-mix(in srgb, var(--color-text-secondary) 92%, white 8%);
   cursor: pointer;
   transition:
-    background var(--motion-duration-1) var(--motion-ease-out),
-    color var(--motion-duration-1) var(--motion-ease-out),
-    text-shadow var(--motion-duration-1) var(--motion-ease-out),
-    transform var(--motion-duration-1) var(--motion-ease-out),
-    border-color var(--motion-duration-1) var(--motion-ease-out);
+    background 250ms ease-in-out,
+    color 250ms ease-in-out,
+    text-shadow 250ms ease-in-out,
+    transform 250ms ease-in-out,
+    border-color 250ms ease-in-out;
   will-change: transform;
   border: 1px solid transparent;
 }
@@ -165,9 +170,12 @@
   grid-column: 2;
   padding: var(--space-6) 32px;
   background: transparent;
+
+  /* Let main consume available height for full-screen experience */
+  min-height: calc(100vh - 56px);
 }
 
-/* When sidebar is off-canvas on mobile, main spans full width */
+/* When sidebar is off-canvas on mobile, main spans full width (100vw x 100vh via grid sizing) */
 @media (max-width: 1023px) {
   .app {
     grid-template-columns: 1fr;
@@ -178,31 +186,13 @@
   }
   .main {
     grid-column: 1;
+    min-height: calc(100vh - 56px);
   }
 }
 
-.pageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-4);
-  animation: fade-in var(--motion-duration-2) var(--motion-ease-out) both;
-}
+/* Respect reduced-motion for main area entrance animations if any container uses them */
 @media (prefers-reduced-motion: reduce) {
-  .pageHeader { animation: none; }
-}
-
-.pageHeader h1 {
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0 0 6px 0;
-}
-
-.pageHeader .subtitle {
-  color: var(--color-text-muted);
-  font-size: 14px;
+  .navItem:hover { transition: none; }
 }
 
 /* Links */
