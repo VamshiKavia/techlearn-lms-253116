@@ -7,7 +7,11 @@ const AuthCtx = createContext(null);
  * PUBLIC_INTERFACE
  * AuthProvider
  * Provides user and session from Supabase. Persists session via supabase-js.
- * Exposes signIn(email, password) and signOut().
+ * Exposes:
+ *  - signIn(email, password)
+ *  - signOut()
+ *  - signUp(email, password, emailRedirectTo?)
+ *  - signInWithOtp(email, emailRedirectTo?)
  *
  * Notes:
  * - Requires env vars REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY
@@ -91,8 +95,60 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  /**
+   * PUBLIC_INTERFACE
+   * signUp
+   * Creates an account with email/password and sends confirmation email.
+   * @param {string} email
+   * @param {string} password
+   * @param {string} [emailRedirectTo] - If omitted, uses REACT_APP_SITE_URL or window.location.origin
+   */
+  const signUp = async (email, password, emailRedirectTo) => {
+    const redirect = emailRedirectTo || process.env.REACT_APP_SITE_URL || window.location.origin;
+    if (!process.env.REACT_APP_SITE_URL) {
+      // eslint-disable-next-line no-console
+      console.warn('[Auth] REACT_APP_SITE_URL is not set; using window.location.origin for email redirects:', redirect);
+    }
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: redirect },
+    });
+    if (error) {
+      const err = new Error(error.message || 'Unable to sign up');
+      err.code = error.status || 'AUTH_SIGNUP_FAILED';
+      throw err;
+    }
+    return data;
+  };
+
+  /**
+   * PUBLIC_INTERFACE
+   * signInWithOtp
+   * Sends a magic link to the provided email.
+   * @param {string} email
+   * @param {string} [emailRedirectTo] - If omitted, uses REACT_APP_SITE_URL or window.location.origin
+   */
+  const signInWithOtp = async (email, emailRedirectTo) => {
+    const redirect = emailRedirectTo || process.env.REACT_APP_SITE_URL || window.location.origin;
+    if (!process.env.REACT_APP_SITE_URL) {
+      // eslint-disable-next-line no-console
+      console.warn('[Auth] REACT_APP_SITE_URL is not set; using window.location.origin for email redirects:', redirect);
+    }
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirect },
+    });
+    if (error) {
+      const err = new Error(error.message || 'Unable to send magic link');
+      err.code = error.status || 'AUTH_OTP_FAILED';
+      throw err;
+    }
+    return true;
+  };
+
   const value = useMemo(
-    () => ({ user, session, initializing, signIn, signOut }),
+    () => ({ user, session, initializing, signIn, signOut, signUp, signInWithOtp }),
     [user, session, initializing]
   );
 

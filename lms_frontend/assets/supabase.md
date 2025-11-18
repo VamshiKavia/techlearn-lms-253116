@@ -11,9 +11,13 @@ Environment variables (must be provided by orchestrator in `.env`):
 
 Client creation:
 - src/core/clients/supabaseClient.js uses `createClient(REACT_APP_SUPABASE_URL, REACT_APP_SUPABASE_KEY)` and enables session persistence.
-- AuthContext (src/core/auth/AuthContext.jsx) initializes from `supabase.auth.getSession()`, subscribes to `onAuthStateChange`, and exposes `signIn(email, password)` and `signOut()`.
+- AuthContext (src/core/auth/AuthContext.jsx) initializes from `supabase.auth.getSession()`, subscribes to `onAuthStateChange`, and exposes:
+  - signIn(email, password)
+  - signOut()
+  - signUp(email, password, emailRedirectTo?)
+  - signInWithOtp(email, emailRedirectTo?)
 
-Email/password sign-in (current UI implementation in Login.jsx):
+Email/password sign-in:
 ```js
 import { getSupabaseClient } from '../core/clients/supabaseClient';
 
@@ -23,20 +27,37 @@ if (error) throw error;
 // data.user and data.session available; AuthContext also updates via onAuthStateChange
 ```
 
-Magic link / OTP example (if needed in future):
+Sign up (email confirmation flow):
+```js
+const supabase = getSupabaseClient();
+const emailRedirectTo = process.env.REACT_APP_SITE_URL || window.location.origin;
+await supabase.auth.signUp({
+  email,
+  password,
+  options: { emailRedirectTo }
+});
+```
+
+Magic link / OTP sign-in:
 ```js
 const supabase = getSupabaseClient();
 await supabase.auth.signInWithOtp({
   email,
   options: {
-    emailRedirectTo: process.env.REACT_APP_SITE_URL // ensure this env is set
+    emailRedirectTo: process.env.REACT_APP_SITE_URL || window.location.origin
   }
 });
 ```
+
+Configuration in Supabase Dashboard:
+- Go to Auth -> URL Configuration
+  - Set "Site URL" to your deployed frontend (e.g., https://app.example.com)
+  - Add any additional "Redirect URLs" used in development or staging
+- Ensure "Email Redirects" are allowed for the above URLs
 
 Security Notes:
 - Do not log tokens or PII.
 - Ensure the site is served over HTTPS in production.
 - Configure allowed redirect URLs in Supabase project settings.
 - Ensure REACT_APP_SUPABASE_KEY is the public anon key (not service role).
-
+- The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects.

@@ -14,9 +14,11 @@ import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
 import { Certificates } from './pages/student/Certificate';
 import { Login } from './pages/auth/Login';
+import { LoginRegister } from './pages/auth/LoginRegister';
+import { Account } from './pages/account/Account';
 
 /**
- * ProtectedRoute: Guards child element behind auth; redirects to /login with return path.
+ * ProtectedRoute: Guards child element behind auth; redirects to /auth with return path.
  */
 function ProtectedRoute({ children }) {
   const { user, initializing } = useAuth();
@@ -35,15 +37,15 @@ function ProtectedRoute({ children }) {
 
   if (!user) {
     const ret = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?redirect=${ret}`} replace />;
+    return <Navigate to={`/auth?redirect=${ret}`} replace />;
   }
   return children;
 }
 
 /**
  * PUBLIC_INTERFACE
- * App: Root application with student-only routing.
- * Frontend-only auth; students must log in to access student pages.
+ * App: Root application routing.
+ * Includes public auth routes and protected student routes.
  */
 function App() {
   return (
@@ -55,6 +57,7 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
+            <Route path="/auth" element={<LoginRegister />} />
 
             {/* Default route redirects to student overview (protected) */}
             <Route path="/" element={<Navigate to="/student/overview" replace />} />
@@ -113,6 +116,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Certificates />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <ProtectedRoute>
+                  <Account />
                 </ProtectedRoute>
               }
             />
