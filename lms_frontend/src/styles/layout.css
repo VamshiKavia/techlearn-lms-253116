@@ -177,23 +177,6 @@ a:active {
   padding: clamp(14px, 2.4vw, 18px);
 
   will-change: transform, box-shadow;
-  position: relative; /* required for shine effect */
-  overflow: hidden;   /* clip shine */
-}
-
-/* Shine sweep element */
-.card::before,
-[data-card]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -40%;
-  width: 30%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.0) 100%);
-  transform: translateX(-120%) skewX(-12deg);
-  pointer-events: none;
-  opacity: 0;
 }
 
 /* Subtle hover/focus background using theme tokens */
@@ -207,15 +190,7 @@ a:active {
     var(--card-hover-shadow),
     0 0 0 1px rgba(84, 17, 97, 0.18),
     var(--edge-light);
-  transform: translateY(-3px) scale(1.01);
-  animation: shadow-expand var(--motion-duration-2) var(--motion-ease-out) both;
-}
-
-/* Trigger shine sweep on hover only */
-.card:hover::before,
-[data-card]:hover::before {
-  animation: light-sweep 900ms var(--motion-ease-out);
-  opacity: 1;
+  transform: translateY(-2px) scale(1.005);
 }
 
 .card:focus-visible,
@@ -230,8 +205,6 @@ a:active {
 @media (prefers-reduced-motion: reduce) {
   .card:focus-visible,
   [data-card]:focus-visible { animation: none; }
-  .card::before,
-  [data-card]::before { display: none !important; }
 }
 
 /* Ensure internal interactive elements retain contrast */
@@ -345,7 +318,6 @@ a:active {
   animation-duration: var(--motion-duration-2), var(--motion-duration-2);
   animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
   animation-fill-mode: both;
-  will-change: opacity, transform;
 }
 .courseGrid > *:nth-child(1) { animation-delay: 40ms; }
 .courseGrid > *:nth-child(2) { animation-delay: 90ms; }

@@ -70,7 +70,7 @@ export function Certificates() {
           return (
             <article
               key={c.id}
-              className="card reveal"
+              className="card"
               style={{ padding: 16, borderRadius: 12, display: 'grid', gap: 10 }}
             >
               <header
@@ -204,7 +204,7 @@ export function Certificates() {
           }}
         >
           <div
-            className="card reveal"
+            className="card"
             style={{
               width: 'min(1080px, 96vw)',
               maxHeight: '92vh',

@@ -27,7 +27,7 @@ export function StudentOverviewPage() {
 
       <section className="statsGrid">
         {overviewStats.map((s) => (
-          <div key={s.label} className="card statCard reveal">
+          <div key={s.label} className="card statCard">
             <div className="statLabel">{s.label}</div>
             <div className={`statValue ${s.tone === 'accent' ? 'accent' : ''}`}>{s.value}</div>
             {s.subtext && <div className="statSub">{s.subtext}</div>}
@@ -38,7 +38,7 @@ export function StudentOverviewPage() {
       <hr className="divider" />
 
       <section className="detailsGrid">
-        <div className="card panel reveal" style={{ gridColumn: '1 / span 1' }}>
+        <div className="card panel" style={{ gridColumn: '1 / span 1' }}>
           <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Progress Trend</div>
           <div style={{
             height: 240,
@@ -49,7 +49,7 @@ export function StudentOverviewPage() {
           <div style={{ marginTop: 12, fontSize: 12, color: 'var(--text-muted)' }}>Last 12 Weeks</div>
         </div>
 
-        <div className="card panel reveal">
+        <div className="card panel">
           <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>Career Distribution</div>
           <div style={{ display: 'grid', gap: 12 }}>
             {['WebDev', 'Data', 'Cloud', 'AI'].map((cat, idx) => (

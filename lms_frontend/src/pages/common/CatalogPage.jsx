@@ -38,7 +38,7 @@ export function CatalogPage() {
 
       <FilterChips options={categories} value={category} onChange={setCategory} />
 
-      <section className="courseGrid reveal-stagger">
+      <section className="courseGrid">
         {filtered.map((c) => (
           <CourseCard
             key={c.id}
