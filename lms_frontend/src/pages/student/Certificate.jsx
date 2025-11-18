@@ -71,6 +71,7 @@ export function Certificates() {
             <article
               key={c.id}
               className="card reveal"
+              data-card
               style={{ padding: 16, borderRadius: 12, display: 'grid', gap: 10 }}
             >
               <header

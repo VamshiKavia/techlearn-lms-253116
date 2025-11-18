@@ -1,5 +1,7 @@
 @import url('./styles/theme.css');
 @import url('./styles/layout.css');
+@import url('./styles/premium-cards.css'); /* ensure premium card tokens applied */
+@import url('./styles/card-visibility-regression.css'); /* helpers for verification */
 
 html, body, #root {
   min-height: 100vh;

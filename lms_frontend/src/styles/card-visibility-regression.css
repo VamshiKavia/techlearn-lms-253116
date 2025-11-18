@@ -1,0 +1,20 @@
+:root {
+  /* QA helper: no runtime impact unless class added */
+}
+
+/* PUBLIC_INTERFACE */
+/** VisibilityRegressionHelpers
+ * Add 'qa-ensure-visible' to body or a container during manual/automated checks to enforce
+ * final visible state on cards and reveal utilities. This does not change routes or logic.
+ */
+.qa-ensure-visible .card,
+.qa-ensure-visible [data-card] {
+  outline: 0; /* keep clean; can be changed to visualize */
+}
+
+.qa-ensure-visible .reveal,
+.qa-ensure-visible .reveal-stagger > * {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}

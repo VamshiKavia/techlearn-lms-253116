@@ -13,7 +13,14 @@ import { StarRating } from './StarRating';
  */
 export function CourseCard({ title, rating, students, duration, onView }) {
   return (
-    <div className="card card--interactive courseCard reveal" data-card role="article" aria-label="Course card">
+    <div
+      className="card card--interactive courseCard reveal"
+      data-card
+      role="article"
+      aria-label="Course card"
+      /* Fallback border for extreme cases if CSS variables are unavailable */
+      style={{ borderColor: 'var(--card-border)', borderStyle: 'solid', borderWidth: 1 }}
+    >
       <div className="courseTitle">{title}</div>
       <div className="metaRow">
         <StarRating value={rating} />
