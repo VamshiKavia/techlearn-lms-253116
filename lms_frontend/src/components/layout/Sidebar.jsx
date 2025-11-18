@@ -6,12 +6,11 @@ import { useUI } from '../../core/ui/UIContext';
 /**
  * PUBLIC_INTERFACE
  * Sidebar: Student-only left navigation; shows brand and user email.
- * Adds data-state for open/closed to support translateX transitions in CSS.
  */
 export function Sidebar() {
   const location = useLocation();
   const { user } = useAuth();
-  const { closeSidebar, isSidebarOpen } = useUI();
+  const { closeSidebar } = useUI();
 
   const navItems = [
     { label: 'Overview', to: '/student/overview' },
@@ -26,10 +25,9 @@ export function Sidebar() {
   ];
 
   const isActive = (to) => location.pathname === to;
-  const state = isSidebarOpen ? 'open' : 'closed';
 
   return (
-    <div className="sidebar" role="navigation" aria-label="Primary" data-state={state}>
+    <div className="sidebar" role="navigation" aria-label="Primary">
       <div className="brand">TechLearn</div>
       <div className="userEmail" aria-label="user-email">{user?.email || 'guest@techlearn'}</div>
       <ul className="navList" role="list">

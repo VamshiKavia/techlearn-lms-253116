@@ -1,9 +1,22 @@
 @import url('../../styles/premium-cards-shared.css');
 
-/* Keep AppShell styles minimal; main behavior handled via styles/layout.css */
-.app-shell,
-.app-content,
-.app-main {
+.app-shell {
+  display: flex;
+  min-height: 100vh;
   background: transparent !important;
-  min-height: 0;
 }
+
+.app-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background: transparent !important;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  padding: 1rem;
+  background: transparent !important;
+}
+
+/* Keep cards/surfaces unchanged: they should have their own surface color from theme variables elsewhere */

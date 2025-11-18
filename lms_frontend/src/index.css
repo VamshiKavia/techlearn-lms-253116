@@ -8,14 +8,6 @@ html, body, #root {
   min-height: 100vh;
   height: auto;
   width: 100%;
-  overflow-x: hidden;
-}
-
-:root {
-  /* fallback declaration in case load order differs */
-  --sidebar-width: 260px;
-  --transition-duration: 300ms;
-  --transition-ease: ease-in-out;
 }
 
 body {

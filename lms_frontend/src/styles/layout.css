@@ -1,31 +1,13 @@
-﻿/* App shell layout and UI utilities (updated with responsive push/overlay behavior) */
-
-/* Global variables: single source of truth */
-:root {
-  --sidebar-width: 260px;
-  --transition-duration: 300ms;
-  --transition-ease: ease-in-out;
-  --sidebar-transition: var(--transition-duration) var(--transition-ease);
-}
-
-html, body, #root {
-  height: auto;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* App root: topbar + content grid */
+﻿/* App shell layout and UI utilities (updated to plum accent #541161) */
 .app {
   display: grid;
-  grid-template-columns: 1fr; /* mobile default */
+  grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-  width: 100%;
-  background: transparent !important;
+  background: transparent !important; /* allow global canvas */
 }
 
-/* Sidebar panel: overlays on mobile, slides via translateX */
+/* Sidebar panel with slide animation */
 .sidebar-panel {
   grid-row: 1 / span 2;
   background: transparent !important;
@@ -36,28 +18,22 @@ html, body, #root {
   padding: var(--space-4);
   color: var(--color-text);
 
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: var(--sidebar-width);
-  max-width: 86vw;
-  height: 100vh;
+  /* Off-canvas default on mobile; desktop handled via media query */
   transform: translateX(-100%);
-  transition: transform var(--sidebar-transition);
+  transition: transform 300ms ease-in-out;
   will-change: transform;
-  z-index: 50; /* above content, below modal/dialogs */
 }
 
-/* State control */
-.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
-.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
-
-/* Reduced motion: minimize transforms */
+/* Reduced motion: disable transform transitions */
 @media (prefers-reduced-motion: reduce) {
   .sidebar-panel { transition: none; transform: none !important; }
 }
 
-/* Mobile scrim overlay */
+/* Root states control transform */
+.app.is-sidebar-open .sidebar-panel { transform: translateX(0); }
+.app.is-sidebar-closed .sidebar-panel { transform: translateX(-100%); }
+
+/* Overlay scrim for mobile when sidebar open */
 .scrim {
   position: fixed;
   inset: 0;
@@ -65,7 +41,7 @@ html, body, #root {
   z-index: 40;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-duration) var(--transition-ease);
+  transition: opacity 250ms ease-in-out;
   border: none;
 }
 .scrim.visible {
@@ -73,9 +49,40 @@ html, body, #root {
   pointer-events: auto;
 }
 
-/* Topbar (kept independent of transforms) */
+/* Desktop behavior: sidebar always visible; scrim hidden */
+@media (min-width: 1024px) {
+  .app {
+    grid-template-columns: 240px 1fr;
+  }
+  .sidebar-panel {
+    transform: translateX(0);
+    position: relative;
+  }
+  .scrim { display: none; }
+}
+
+/* Ensure original .sidebar rules still apply to inner content container (brand, list, etc.) */
+
+.sidebar {
+  grid-row: 1 / span 2;
+
+  /* Fully transparent: inherit global page/canvas background with no glass/blur */
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+
+  /* Keep a subtle divider for structure/contrast */
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
+  box-shadow: none;
+
+  padding: var(--space-4);
+
+  /* Preserve strong readable text color from theme tokens */
+  color: var(--color-text);
+}
+
 .topbar {
-  grid-column: 1;
+  grid-column: 2;
   height: 56px;
   background: var(--header-bg);
   border-bottom: 1px solid var(--color-border);
@@ -84,74 +91,12 @@ html, body, #root {
   justify-content: space-between;
   padding: 0 var(--space-5);
   color: var(--color-text);
-  z-index: 10;
 }
 
-/* Menu button hidden on desktop */
+/* Topbar menu button visibility */
 .topbar-menu { display: inline-flex; }
 @media (min-width: 1024px) {
   .topbar-menu { display: none; }
-}
-
-/* Main content wrapper */
-.main {
-  grid-column: 1;
-  padding: var(--space-6) 32px;
-  background: transparent;
-  min-height: calc(100vh - 56px);
-  transition:
-    transform var(--sidebar-transition),
-    margin-left var(--sidebar-transition),
-    width var(--sidebar-transition);
-  will-change: transform, width;
-  width: 100%;
-}
-
-/* Desktop push behavior */
-@media (min-width: 1024px) {
-  .app {
-    grid-template-columns: var(--sidebar-width) 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .sidebar-panel {
-    position: relative; /* back to flow */
-    height: auto;
-    max-width: none;
-    transform: translateX(0); /* visible in column when open */
-    z-index: 1;
-  }
-
-  .scrim { display: none; }
-
-  /* When closed, collapse sidebar column so content spans full width */
-  .app.is-sidebar-closed {
-    grid-template-columns: 0 1fr;
-  }
-
-  /* Content sizing: rely on grid columns to avoid gaps; keep width 100% */
-  .main.with-sidebar {
-    transform: translateX(0);
-    margin-left: 0;
-    width: 100%;
-  }
-  .main.without-sidebar {
-    transform: translateX(0);
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
-/* Sidebar inner content (transparent, active item styles) */
-.sidebar {
-  grid-row: 1 / span 2;
-  background: transparent !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
-  box-shadow: none;
-  padding: var(--space-4);
-  color: var(--color-text);
 }
 
 .brand {
@@ -182,18 +127,24 @@ html, body, #root {
   color: color-mix(in srgb, var(--color-text-secondary) 92%, white 8%);
   cursor: pointer;
   transition:
-    background var(--transition-duration) var(--transition-ease),
-    color var(--transition-duration) var(--transition-ease),
-    border-color var(--transition-duration) var(--transition-ease);
+    background var(--motion-duration-1) var(--motion-ease-out),
+    color var(--motion-duration-1) var(--motion-ease-out),
+    text-shadow var(--motion-duration-1) var(--motion-ease-out),
+    transform var(--motion-duration-1) var(--motion-ease-out),
+    border-color var(--motion-duration-1) var(--motion-ease-out);
   will-change: transform;
   border: 1px solid transparent;
 }
 .navItem:hover {
+  /* On transparent sidebar, use subtle overlay that works in both modes */
   background: color-mix(in srgb, var(--bg-subtle) 65%, transparent);
   color: var(--color-text);
+  text-shadow: 0 0 8px rgba(84, 17, 97, 0.18);
+  transform: none !important;
   border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
 }
 .navItem.active {
+  /* Distinct active overlay; visible on transparent background in both themes */
   background: color-mix(in srgb, var(--color-primary) 14%, var(--bg-subtle) 86%);
   color: var(--color-text);
   position: relative;
@@ -210,17 +161,443 @@ html, body, #root {
   box-shadow: 0 0 12px rgba(84,17,97,0.45);
 }
 
-/* Reduced motion: remove hover transforms if any elsewhere */
-@media (prefers-reduced-motion: reduce) {
-  .navItem { transition: none; }
+.main {
+  grid-column: 2;
+  padding: var(--space-6) 32px;
+  background: transparent;
 }
 
-/* Ensure transparent sidebar across themes */
+/* When sidebar is off-canvas on mobile, main spans full width */
+@media (max-width: 1023px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .topbar {
+    grid-column: 1;
+  }
+  .main {
+    grid-column: 1;
+  }
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  animation: fade-in var(--motion-duration-2) var(--motion-ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pageHeader { animation: none; }
+}
+
+.pageHeader h1 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 6px 0;
+}
+
+.pageHeader .subtitle {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+a:active {
+  color: var(--color-primary-active);
+}
+
+/* Card */
+/* Transparent card surfaces that inherit page background while preserving outline and depth */
+.card,
+[data-card] {
+  /* Keep surfaces transparent; hover effects come from unified rules below */
+  background: transparent !important;
+
+  /* Remove glass blur to stay consistent with unified Full Stack effect */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+
+  /* Subtle neon-purple border halo and radius; base depth handled by premium tokens */
+  border: 1px solid var(--card-border, var(--border-subtle));
+  border-radius: var(--radius-lg);
+  box-shadow:
+    var(--card-shadow, var(--shadow-sm)),
+    0 0 0 1px rgba(84, 17, 97, 0.10);
+
+  /* Smooth transitions for transform/shadow per requirements */
+  transition: var(--card-hover-transition, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1));
+  will-change: transform, box-shadow;
+
+  /* Clean typography adjustments */
+  color: var(--text-primary);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+
+  /* Balanced padding defaults for generic cards (specific components may override) */
+  padding: clamp(14px, 2.4vw, 18px);
+}
+
+/* Delegate hover visuals to premium-cards.css shared selectors to ensure consistency */
+.card:hover,
+.card:focus-within,
+[data-card]:hover,
+[data-card]:focus-within,
+.courseCard:hover,
+.courseCard:focus-within {
+  /* Transform: slight lift and scale with shadow/glow expansion */
+  transform: translateY(calc(-1 * var(--card-hover-translate, 4px))) scale(var(--card-hover-scale, 1.03));
+  box-shadow:
+    var(--card-hover-shadow, 0 10px 28px rgba(2, 6, 23, 0.16)),
+    var(--card-hover-glow, 0 0 16px rgba(84, 17, 97, 0.24), 0 0 36px rgba(84, 17, 97, 0.16));
+  border-color: var(--card-hover-border, color-mix(in srgb, var(--color-border) 55%, var(--color-primary) 45%));
+  background-color: transparent; /* preserve visibility */
+}
+
+/* Motion preferences: disable transforms while keeping static hover shadow/border */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .card:focus-within,
+  [data-card]:hover,
+  [data-card]:focus-within,
+  .courseCard:hover,
+  .courseCard:focus-within {
+    transform: none !important;
+    transition: none !important;
+    /* keep expanded shadow statically for clear affordance */
+    box-shadow:
+      var(--card-hover-shadow, 0 10px 28px rgba(2, 6, 23, 0.16)),
+      var(--card-hover-glow, 0 0 16px rgba(84, 17, 97, 0.24), 0 0 36px rgba(84, 17, 97, 0.16));
+  }
+}
+
+.card:focus-visible,
+[data-card]:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--focus-ring-neon),
+    0 0 0 1px rgba(84, 17, 97, 0.22),
+    var(--edge-light);
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card:focus-visible,
+  [data-card]:focus-visible { animation: none; }
+}
+
+/* Ensure internal interactive elements retain contrast */
+.card > *,
+[data-card] > * {
+  color: var(--text-primary);
+}
+.card a, .card button,
+[data-card] a, [data-card] button {
+  color: var(--text-primary);
+}
+
+/* Optional: elevated and interactive helpers */
+.card--elevated,
+[data-card].card--elevated { box-shadow: var(--shadow-md), var(--edge-light); }
+.card--interactive:hover,
+[data-card].card--interactive:hover {
+  box-shadow: var(--card-hover-shadow), var(--edge-light);
+  transform: none !important;
+  border-color: color-mix(in srgb, var(--color-border) 60%, var(--color-primary) 40%);
+}
+
+/* Reduced motion for cards */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  [data-card] { transform: none; transition: none; }
+}
+
+/* Modal primitives */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: saturate(120%) blur(2px);
+  -webkit-backdrop-filter: saturate(120%) blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+
+.modal {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: min(640px, 94vw);
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader, .modalFooter {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.modalHeader { display: flex; align-items: center; justify-content: space-between; }
+.modalTitle { font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.modalBody { padding: 16px 18px; overflow: auto; }
+.modalFooter {
+  border-bottom: none;
+  border-top: 1px solid var(--border-subtle);
+  display: flex; justify-content: flex-end; gap: var(--space-2);
+}
+
+/* Grids and panels */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+@media (max-width: 1279px) { .statsGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 767px)  { .statsGrid { grid-template-columns: 1fr; } }
+
+.statCard { padding: var(--space-4); }
+.statLabel {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.statValue { font-size: 26px; font-weight: 700; color: var(--text-primary); }
+.statValue.accent { color: var(--primary); }
+.statSub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+@media (max-width: 1023px) { .detailsGrid { grid-template-columns: 1fr; } }
+
+.panel { padding: var(--space-4); }
+
+.filters { display: flex; gap: var(--space-3); flex-wrap: wrap; margin: 12px 0 16px; }
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: var(--space-6);
+}
+.courseGrid.stagger-children > * { /* allow opt-in via class on container */ }
+
+/* Default apply stagger subtly to course grids */
+.courseGrid > * {
+  animation: none !important;
+}
+.courseGrid > *:nth-child(1) { animation-delay: 40ms; }
+.courseGrid > *:nth-child(2) { animation-delay: 90ms; }
+.courseGrid > *:nth-child(3) { animation-delay: 140ms; }
+.courseGrid > *:nth-child(4) { animation-delay: 190ms; }
+.courseGrid > *:nth-child(5) { animation-delay: 240ms; }
+.courseGrid > *:nth-child(6) { animation-delay: 290ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .courseGrid > * { animation: none !important; }
+}
+@media (max-width: 1023px) { .courseGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px)  { .courseGrid { grid-template-columns: 1fr; } }
+
+.courseCard {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  transition: var(--card-hover-transition, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1));
+  will-change: transform, box-shadow;
+}
+.courseCard:hover { /* hover transform defined above; keep here as no-op placeholder */ }
+.courseTitle { font-size: 18px; font-weight: 700; line-height: 1.35; letter-spacing: 0.01em; margin-bottom: 8px; }
+.metaRow { display: flex; gap: 14px; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; align-items: center; }
+.viewBtn { margin-top: 12px; height: 34px; box-shadow: 0 2px 10px rgba(84,17,97,0.16); }
+
+/* Topics */
+.topicGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: var(--space-6);
+}
+.topicGrid > * {
+  animation: none !important;
+}
+.topicGrid > *:nth-child(1) { animation-delay: 40ms; }
+.topicGrid > *:nth-child(2) { animation-delay: 90ms; }
+.topicGrid > *:nth-child(3) { animation-delay: 140ms; }
+.topicGrid > *:nth-child(4) { animation-delay: 190ms; }
+.topicGrid > *:nth-child(5) { animation-delay: 240ms; }
+.topicGrid > *:nth-child(6) { animation-delay: 290ms; }
+@media (prefers-reduced-motion: reduce) {
+  .topicGrid > * { animation: none !important; }
+}
+@media (max-width: 1023px) { .topicGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 639px)  { .topicGrid { grid-template-columns: 1fr; } }
+
+.topicPanel { padding: var(--space-4); }
+.topicHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); }
+.progressLabel { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: var(--space-2); }
+.progressTrack { height: 6px; background: var(--progress-track); border-radius: 9999px; }
+.progressFill { height: 6px; background: var(--progress-fill); border-radius: 9999px; width: var(--progress, 40%); }
+
+/* Lessons */
+.videoLessonsTitle { margin-top: var(--space-3); font-size: 14px; font-weight: 600; }
+.lessonRow {
+  display: grid; grid-template-columns: 1fr auto auto; gap: var(--space-3); align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--color-border);
+}
+.lessonRow:last-child { border-bottom: none; }
+.lessonDuration { color: var(--text-muted); font-size: 14px; }
+.lessonPlay {
+  background: transparent; border: 1px solid var(--color-border); color: var(--color-primary);
+  font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
+}
+.lessonPlay:hover { background: var(--color-surface); border-color: color-mix(in srgb, var(--color-border) 45%, var(--color-primary) 55%); color: var(--color-primary-hover); }
+.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring); border-color: var(--input-focus-border); }
+
+.divider { border: none; border-top: 1px solid var(--border-subtle); margin: var(--space-6) 0; }
+
+/* Tabs */
+.tabs { display: flex; gap: var(--space-2); }
+.tab {
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.tab:hover { background: var(--bg-subtle); color: var(--text-primary); box-shadow: inset 0 -2px 0 rgba(84, 17, 97, 0.35); }
+.tab--active {
+  color: var(--text-primary);
+  position: relative;
+}
+.tab--active::after {
+  content: "";
+  position: absolute;
+  left: 10px; right: 10px; bottom: -9px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* Topbar primary actions */
+.topbar .action-primary,
+.topbar .btn-primary {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-primary);
+}
+
+/* Sidebar links focus */
+.sidebar .nav-link:hover,
+.sidebar a:hover {
+  color: var(--color-primary-hover);
+  text-shadow: 0 0 8px rgba(84, 17, 97, 0.25);
+}
+.sidebar .nav-link:focus-visible,
+.sidebar a:focus-visible {
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+/* Buttons in layout helpers */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1.25rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.btn-primary:active {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Focus visible outlines for any focusable */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
+}
+
+/* Form controls */
+input,
+select,
+textarea {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.625rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+  outline: none;
+}
+
+/* Reduced motion: remove neon glows while retaining structure */
+@media (prefers-reduced-motion: reduce) {
+  .navItem:hover,
+  .courseCard:hover,
+  .card--interactive:hover {
+    box-shadow: var(--shadow-md);
+    text-shadow: none;
+    transform: none;
+  }
+}
+
+/* Sidebar glass fine-tuning per theme */
 :root[data-theme='light'] .sidebar,
 :root[data-theme='dark'] .sidebar {
+  /* Force transparency in both themes; inherit global gradient/canvas */
   background: transparent !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+
+  /* Maintain separator and readable text */
   border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
   box-shadow: none;
   color: var(--color-text);
