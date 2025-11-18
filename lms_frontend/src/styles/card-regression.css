@@ -1,6 +1,3 @@
-/* Card hover regression protection and normalization */
-
-/* Existing QA helpers preserved */
 :root {
   /* helper only for manual QA; not used by runtime */
 }
@@ -23,55 +20,4 @@
   margin: 8px 0;
   font-size: 12px;
   color: var(--text-secondary);
-}
-
-/* Base card selector harmonization so all card types respond consistently */
-.card,
-[data-card] {
-  /* Smooth transitions for transform and shadow only */
-  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform, box-shadow;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  /* Do not force overflow or clipping; keep components unchanged */
-}
-
-/* Respect reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  [data-card] {
-    transition: none;
-    transform: none !important;
-    /* Keep shadows unchanged to avoid motion, but do not alter visibility/opacity/z-index */
-  }
-}
-
-/* Stronger hover profile applied safely on hover-capable, fine-pointer devices */
-@media (hover: hover) and (pointer: fine) {
-  .card:hover,
-  [data-card]:hover {
-    /* Stronger lift and scale */
-    transform: translateY(-6px) scale(1.04);
-
-    /* Slightly stronger purple glow (#541161) and shadow expansion.
-       We layer shadows without modifying opacity/visibility/z-index. */
-    box-shadow:
-      0 4px 14px rgba(0, 0, 0, 0.10),
-      0 12px 28px rgba(0, 0, 0, 0.10),
-      0 0 0px 0px rgba(84, 17, 97, 0.00),
-      0 0 18px rgba(84, 17, 97, 0.22); /* #541161 glow slightly stronger */
-  }
-
-  .card:active,
-  [data-card]:active {
-    /* Maintain a subtle pressed state without large motion */
-    transform: translateY(-3px) scale(1.02);
-  }
-}
-
-/* Keep focus-visible accessible without shadows trickery */
-.card:focus-visible,
-[data-card]:focus-visible {
-  outline: 2px solid #541161;
-  outline-offset: 2px;
 }

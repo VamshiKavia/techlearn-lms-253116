@@ -3,7 +3,6 @@ import { overviewStats } from '../../shared/mocks/overviewStats';
 import { activities } from '../../shared/mocks/activity';
 import { tips } from '../../shared/mocks/tips';
 import { useAuth } from '../../core/auth/AuthContext';
-import './overview-disable-animations.css';
 
 /**
  * PUBLIC_INTERFACE
@@ -14,7 +13,7 @@ export function StudentOverviewPage() {
   const greeting = user?.name ? `Welcome, ${user.name}!` : user?.email ? `Welcome, ${user.email}!` : 'Welcome!';
 
   return (
-    <div className="overview-page" data-page="overview">
+    <div>
       <div className="pageHeader">
         <div>
           <h1>Student Overview</h1>
