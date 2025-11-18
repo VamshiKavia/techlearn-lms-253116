@@ -5,7 +5,7 @@
   grid-template-rows: auto 1fr;
   min-height: 100vh;
   /* Transparent so global canvas (html/body/#root) gradient is visible */
-  background: transparent;
+  background: transparent !important;
 }
 
 .sidebar {

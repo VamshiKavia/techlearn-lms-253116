@@ -1,0 +1,20 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: transparent !important;
+}
+
+.app-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background: transparent !important;
+}
+
+.app-main {
+  flex: 1 1 auto;
+  padding: 1rem;
+  background: transparent !important;
+}
+
+/* Keep cards/surfaces unchanged: they should have their own surface color from theme variables elsewhere */

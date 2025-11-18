@@ -171,12 +171,11 @@
   --neon-card-bg-fallback: linear-gradient(180deg, rgba(192,132,252,0.06), rgba(221,214,254,0.06));
 
   /* Canvas background tokens for global dark canvas only */
-  --bg-canvas: #0b0b0f; /* static near-black fallback per requirements */
-  /* Unified linear gradient across the whole page (single paint) */
+  --bg-canvas: #000000; /* solid fallback */
+  /* Unified linear gradient across the whole page (single paint) - exact colors per requirement */
   --bg-canvas-gradient: linear-gradient(
     180deg,
-    #4b0082 0%,
-    #5b0ef0 10%,
+    #541161 0%,
     #000000 100%
   );
 }

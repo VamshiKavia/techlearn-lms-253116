@@ -22,8 +22,10 @@ body {
 :root[data-theme='dark'] html,
 :root[data-theme='dark'] body,
 :root[data-theme='dark'] #root {
-  background: var(--bg-canvas); /* solid fallback first */
-  background: var(--bg-canvas-gradient);
+  /* Solid fallback first (near-black) */
+  background: #000000;
+  /* Required gradient from #541161 (top) to #000000 (bottom) across entire viewport */
+  background: linear-gradient(180deg, #541161 0%, #000000 100%) fixed;
   background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
