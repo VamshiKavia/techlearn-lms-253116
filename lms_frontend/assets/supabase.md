@@ -49,10 +49,11 @@ Security Notes:
 - Ensure REACT_APP_SUPABASE_KEY is the public anon key (not service role).
 - The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects on sign-up confirmation.
 
-Role Handling (Frontend-only persistence for now):
-- The Login page includes a required Role selector (Admin, Instructor, Student).
-- The selected role is stored in localStorage under 'techlearn.role' and can be read by the app (e.g., to conditionally navigate to '/admin' when the feature flag REACT_APP_FEATURE_FLAGS includes 'roleBasedRedirect').
-- No secrets are altered and no sensitive data is stored; once roles are available in Supabase (e.g., as JWT claims in app_metadata), update client guards to read role from user/app_metadata instead of localStorage.
+Role Handling (Supabase user_metadata source of truth):
+- On Sign Up: the selected role (admin/instructor/student) is written to Supabase `user_metadata.role` via `auth.signUp({ options: { data: { role }}})`. Email confirmation still applies.
+- On Sign In: if a role is selected (simple Login page), it is written to `user_metadata.role` via `auth.updateUser({ data: { role }})` immediately after successful sign-in.
+- On Session Restore: the app reads role from `user_metadata.role` and uses it as the source of truth for redirects and UI. A localStorage fallback ('techlearn.role') is retained only for resilience if metadata is temporarily unavailable.
+- No new env vars are introduced. Existing styling and feature flags are unchanged.
 
 ---
 

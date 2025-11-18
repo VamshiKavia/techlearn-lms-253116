@@ -6,13 +6,7 @@ import { useAuth } from '../../core/auth/AuthContext';
  * PUBLIC_INTERFACE
  * Login
  * Email/password login using Supabase. On success, redirects to requested path
- * or to the Student dashboard (/student/overview).
- *
- * Enhancements:
- * - Adds a required "Role" selector (Admin, Instructor, Student).
- * - Validates role before submission.
- * - Persists selected role to localStorage as 'techlearn.role'.
- * - Optionally redirects to role-appropriate dashboard when feature flag REACT_APP_FEATURE_FLAGS includes 'roleBasedRedirect'.
+ * or to a role-based destination using Supabase user_metadata.role as source of truth (falls back to local selection).
  */
 export function Login() {
   const navigate = useNavigate();
@@ -35,31 +29,34 @@ export function Login() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // prefer student dashboard as landing page; allow deep-link redirect param
   const redirectTo = params.get('redirect') || '/student/overview';
 
-  // if already authenticated, redirect out of login page
+  // Determine role from metadata if present on current user; fallback to local storage selection.
+  const effectiveRole = (() => {
+    const meta =
+      user?.user_metadata?.role ||
+      user?.app_metadata?.role ||
+      user?.identities?.[0]?.identity_data?.role ||
+      '';
+    if (meta && ['admin', 'instructor', 'student'].includes(String(meta))) return String(meta);
+    return role || '';
+  })();
+
+  // If already authenticated, redirect based on metadata role then fallback to redirectTo
   useEffect(() => {
     if (!initializing && user) {
-      // If user lands on login while already authenticated, attempt role-based redirect.
-      let storedRole = '';
-      try {
-        storedRole = localStorage.getItem('techlearn.role') || '';
-      } catch {
-        // ignore
-      }
-      if (storedRole === 'admin') {
+      if (effectiveRole === 'admin') {
         navigate('/admin', { replace: true });
         return;
       }
-      if (storedRole === 'student') {
+      if (effectiveRole === 'student') {
+        // Note: retain original path "/dashboad" used previously in this codebase
         navigate('/dashboad', { replace: true });
         return;
       }
-      // Fallback to original redirect target or student overview
       navigate(redirectTo || '/student/overview', { replace: true });
     }
-  }, [user, initializing, navigate, redirectTo]);
+  }, [user, initializing, navigate, redirectTo, effectiveRole]);
 
   const validate = () => {
     const e = email.trim();
@@ -75,16 +72,9 @@ export function Login() {
     return '';
   };
 
-  // Choose a post-login path by role. Mapping per requirement:
-  // admin -> /admin
-  // student -> /dashboad (intentional path per spec)
-  // instructor (not specified) falls back to student default for now.
-  const resolveRoleRedirect = () => {
-    // Prefer explicit role-based redirect as per task request
-    if (role === 'admin') return '/admin';
-    if (role === 'student') return '/dashboad';
-    // Unspecified roles fallback: maintain current redirect target if provided,
-    // otherwise use student overview for compatibility.
+  const resolveRoleRedirect = (r) => {
+    if (r === 'admin') return '/admin';
+    if (r === 'student') return '/dashboad';
     return redirectTo || '/student/overview';
   };
 
@@ -98,18 +88,25 @@ export function Login() {
     }
     setSubmitting(true);
     try {
-      // Persist chosen role locally so other parts of the app can read it (e.g., AdminProtectedRoute in future).
+      // Attempt sign-in and write selected role to Supabase user_metadata
+      await signIn(email, password, role);
+
+      // After sign-in, use metadata role if available; fallback to selected role
+      let metaRole = '';
       try {
-        localStorage.setItem('techlearn.role', role);
+        const u = (await (async () => user)()) || null;
+        // The local 'user' might not update synchronously; prefer the chosen role for immediate redirect.
+        metaRole =
+          u?.user_metadata?.role ||
+          u?.app_metadata?.role ||
+          u?.identities?.[0]?.identity_data?.role ||
+          '';
       } catch {
-        // ignore storage failures
+        // ignore
       }
-
-      // If a backend or Supabase custom claim is expected, this is where you'd include it.
-      // For Supabase email/password we still authenticate the user normally:
-      await signIn(email, password);
-
-      const target = resolveRoleRedirect();
+      const target = resolveRoleRedirect(
+        ['admin', 'instructor', 'student'].includes(String(metaRole)) ? String(metaRole) : role
+      );
       navigate(target, { replace: true });
     } catch (err) {
       setError(err?.message || 'Invalid email or password');

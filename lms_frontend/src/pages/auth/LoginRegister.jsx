@@ -7,12 +7,10 @@ import { getSupabaseClient } from '../../core/clients/supabaseClient';
  * PUBLIC_INTERFACE
  * LoginRegister
  * Unified authentication screen supporting:
- * - Email/password Sign In
- * - Email/password Sign Up
+ * - Email/password Sign In (with role selection to write into user_metadata on next login using simple page)
+ * - Email/password Sign Up (persists selected role into user_metadata)
  *
- * Notes:
- * - Redirect behavior: uses ?redirect=... or defaults to /student/overview
- * - REACT_APP_SITE_URL may be used for email confirmation redirect on sign-up; falls back to window.location.origin
+ * Redirects use metadata role as source of truth when available; fallback to redirectTo.
  */
 export function LoginRegister() {
   const navigate = useNavigate();
@@ -28,13 +26,36 @@ export function LoginRegister() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
+  // Role for sign-up (required for this flow to seed metadata)
+  const [signupRole, setSignupRole] = useState(() => {
+    try {
+      const r = localStorage.getItem('techlearn.role');
+      if (r && ['admin', 'instructor', 'student'].includes(r)) return r;
+    } catch {}
+    return '';
+  });
+
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Redirect away if already authenticated
+  // Redirect away if already authenticated; prefer metadata role
   useEffect(() => {
     if (!initializing && user) {
+      const meta =
+        user?.user_metadata?.role ||
+        user?.app_metadata?.role ||
+        user?.identities?.[0]?.identity_data?.role ||
+        '';
+      const role = ['admin', 'instructor', 'student'].includes(String(meta)) ? String(meta) : '';
+      if (role === 'admin') {
+        navigate('/admin', { replace: true });
+        return;
+      }
+      if (role === 'student') {
+        navigate('/dashboad', { replace: true });
+        return;
+      }
       navigate(redirectTo, { replace: true });
     }
   }, [user, initializing, navigate, redirectTo]);
@@ -61,7 +82,19 @@ export function LoginRegister() {
       const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
       if (err) throw new Error(err.message || 'Unable to sign in');
       if (data?.user) {
-        navigate(redirectTo, { replace: true });
+        // After sign-in here, we don't have a role selector; redirect using metadata role if set; fallback to redirectTo
+        const meta =
+          data.user?.user_metadata?.role ||
+          data.user?.app_metadata?.role ||
+          data.user?.identities?.[0]?.identity_data?.role ||
+          '';
+        if (meta === 'admin') {
+          navigate('/admin', { replace: true });
+        } else if (meta === 'student') {
+          navigate('/dashboad', { replace: true });
+        } else {
+          navigate(redirectTo, { replace: true });
+        }
       }
     } catch (ex) {
       setError(ex?.message || 'Sign-in failed');
@@ -79,6 +112,9 @@ export function LoginRegister() {
     if (!password) return setError('Password is required');
     if (password.length < 6) return setError('Password must be at least 6 characters');
     if (confirm !== password) return setError('Passwords do not match');
+    if (!signupRole || !['admin', 'instructor', 'student'].includes(signupRole)) {
+      return setError('Please select a role');
+    }
     setLoading(true);
     try {
       const emailRedirectTo = process.env.REACT_APP_SITE_URL || window.location.origin;
@@ -91,9 +127,13 @@ export function LoginRegister() {
         password,
         options: {
           emailRedirectTo,
+          data: { role: signupRole }, // seed role into user_metadata
         },
       });
       if (err) throw new Error(err.message || 'Unable to sign up');
+      // Remember local role as fallback for immediate UX continuity after email confirmation
+      try { localStorage.setItem('techlearn.role', signupRole); } catch {}
+
       if (data?.user) {
         setInfo('Check your inbox to confirm your email. After confirmation, you can sign in.');
         setActiveTab('signin');
@@ -280,6 +320,33 @@ export function LoginRegister() {
                   }}
                   aria-required="true"
                 />
+              </label>
+
+              <label style={{ display: 'grid', gap: 6 }}>
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>Role</span>
+                <select
+                  aria-label="Select role"
+                  value={signupRole}
+                  onChange={(e) => setSignupRole(e.target.value)}
+                  style={{
+                    height: 40,
+                    padding: '8px 12px',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 8,
+                    background: 'white',
+                  }}
+                  aria-required="true"
+                >
+                  <option value="">Select role</option>
+                  <option value="admin">Admin</option>
+                  <option value="instructor">Instructor</option>
+                  <option value="student">Student</option>
+                </select>
+                {!signupRole && (
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                    Please select your role.
+                  </span>
+                )}
               </label>
 
               <button
