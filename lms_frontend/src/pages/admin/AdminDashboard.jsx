@@ -24,7 +24,7 @@ export function AdminDashboard() {
       {/* Temporary access warning until proper RBAC is enforced */}
       <div
         role="status"
-        className="card"
+        className="card reveal-on-appear revealed"
         style={{
           padding: 12,
           borderRadius: 12,
@@ -38,7 +38,7 @@ export function AdminDashboard() {
         You are signed in as {user?.email || 'unknown user'}. Role-based access control will be enforced once roles are configured in Supabase. For now, any authenticated user can access this page.
       </div>
 
-      <section className="card" style={{ padding: 16, borderRadius: 12 }}>
+      <section className="card reveal-on-appear revealed" style={{ padding: 16, borderRadius: 12 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
           <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Create Course</div>
           <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Add basic course details</div>

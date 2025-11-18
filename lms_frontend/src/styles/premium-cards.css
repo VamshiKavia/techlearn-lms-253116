@@ -1,0 +1,136 @@
+:root {
+  --card-radius: 14px;
+  --card-bg: #ffffff;
+  --card-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 1px 3px rgba(17, 24, 39, 0.1);
+  --card-shadow-hover: 0 8px 24px rgba(17, 24, 39, 0.14), 0 2px 8px rgba(17, 24, 39, 0.08);
+  --card-border: rgba(17, 24, 39, 0.08);
+  --card-scale: 1.015;
+  --card-glow-color: #541161;
+  --card-glow: 0 0 0px rgba(84, 17, 97, 0), 0 0 0px rgba(84, 17, 97, 0);
+  --card-glow-hover: 0 0 18px rgba(84, 17, 97, 0.22), 0 0 40px rgba(84, 17, 97, 0.18);
+  --shine-angle: 130deg;
+  --shine-color: rgba(255, 255, 255, 0.28);
+  --shine-size: 22%;
+  --reveal-translate: 12px;
+  --transition-fast: 200ms;
+  --transition-medium: 360ms;
+  --transition-slow: 640ms;
+}
+
+/* Base selector for any card wrapper */
+.card,
+[data-card] {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  overflow: clip; /* hide shine sweep overflow while keeping rounded corners */
+  transform: translateZ(0); /* enable GPU accel */
+  will-change: box-shadow, transform;
+  transition:
+    transform var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
+    box-shadow var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
+    border-color var(--transition-medium) ease;
+}
+
+/* Hover/Focus: lift, scale, glow, expanded shadow */
+.card:hover,
+.card:focus-within,
+[data-card]:hover,
+[data-card]:focus-within {
+  box-shadow: var(--card-shadow-hover), var(--card-glow-hover);
+  transform: translateY(-2px) scale(var(--card-scale));
+  border-color: rgba(84, 17, 97, 0.22);
+}
+
+/* Gentle glow layer to smooth the purple ambience */
+.card::before,
+[data-card]::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: var(--card-glow);
+  transition: box-shadow var(--transition-slow) ease;
+}
+
+.card:hover::before,
+.card:focus-within::before,
+[data-card]:hover::before,
+[data-card]:focus-within::before {
+  box-shadow: var(--card-glow-hover);
+}
+
+/* Light-sweep shine effect */
+.card::after,
+[data-card]::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -30%;
+  width: var(--shine-size);
+  transform: skewX(-15deg) translateX(-120%);
+  background: linear-gradient(
+    var(--shine-angle),
+    transparent 0%,
+    var(--shine-color) 45%,
+    transparent 100%
+  );
+  opacity: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  transition:
+    opacity var(--transition-fast) ease,
+    transform var(--transition-medium) ease;
+}
+
+/* Trigger shine sweep on hover */
+.card:hover::after,
+[data-card]:hover::after {
+  opacity: 1;
+  transform: skewX(-15deg) translateX(260%);
+}
+
+/* Reveal-on-appear utilities */
+.reveal-on-appear {
+  opacity: 0;
+  transform: translateY(var(--reveal-translate));
+}
+
+.reveal-on-appear.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--transition-medium) ease,
+    transform var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* Optional stagger helpers for grid lists */
+.reveal-delay-1 { transition-delay: 40ms; }
+.reveal-delay-2 { transition-delay: 80ms; }
+.reveal-delay-3 { transition-delay: 120ms; }
+.reveal-delay-4 { transition-delay: 160ms; }
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  [data-card] {
+    transition: none !important;
+    transform: none !important;
+  }
+  .card::after,
+  [data-card]::after,
+  .card::before,
+  [data-card]::before {
+    display: none !important;
+  }
+  .reveal-on-appear,
+  .reveal-on-appear.revealed {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
