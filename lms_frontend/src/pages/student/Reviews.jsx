@@ -70,7 +70,7 @@ export function Reviews() {
         {/* Right-side summary stats badge group */}
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <div
-            className="card"
+            className="card reveal"
             style={{
               padding: '10px 12px',
               display: 'flex',
@@ -144,7 +144,7 @@ export function Reviews() {
         {filtered.map((r) => (
           <article
             key={r.id}
-            className="card"
+            className="card reveal"
             style={{ padding: 16, borderRadius: 12 }}
           >
             <header
