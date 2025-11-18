@@ -6,7 +6,11 @@
   grid-template-rows: auto 1fr;
   min-height: 100vh;
   min-width: 100vw;
-  background: transparent !important; /* allow global canvas */
+  /* Inherit the global canvas so the gradient covers the entire app shell */
+  background: inherit !important;
+  background-attachment: inherit;
+  background-repeat: inherit;
+  background-size: inherit;
 }
 
 /* Sidebar panel with slide animation (off-canvas on mobile/closed state) */

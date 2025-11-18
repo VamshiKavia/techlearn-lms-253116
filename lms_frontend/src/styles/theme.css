@@ -291,8 +291,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Apply global canvas background from tokens */
-  background: var(--bg-canvas);
+  /* Apply unified global canvas background from tokens */
+  background: var(--bg-canvas-gradient, var(--bg-canvas));
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;

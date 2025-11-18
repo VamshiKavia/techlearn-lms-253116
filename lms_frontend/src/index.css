@@ -9,7 +9,8 @@ html, body, #root {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background: transparent; /* canvas comes from theme tokens on body */
+  /* Keep transparent so the body gradient canvas is visible across full viewport */
+  background: transparent;
 }
 
 body {
