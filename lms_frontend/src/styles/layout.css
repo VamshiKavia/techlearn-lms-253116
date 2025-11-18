@@ -28,7 +28,8 @@
 .topbar {
   grid-column: 2;
   height: 56px;
-  background: var(--header-bg);
+  /* Transparent to keep global gradient continuous */
+  background: transparent !important;
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;

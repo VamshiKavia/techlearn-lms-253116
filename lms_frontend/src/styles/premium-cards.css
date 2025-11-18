@@ -44,6 +44,17 @@
   border-color: rgba(84, 17, 97, 0.22);
 }
 
+/* Light-mode enhancement: softer purple glow suited for light surfaces */
+:root[data-theme='light'] .card:hover,
+:root[data-theme='light'] [data-card]:hover,
+:root[data-theme='light'] .card:focus-within,
+:root[data-theme='light'] [data-card]:focus-within {
+  box-shadow:
+    0 8px 24px rgba(17, 24, 39, 0.12),
+    0 0 0 1px rgba(84, 17, 97, 0.20),
+    0 0 22px rgba(84, 17, 97, 0.18);
+}
+
 /* Gentle glow layer to smooth the purple ambience */
 .card::before,
 [data-card]::before {

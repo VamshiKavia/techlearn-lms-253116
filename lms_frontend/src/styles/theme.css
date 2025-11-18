@@ -90,9 +90,9 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  /* Canvas tokens */
-  --bg-canvas: var(--color-background);
-  --bg-canvas-gradient: var(--color-background);
+  /* Canvas tokens (light mode): allow gradient background usage */
+  --bg-canvas: linear-gradient(180deg, #CD8FC0 0%, #FFFFFF 100%);
+  --bg-canvas-gradient: linear-gradient(180deg, #CD8FC0 0%, #FFFFFF 100%);
 
   /* Card baseline tokens (transparent by default) */
   --card-bg: transparent;
