@@ -28,8 +28,7 @@
 .topbar {
   grid-column: 2;
   height: 56px;
-  /* Transparent to keep global gradient continuous */
-  background: transparent !important;
+  background: var(--header-bg);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
@@ -145,16 +144,17 @@ a:active {
 }
 
 /* Card */
-/* Transparent card surfaces inherit page background while preserving outline and depth */
+/* Transparent card surfaces that inherit page background while preserving outline and depth */
 .card,
 [data-card] {
-  background: transparent !important;
+  /* Gentle translucent surface: stronger in dark, gentle in light */
+  background: color-mix(in srgb, var(--card-bg) 70%, transparent) !important;
 
-  /* Remove glass blur; we keep clean transparency */
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  /* Slight glass blur for cards too, but subtle */
+  -webkit-backdrop-filter: blur(6px) saturate(110%);
+  backdrop-filter: blur(6px) saturate(110%);
 
-  /* Preserve border/shadow/halo */
+  /* Subtle neon-purple border glow */
   border: 1px solid var(--card-border, var(--border-subtle));
   border-radius: var(--radius-lg);
   box-shadow:
@@ -168,17 +168,17 @@ a:active {
     box-shadow var(--motion-duration-2) var(--motion-ease-out),
     transform var(--motion-duration-2) var(--motion-ease-out);
 
-  /* Typography */
+  /* Clean typography adjustments */
   color: var(--text-primary);
   line-height: 1.5;
   letter-spacing: 0.01em;
 
+  /* Balanced padding defaults for generic cards (specific components may override) */
   padding: clamp(14px, 2.4vw, 18px);
 
   will-change: transform, box-shadow;
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+  position: relative; /* required for shine effect */
+  overflow: hidden;   /* clip shine */
 }
 
 /* Shine sweep element */
@@ -190,11 +190,10 @@ a:active {
   bottom: 0;
   left: -40%;
   width: 30%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.0) 100%);
+  background: linear-gradient(120deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.0) 100%);
   transform: translateX(-120%) skewX(-12deg);
   pointer-events: none;
-  opacity: 0.01; /* minimal by default to avoid sudden flash and ensure presence */
-  z-index: 0; /* keep below content */
+  opacity: 0;
 }
 
 /* Subtle hover/focus background using theme tokens */
@@ -210,14 +209,13 @@ a:active {
     var(--edge-light);
   transform: translateY(-3px) scale(1.01);
   animation: shadow-expand var(--motion-duration-2) var(--motion-ease-out) both;
-  color: var(--text-primary);
 }
 
 /* Trigger shine sweep on hover only */
 .card:hover::before,
 [data-card]:hover::before {
   animation: light-sweep 900ms var(--motion-ease-out);
-  opacity: 0.25; /* controlled shine intensity */
+  opacity: 1;
 }
 
 .card:focus-visible,
@@ -240,9 +238,6 @@ a:active {
 .card > *,
 [data-card] > * {
   color: var(--text-primary);
-  mix-blend-mode: normal;
-  position: relative;
-  z-index: 1; /* above ::before shine */
 }
 .card a, .card button,
 [data-card] a, [data-card] button {

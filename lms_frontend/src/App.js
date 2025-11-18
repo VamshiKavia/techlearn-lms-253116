@@ -164,18 +164,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  {/*
-                    Profile page: edit user_metadata.display_name.
-                    Kept within main AppShell and protected like other student routes.
-                  */}
-                  {React.createElement(require('./pages/account/Profile').Profile)}
-                </ProtectedRoute>
-              }
-            />
             {/* Admin routes (separate layout). Guard applied at the layout level. */}
             <Route
               path="/admin/*"

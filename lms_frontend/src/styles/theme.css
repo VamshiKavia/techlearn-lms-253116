@@ -90,18 +90,21 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  /* Canvas tokens (light mode): allow gradient background usage */
-  --bg-canvas: linear-gradient(180deg, #CD8FC0 0%, #FFFFFF 100%);
-  --bg-canvas-gradient: linear-gradient(180deg, #CD8FC0 0%, #FFFFFF 100%);
+  /* Canvas tokens */
+  --bg-canvas: var(--color-background);
+  --bg-canvas-gradient: var(--color-background);
 
-  /* Card baseline tokens: use subtle surface to ensure visibility over global gradients */
-  --card-bg: color-mix(in srgb, var(--color-surface) 92%, #ffffff 8%);
+  /* Card baseline tokens (transparent by default) */
+  --card-bg: transparent;
   --card-border: var(--border-subtle);
   --card-shadow: var(--shadow-sm);
 
-  /* Card hover/focus tokens (LIGHT): stronger visible surface and border for contrast */
-  --card-hover-bg: color-mix(in srgb, #ffffff 86%, var(--color-primary) 14%);
-  --card-hover-border: color-mix(in srgb, var(--color-border) 55%, var(--color-primary) 45%);
+  /* Card hover/focus tokens (LIGHT) - slightly stronger translucency for emphasis */
+  /* Background tint increased for clearer hover while maintaining text contrast */
+  --card-hover-bg: rgba(17, 24, 39, 0.06);
+  /* Border emphasis slightly stronger to outline the card on hover */
+  --card-hover-border: rgba(17, 24, 39, 0.18);
+  /* Shadow/glow intensity increased one notch (spread and opacity) */
   --card-hover-shadow: 0 7px 20px rgba(2, 6, 23, 0.12);
 
   /* New minimal tokens */
@@ -176,17 +179,11 @@
              slide-up var(--motion-duration-2) var(--motion-ease-out) forwards;
   will-change: opacity, transform;
 }
-.reveal,
-.reveal-stagger > * {
-  /* Ensure final state when animations complete or are interrupted */
-  animation-fill-mode: forwards;
-}
 .reveal-stagger > * {
   opacity: 0;
   transform: translateY(8px);
   animation: fade-in var(--motion-duration-2) var(--motion-ease-out) forwards,
              slide-up var(--motion-duration-2) var(--motion-ease-out) forwards;
-  animation-fill-mode: forwards;
 }
 .reveal-stagger > *:nth-child(1) { animation-delay: 40ms; }
 .reveal-stagger > *:nth-child(2) { animation-delay: 90ms; }
@@ -323,8 +320,8 @@
   --bg-canvas: #000000;
   --bg-canvas-gradient: linear-gradient(180deg, #541161 0%, #000000 100%);
 
-  /* Card baseline (dark): subtle elevated tint for visibility over dark gradients */
-  --card-bg: rgba(16, 22, 40, 0.55);
+  /* Card baseline (inherit) */
+  --card-bg: transparent;
   --card-border: var(--color-border);
   --card-shadow: var(--shadow-sm);
 

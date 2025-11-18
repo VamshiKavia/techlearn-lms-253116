@@ -1,7 +1,5 @@
 @import url('./styles/theme.css');
 @import url('./styles/layout.css');
-@import url('./styles/premium-cards.css'); /* ensure premium card tokens applied */
-@import url('./styles/card-visibility-regression.css'); /* helpers for verification */
 
 html, body, #root {
   min-height: 100vh;
@@ -9,7 +7,6 @@ html, body, #root {
   width: 100%;
 }
 
-/* Apply global typography and text color */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -20,7 +17,7 @@ body {
   color: var(--color-text);
 }
 
-/* Dark mode unified background: preserved as-is */
+/* Dark mode unified background: single canvas gradient applied once */
 :root[data-theme='dark'] html,
 :root[data-theme='dark'] body,
 :root[data-theme='dark'] #root {
@@ -31,18 +28,17 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Light mode: full-viewport gradient top-to-bottom (#CD8FC0 → #FFFFFF) */
+/* Light mode background uses tokens */
 :root[data-theme='light'] html,
 :root[data-theme='light'] body,
 :root[data-theme='light'] #root {
-  background: #CD8FC0;
-  background: linear-gradient(180deg, #CD8FC0 0%, #FFFFFF 100%) fixed;
-  background-attachment: fixed;
-  background-size: cover;
+  background: var(--bg-canvas);
+  background-attachment: scroll;
+  background-size: auto;
   background-repeat: no-repeat;
 }
 
-/* Global focus behavior using #541161 accent (from tokens) */
+/* Global focus behavior */
 :focus { outline: none; }
 :focus-visible {
   outline: none;
@@ -50,19 +46,16 @@ body {
   border-radius: 6px;
 }
 
-/* Accent for links/buttons is handled through theme tokens (color-primary #541161) */
+/* Utilities */
 .text-primary { color: var(--color-primary); }
 .text-primary:hover { color: var(--color-primary-hover); }
 .text-primary:active { color: var(--color-primary-active); }
 
-/* prefers-reduced-motion: simplify backgrounds and animations */
+/* prefers-reduced-motion: simplify backgrounds */
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme='dark'] html,
   :root[data-theme='dark'] body,
-  :root[data-theme='dark'] #root,
-  :root[data-theme='light'] html,
-  :root[data-theme='light'] body,
-  :root[data-theme='light'] #root {
+  :root[data-theme='dark'] #root {
     background: var(--bg-canvas);
     background-attachment: scroll;
     background-size: auto;
