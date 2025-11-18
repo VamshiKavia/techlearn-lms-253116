@@ -97,9 +97,10 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  /* Canvas tokens */
-  --bg-canvas: var(--color-background);
-  --bg-canvas-gradient: var(--color-background);
+  /* Canvas tokens: unified light gradient across viewport */
+  --bg-canvas: linear-gradient(180deg, #cd8fc0 0%, #ffffff 100%);
+  --bg-canvas-gradient: var(--bg-canvas);
+  --bg-canvas-fallback: #ffffff;
 
   /* Card baseline tokens (transparent by default) */
   --card-bg: transparent;
@@ -107,11 +108,8 @@
   --card-shadow: var(--shadow-sm);
 
   /* Card hover/focus tokens (LIGHT) - slightly stronger translucency for emphasis */
-  /* Background tint increased for clearer hover while maintaining text contrast */
   --card-hover-bg: rgba(17, 24, 39, 0.06);
-  /* Border emphasis slightly stronger to outline the card on hover */
   --card-hover-border: rgba(17, 24, 39, 0.18);
-  /* Shadow/glow intensity increased one notch (spread and opacity) */
   --card-hover-shadow: 0 7px 20px rgba(2, 6, 23, 0.12);
 
   /* New minimal tokens */
@@ -257,18 +255,16 @@
   /* Canvas background tokens for global dark canvas */
   --bg-canvas: #000000;
   --bg-canvas-gradient: linear-gradient(180deg, #541161 0%, #000000 100%);
+  --bg-canvas-fallback: #000000;
 
   /* Card baseline (inherit) */
   --card-bg: transparent;
   --card-border: var(--color-border);
   --card-shadow: var(--shadow-sm);
 
-  /* Card hover/focus tokens (DARK) - #541161 tinted translucency, stronger for clarity */
-  /* Suggested adjustment: raise alpha to ~0.22 for clearer hover while preserving legibility */
+  /* Card hover/focus tokens (DARK) */
   --card-hover-bg: rgba(84, 17, 97, 0.22);
-  /* Border emphasis subtly increased */
   --card-hover-border: rgba(84, 17, 97, 0.42);
-  /* Slightly stronger shadow/glow (radius/spread and opacity) */
   --card-hover-shadow: 0 10px 26px rgba(84, 17, 97, 0.32);
 
   /* Card hover animation tokens (DARK) */
@@ -283,7 +279,10 @@
 }
 
 /* Base document using tokens */
-html, body, #root { height: 100%; }
+html, body, #root {
+  height: 100%;
+  min-height: 100%;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -291,6 +290,16 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Apply global canvas background from tokens */
+  background: var(--bg-canvas);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+html, #root {
+  /* Ensure unified canvas visible across the full viewport */
+  background: transparent;
 }
 
 /* Links default */
@@ -365,7 +374,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible { outline: none; box-shadow: var(--focus-ring); border-color: var(--input-focus-border); }
 
-/* Reduced motion */
+/* Reduced motion: solid fallback background to avoid animated effects */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
@@ -374,5 +383,10 @@ textarea:focus-visible { outline: none; box-shadow: var(--focus-ring); border-co
     scroll-behavior: auto !important;
     text-shadow: none !important;
     box-shadow: var(--shadow-sm) !important;
+  }
+  body {
+    background: var(--bg-canvas-fallback);
+    background-attachment: scroll;
+    background-size: auto;
   }
 }

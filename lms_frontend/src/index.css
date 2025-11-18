@@ -4,10 +4,12 @@
 @import url('./styles/cards-no-animations.css');
 @import url('./styles/premium-cards-shared.css');
 
+/* Ensure full-viewport sizing and transparency for unified canvas */
 html, body, #root {
   min-height: 100vh;
-  height: auto;
+  height: 100%;
   width: 100%;
+  background: transparent; /* canvas comes from theme tokens on body */
 }
 
 body {
@@ -18,27 +20,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--color-text);
-}
-
-/* Dark mode unified background: single canvas gradient applied once */
-:root[data-theme='dark'] html,
-:root[data-theme='dark'] body,
-:root[data-theme='dark'] #root {
-  background: #000000;
-  background: linear-gradient(180deg, #541161 0%, #000000 100%) fixed;
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-/* Light mode background uses tokens */
-:root[data-theme='light'] html,
-:root[data-theme='light'] body,
-:root[data-theme='light'] #root {
-  background: var(--bg-canvas);
-  background-attachment: scroll;
-  background-size: auto;
-  background-repeat: no-repeat;
 }
 
 /* Global focus behavior */
@@ -54,14 +35,9 @@ body {
 .text-primary:hover { color: var(--color-primary-hover); }
 .text-primary:active { color: var(--color-primary-active); }
 
-/* prefers-reduced-motion: simplify backgrounds */
+/* prefers-reduced-motion: the theme.css already swaps background to solid fallback */
 @media (prefers-reduced-motion: reduce) {
-  :root[data-theme='dark'] html,
-  :root[data-theme='dark'] body,
-  :root[data-theme='dark'] #root {
-    background: var(--bg-canvas);
-    background-attachment: scroll;
-    background-size: auto;
-    background-repeat: no-repeat;
+  html, body, #root {
+    background: transparent;
   }
 }

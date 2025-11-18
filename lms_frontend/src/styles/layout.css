@@ -1,4 +1,4 @@
-﻿/* App shell layout and UI utilities (updated to plum accent #541161) */
+﻿/* App shell layout and UI utilities (plum accent #541161) */
 .app {
   display: grid;
   /* Desktop default: sidebar + main columns; 260px fixed for sidebar */
@@ -109,7 +109,7 @@
 .topbar {
   grid-column: 2;
   height: 56px;
-  background: var(--header-bg);
+  background: transparent; /* keep transparent to not split canvas */
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;

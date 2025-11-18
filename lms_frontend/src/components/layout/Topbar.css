@@ -1,0 +1,4 @@
+.topbar {
+  /* Keep topbar transparent to let the canvas gradient show through */
+  background: transparent;
+}
