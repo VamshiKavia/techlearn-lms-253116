@@ -5,6 +5,7 @@ import { useAuth } from '../../core/auth/AuthContext';
 /**
  * PUBLIC_INTERFACE
  * Sidebar: Student-only left navigation; shows brand and user email.
+ * Uses neutral surfaces (no neon classes).
  */
 export function Sidebar() {
   const location = useLocation();
@@ -25,7 +26,7 @@ export function Sidebar() {
   const isActive = (to) => location.pathname === to;
 
   return (
-    <div className="neon-surface">
+    <div>
       <div className="brand">TechLearn</div>
       <div className="userEmail" aria-label="user-email">{user?.email || 'guest@techlearn'}</div>
       <ul className="navList" role="list">

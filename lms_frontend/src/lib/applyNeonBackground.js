@@ -1,17 +1,23 @@
 /// PUBLIC_INTERFACE
 /**
  * applyNeonBackground
- * Sets a CSS variable on the body that points to the neon background image.
- * This avoids CRA build-time asset resolution since the attachment lives outside /public.
- *
- * It respects user motion preference by not adding any animations, only a static image URL.
+ * Previously initialized neon theme/background. Now intentionally a no-op.
+ * It will clear any neon-related CSS variables/flags if they were set earlier.
  */
 export function applyNeonBackground() {
+  if (typeof document === 'undefined') return;
   try {
-    const path = '/attachments/20251118_075416_abstract-flowing-neon-wave-background.jpg';
-    const url = new URL(path, window.location.origin).toString();
-    document.body.style.setProperty('--neon-bg-url', `url("${url}")`);
+    const root = document.documentElement;
+    const body = document.body;
+    root.removeAttribute('data-neon-enabled');
+    root.style.removeProperty('--neon-bg');
+    root.style.removeProperty('--neon-primary');
+    root.style.removeProperty('--neon-accent');
+    root.style.removeProperty('--neon-surface');
+    root.style.removeProperty('--neon-surface-2');
+    root.style.removeProperty('--neon-glow');
+    body && body.style.removeProperty('--neon-bg-url');
   } catch {
-    // fail silently to not break the app
+    // no-op
   }
 }

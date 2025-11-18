@@ -1,7 +1,7 @@
 @import url('./styles/theme.css');
 @import url('./styles/layout.css');
 
-/* Global neon wave background using provided attachment path, with accessibility overlay */
+/* Global base */
 html, body, #root {
   height: 100%;
 }
@@ -13,69 +13,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--text-primary);
-  background: transparent; /* handled by pseudo-elements */
-  position: relative;
-  overflow-x: hidden;
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
-/* Background image layer */
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-body::before {
-  /* Background image URL provided at runtime via CSS var to avoid build-time asset resolution */
-  background-image: var(--neon-bg-url, none);
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  z-index: -2;
-  transform: translateZ(0);
-}
-
-/* Readability overlay: dark-to-transparent gradient */
-body::after {
-  z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    rgba(3, 7, 18, 0.55) 0%,
-    rgba(3, 7, 18, 0.35) 35%,
-    rgba(3, 7, 18, 0.20) 60%,
-    rgba(3, 7, 18, 0.08) 100%
-  );
-}
-
-/* Minimal accents still allowed on top of image */
+/* Code font */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-/* Lightweight divider accent */
-hr {
-  border: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.25), transparent);
-}
-
-/* Focus outline for tables (kept for accessibility) */
-table:focus-within {
-  box-shadow: var(--focus-ring-neon);
-  border-radius: var(--radius-sm);
-}
-
-/* Motion safety */
-@media (prefers-reduced-motion: reduce) {
-  body::before,
-  body::after {
-    transition: none !important;
-    animation: none !important;
-  }
 }
