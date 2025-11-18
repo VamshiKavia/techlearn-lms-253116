@@ -12,6 +12,7 @@ import { StarRating } from './StarRating';
  * @param {() => void} props.onView
  */
 export function CourseCard({ title, rating, students, duration, onView }) {
+  // Uses global unified Full Stack hover effect via .card and [data-card] selectors
   return (
     <div className="card card--interactive courseCard" data-card role="article" aria-label="Course card">
       <div className="courseTitle">{title}</div>

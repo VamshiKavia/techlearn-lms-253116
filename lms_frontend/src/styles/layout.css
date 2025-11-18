@@ -147,21 +147,21 @@ a:active {
 /* Transparent card surfaces that inherit page background while preserving outline and depth */
 .card,
 [data-card] {
-  /* Gentle translucent surface: stronger in dark, gentle in light */
-  background: color-mix(in srgb, var(--card-bg) 70%, transparent) !important;
+  /* Keep surfaces transparent; hover effects come from premium-cards.css */
+  background: transparent !important;
 
-  /* Slight glass blur for cards too, but subtle */
-  -webkit-backdrop-filter: blur(6px) saturate(110%);
-  backdrop-filter: blur(6px) saturate(110%);
+  /* Remove glass blur to stay consistent with unified Full Stack effect */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 
-  /* Subtle neon-purple border glow */
+  /* Subtle neon-purple border halo and radius; base depth handled by premium tokens */
   border: 1px solid var(--card-border, var(--border-subtle));
   border-radius: var(--radius-lg);
   box-shadow:
     var(--card-shadow, var(--shadow-sm)),
-    0 0 0 1px rgba(84, 17, 97, 0.10); /* edge neon halo */
+    0 0 0 1px rgba(84, 17, 97, 0.10);
 
-  /* Smooth transitions including hover tokens */
+  /* Smooth transitions; scaling/glow handled in premium-cards hover */
   transition:
     background-color var(--motion-duration-2) var(--motion-ease-out),
     border-color var(--motion-duration-2) var(--motion-ease-out),
@@ -179,18 +179,13 @@ a:active {
   will-change: transform, box-shadow;
 }
 
-/* Subtle hover/focus background using theme tokens */
+/* Delegate hover visuals to premium-cards.css shared selectors to ensure consistency */
 .card:hover,
 .card:focus-within,
 [data-card]:hover,
 [data-card]:focus-within {
-  background-color: var(--card-hover-bg);
-  border-color: var(--card-hover-border);
-  box-shadow:
-    var(--card-hover-shadow),
-    0 0 0 1px rgba(84, 17, 97, 0.18),
-    var(--edge-light);
-  transform: translateY(-2px) scale(1.005);
+  /* Keep background transparent; the tint, glow, and scale come from unified rules */
+  background-color: transparent;
 }
 
 .card:focus-visible,
