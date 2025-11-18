@@ -112,15 +112,28 @@ a:active {
 }
 
 /* Card */
+/* Transparent card surfaces that inherit page background while preserving outline and depth */
 .card,
 [data-card] {
-  background: var(--bg-panel);
+  /* Remove any fill so cards inherit the global canvas/gradient */
+  background: transparent !important;
+  /* Ensure no backdrop-filter adds haze; we want a clean, transparent look */
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+
+  /* Keep delineation and depth */
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm), var(--edge-light);
-  transition: box-shadow var(--transition-base), transform var(--transition-base), background var(--transition-base), border-color var(--transition-fast);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base),
+    border-color var(--transition-fast);
+  /* Maintain readable text color tokens */
   color: var(--text-primary);
 }
+
+/* Optional: provide a subtle hover ring without adding background */
 .card--elevated,
 [data-card].card--elevated { box-shadow: var(--shadow-md), var(--edge-light); }
 .card--interactive:hover,
