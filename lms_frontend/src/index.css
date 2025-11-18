@@ -14,7 +14,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Important: do not set a separate body background; allow unified canvas gradient to paint */
   color: var(--color-text);
 }
 
@@ -22,26 +21,37 @@ body {
 :root[data-theme='dark'] html,
 :root[data-theme='dark'] body,
 :root[data-theme='dark'] #root {
-  /* Solid fallback first (near-black) */
   background: #000000;
-  /* Required gradient from #541161 (top) to #000000 (bottom) across entire viewport */
   background: linear-gradient(180deg, #541161 0%, #000000 100%) fixed;
   background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
-/* Optional: keep light mode single paint using tokens if already themed */
+/* Light mode background uses tokens */
 :root[data-theme='light'] html,
 :root[data-theme='light'] body,
 :root[data-theme='light'] #root {
-  background: var(--bg-canvas); /* defaults to var(--color-background) via theme.css */
+  background: var(--bg-canvas);
   background-attachment: scroll;
   background-size: auto;
   background-repeat: no-repeat;
 }
 
-/* prefers-reduced-motion: use static solid background to avoid discomfort */
+/* Global focus behavior */
+:focus { outline: none; }
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 6px;
+}
+
+/* Utilities */
+.text-primary { color: var(--color-primary); }
+.text-primary:hover { color: var(--color-primary-hover); }
+.text-primary:active { color: var(--color-primary-active); }
+
+/* prefers-reduced-motion: simplify backgrounds */
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme='dark'] html,
   :root[data-theme='dark'] body,
@@ -50,30 +60,5 @@ body {
     background-attachment: scroll;
     background-size: auto;
     background-repeat: no-repeat;
-  }
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-/* Minimal divider accents */
-hr {
-  border: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.25), transparent);
-}
-
-/* Table focus outlines non-intrusive */
-table:focus-within {
-  box-shadow: var(--focus-ring-neon);
-  border-radius: var(--radius-sm);
-}
-
-/* Reduce motion: remove ambient neon background blends */
-@media (prefers-reduced-motion: reduce) {
-  body {
-    background: var(--bg-canvas);
   }
 }
