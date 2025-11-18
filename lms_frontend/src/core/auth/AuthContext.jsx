@@ -11,13 +11,21 @@ const AuthCtx = createContext(null);
  *  - signIn(email, password)
  *  - signOut()
  *  - signUp(email, password, emailRedirectTo?)
- *  - signInWithOtp(email, emailRedirectTo?)
  *
  * Notes:
  * - Requires env vars REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_KEY
  * - No secrets are hardcoded.
  */
 export function AuthProvider({ children }) {
+  /**
+   * Smoke test steps (manual):
+   * 1) Start frontend (npm start) with valid REACT_APP_SUPABASE_URL/KEY.
+   * 2) Visit /auth:
+   *    - Sign Up tab: create a user. Expect info message to check email.
+   *    - After email confirmation, go to Sign In tab and sign in.
+   * 3) After successful sign-in, you should be redirected to /student/overview.
+   * 4) Click Logout in topbar; expect to be sent to /login and protected routes redirect to /auth.
+   */
   const supabase = getSupabaseClient();
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
@@ -122,33 +130,8 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  /**
-   * PUBLIC_INTERFACE
-   * signInWithOtp
-   * Sends a magic link to the provided email.
-   * @param {string} email
-   * @param {string} [emailRedirectTo] - If omitted, uses REACT_APP_SITE_URL or window.location.origin
-   */
-  const signInWithOtp = async (email, emailRedirectTo) => {
-    const redirect = emailRedirectTo || process.env.REACT_APP_SITE_URL || window.location.origin;
-    if (!process.env.REACT_APP_SITE_URL) {
-      // eslint-disable-next-line no-console
-      console.warn('[Auth] REACT_APP_SITE_URL is not set; using window.location.origin for email redirects:', redirect);
-    }
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirect },
-    });
-    if (error) {
-      const err = new Error(error.message || 'Unable to send magic link');
-      err.code = error.status || 'AUTH_OTP_FAILED';
-      throw err;
-    }
-    return true;
-  };
-
   const value = useMemo(
-    () => ({ user, session, initializing, signIn, signOut, signUp, signInWithOtp }),
+    () => ({ user, session, initializing, signIn, signOut, signUp }),
     [user, session, initializing]
   );
 

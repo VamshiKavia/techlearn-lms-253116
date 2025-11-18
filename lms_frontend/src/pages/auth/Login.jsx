@@ -67,7 +67,7 @@ export function Login() {
           <div style={{ fontWeight: 800, fontSize: 20, letterSpacing: -0.2, color: 'var(--text-primary)' }}>TechLearn</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Welcome back</div>
           <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-            Sign in to continue to your student dashboard.
+            Sign in with your email and password to continue to your student dashboard.
           </div>
         </div>
 

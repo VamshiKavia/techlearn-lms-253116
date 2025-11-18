@@ -1,11 +1,11 @@
 # Supabase Integration (Frontend)
 
-This frontend uses Supabase for authentication. No secrets are hardcoded; configuration is read from environment variables.
+This frontend uses Supabase for authentication via email/password. No secrets are hardcoded; configuration is read from environment variables.
 
 Environment variables (must be provided by orchestrator in `.env`):
 - REACT_APP_SUPABASE_URL
 - REACT_APP_SUPABASE_KEY
-- REACT_APP_SITE_URL (used as emailRedirectTo for magic link / email-based flows)
+- REACT_APP_SITE_URL (optional; used as emailRedirectTo for sign-up email confirmations; falls back to window.location.origin)
 - REACT_APP_API_BASE or REACT_APP_API_BASE_URL (for backend API base)
 - REACT_APP_BACKEND_URL (optional fallback)
 
@@ -15,7 +15,6 @@ Client creation:
   - signIn(email, password)
   - signOut()
   - signUp(email, password, emailRedirectTo?)
-  - signInWithOtp(email, emailRedirectTo?)
 
 Email/password sign-in:
 ```js
@@ -38,26 +37,14 @@ await supabase.auth.signUp({
 });
 ```
 
-Magic link / OTP sign-in:
-```js
-const supabase = getSupabaseClient();
-await supabase.auth.signInWithOtp({
-  email,
-  options: {
-    emailRedirectTo: process.env.REACT_APP_SITE_URL || window.location.origin
-  }
-});
-```
-
 Configuration in Supabase Dashboard:
 - Go to Auth -> URL Configuration
   - Set "Site URL" to your deployed frontend (e.g., https://app.example.com)
   - Add any additional "Redirect URLs" used in development or staging
-- Ensure "Email Redirects" are allowed for the above URLs
 
 Security Notes:
 - Do not log tokens or PII.
 - Ensure the site is served over HTTPS in production.
 - Configure allowed redirect URLs in Supabase project settings.
 - Ensure REACT_APP_SUPABASE_KEY is the public anon key (not service role).
-- The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects.
+- The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects on sign-up confirmation.

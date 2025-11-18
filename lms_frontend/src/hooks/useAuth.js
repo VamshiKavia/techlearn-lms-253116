@@ -5,7 +5,7 @@ import { useAuth as useAuthCtx } from '../core/auth/AuthContext';
 /**
  * PUBLIC_INTERFACE
  * useAuth
- * Wrapper hook that returns the auth context (user, session, initializing, signIn, signOut)
+ * Wrapper hook that returns the auth context (user, session, initializing, signIn, signOut, signUp)
  */
 export function useAuth() {
   return useAuthCtx();
