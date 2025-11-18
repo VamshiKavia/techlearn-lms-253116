@@ -41,7 +41,23 @@ export function Login() {
   // if already authenticated, redirect out of login page
   useEffect(() => {
     if (!initializing && user) {
-      navigate(redirectTo, { replace: true });
+      // If user lands on login while already authenticated, attempt role-based redirect.
+      let storedRole = '';
+      try {
+        storedRole = localStorage.getItem('techlearn.role') || '';
+      } catch {
+        // ignore
+      }
+      if (storedRole === 'admin') {
+        navigate('/admin', { replace: true });
+        return;
+      }
+      if (storedRole === 'student') {
+        navigate('/dashboad', { replace: true });
+        return;
+      }
+      // Fallback to original redirect target or student overview
+      navigate(redirectTo || '/student/overview', { replace: true });
     }
   }, [user, initializing, navigate, redirectTo]);
 
@@ -59,15 +75,17 @@ export function Login() {
     return '';
   };
 
-  // Choose a post-login path by role when feature flag is present
+  // Choose a post-login path by role. Mapping per requirement:
+  // admin -> /admin
+  // student -> /dashboad (intentional path per spec)
+  // instructor (not specified) falls back to student default for now.
   const resolveRoleRedirect = () => {
-    const flags = (process.env.REACT_APP_FEATURE_FLAGS || '').toLowerCase();
-    const enableRoleRedirect = flags.includes('rolebasedredirect');
-    if (!enableRoleRedirect) return redirectTo;
-
+    // Prefer explicit role-based redirect as per task request
     if (role === 'admin') return '/admin';
-    if (role === 'instructor') return '/student/overview'; // placeholder until /instructor routes exist
-    return '/student/overview';
+    if (role === 'student') return '/dashboad';
+    // Unspecified roles fallback: maintain current redirect target if provided,
+    // otherwise use student overview for compatibility.
+    return redirectTo || '/student/overview';
   };
 
   const handleSubmit = async (e) => {
