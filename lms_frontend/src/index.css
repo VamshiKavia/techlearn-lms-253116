@@ -1,6 +1,7 @@
 @import url('./styles/theme.css');
 @import url('./styles/layout.css');
 @import url('./styles/premium-cards.css');
+@import url('./styles/cards-no-animations.css');
 
 html, body, #root {
   min-height: 100vh;

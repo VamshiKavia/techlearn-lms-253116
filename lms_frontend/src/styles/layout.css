@@ -78,7 +78,7 @@
   background: color-mix(in srgb, var(--bg-subtle) 65%, transparent);
   color: var(--color-text);
   text-shadow: 0 0 8px rgba(84, 17, 97, 0.18);
-  transform: translateX(1px);
+  transform: none !important;
   border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
 }
 .navItem.active {
@@ -162,11 +162,8 @@ a:active {
     0 0 0 1px rgba(84, 17, 97, 0.10);
 
   /* Smooth transitions; scaling/glow handled in premium-cards hover */
-  transition:
-    background-color var(--motion-duration-2) var(--motion-ease-out),
-    border-color var(--motion-duration-2) var(--motion-ease-out),
-    box-shadow var(--motion-duration-2) var(--motion-ease-out),
-    transform var(--motion-duration-2) var(--motion-ease-out);
+  /* Disable card transitions; keep static visuals */
+  transition: none !important;
 
   /* Clean typography adjustments */
   color: var(--text-primary);
@@ -195,7 +192,7 @@ a:active {
     var(--focus-ring-neon),
     0 0 0 1px rgba(84, 17, 97, 0.22),
     var(--edge-light);
-  animation: focus-pulse var(--motion-duration-3) var(--motion-ease-out);
+  animation: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
   .card:focus-visible,
@@ -218,7 +215,7 @@ a:active {
 .card--interactive:hover,
 [data-card].card--interactive:hover {
   box-shadow: var(--card-hover-shadow), var(--edge-light);
-  transform: translateY(-1px);
+  transform: none !important;
   border-color: color-mix(in srgb, var(--color-border) 60%, var(--color-primary) 40%);
 }
 
@@ -309,10 +306,7 @@ a:active {
 
 /* Default apply stagger subtly to course grids */
 .courseGrid > * {
-  animation-name: fade-in, slide-up;
-  animation-duration: var(--motion-duration-2), var(--motion-duration-2);
-  animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
-  animation-fill-mode: both;
+  animation: none !important;
 }
 .courseGrid > *:nth-child(1) { animation-delay: 40ms; }
 .courseGrid > *:nth-child(2) { animation-delay: 90ms; }
@@ -327,8 +321,8 @@ a:active {
 @media (max-width: 1023px) { .courseGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 639px)  { .courseGrid { grid-template-columns: 1fr; } }
 
-.courseCard { padding: 18px; transition: box-shadow var(--transition-base), transform var(--transition-base); border-radius: var(--radius-lg); }
-.courseCard:hover { box-shadow: var(--shadow-md); }
+.courseCard { padding: 18px; transition: none !important; border-radius: var(--radius-lg); }
+.courseCard:hover { box-shadow: var(--shadow-md); transform: none !important; }
 .courseTitle { font-size: 18px; font-weight: 700; line-height: 1.35; letter-spacing: 0.01em; margin-bottom: 8px; }
 .metaRow { display: flex; gap: 14px; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; align-items: center; }
 .viewBtn { margin-top: 12px; height: 34px; box-shadow: 0 2px 10px rgba(84,17,97,0.16); }
@@ -340,10 +334,7 @@ a:active {
   gap: var(--space-6);
 }
 .topicGrid > * {
-  animation-name: fade-in, slide-up;
-  animation-duration: var(--motion-duration-2), var(--motion-duration-2);
-  animation-timing-function: var(--motion-ease-out), var(--motion-ease-out);
-  animation-fill-mode: both;
+  animation: none !important;
 }
 .topicGrid > *:nth-child(1) { animation-delay: 40ms; }
 .topicGrid > *:nth-child(2) { animation-delay: 90ms; }

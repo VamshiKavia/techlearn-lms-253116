@@ -1,0 +1,138 @@
+:root {
+  /* Accent color remains unchanged */
+  --accent-color: #541161;
+}
+
+/* PUBLIC_INTERFACE
+   Disable all animations and transitions on card components globally.
+   This preserves hover background tint, border/shadow static styles,
+   and ensures no motion regardless of user preference, while still
+   respecting prefers-reduced-motion elsewhere in the app.
+*/
+[data-card],
+.card,
+.course-card,
+.premium-card,
+.dashboard-card,
+.list-card,
+.catalog-card,
+.courseCard,
+.course-card-root {
+  /* Remove transitions and animations */
+  transition: none !important;
+  animation: none !important;
+
+  /* Neutralize transform-based motion without affecting layout */
+  transform: none !important;
+
+  /* Ensure perspective/3d effects do not introduce motion */
+  transform-style: flat !important;
+  backface-visibility: visible !important;
+
+  /* If custom properties drive transitions, clamp them */
+  --card-transition-duration: 0ms !important;
+  --card-transition: none !important;
+  --card-anim-duration: 0ms !important;
+  --card-anim-ease: linear !important;
+  --card-reveal-delay: 0ms !important;
+  --card-hover-scale: 1 !important;
+
+  /* Keep static visual styles intact */
+  will-change: auto !important;
+}
+
+/* Remove keyframe-driven effects applied via common utility classes */
+.glow-pulse,
+.card-glow,
+.card-entrance,
+.card-stagger,
+.card-shine,
+.card-reveal {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  --glow-pulse-duration: 0ms !important;
+  --shine-duration: 0ms !important;
+  --reveal-delay: 0ms !important;
+}
+
+/* Preserve hover background tint and static visual states without animation */
+[data-card]:hover,
+.card:hover,
+.course-card:hover,
+.premium-card:hover,
+.dashboard-card:hover,
+.list-card:hover,
+.catalog-card:hover,
+.courseCard:hover,
+.course-card-root:hover {
+  /* Keep background tint; avoid animating scale or translate */
+  background-color: color-mix(in oklab, currentColor 6%, transparent) !important;
+  transform: none !important;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent-color) 28%, transparent) !important;
+  /* Ensure no transition on hover state either */
+  transition: none !important;
+}
+
+/* Explicitly kill popular animation names that might be declared elsewhere */
+@keyframes glowPulse { from { } to { } }
+@keyframes pulse { from { } to { } }
+@keyframes float { from { } to { } }
+@keyframes revealUp { from { } to { } }
+@keyframes revealIn { from { } to { } }
+@keyframes shineSweep { from { } to { } }
+
+/* Prefer-reduced-motion remains respected globally; cards have no motion regardless */
+@media (prefers-reduced-motion: reduce) {
+  [data-card],
+  .card,
+  .course-card,
+  .premium-card,
+  .dashboard-card,
+  .list-card,
+  .catalog-card,
+  .courseCard,
+  .course-card-root,
+  .glow-pulse,
+  .card-glow,
+  .card-entrance,
+  .card-stagger,
+  .card-shine,
+  .card-reveal {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Maintain dark/light mode consistency (no animated effects; preserve static contrast) */
+:root,
+:root[data-theme="light"] {
+  --card-hover-bg-tint: rgba(0, 0, 0, 0.04);
+  --card-border: rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="dark"] {
+  --card-hover-bg-tint: rgba(255, 255, 255, 0.06);
+  --card-border: rgba(255, 255, 255, 0.10);
+}
+
+[data-card]:hover,
+.card:hover {
+  background-color: var(--card-hover-bg-tint) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* Keep sidebar transparent and accent intact (non-animated) */
+.sidebar,
+.sidebar-container {
+  background: transparent !important;
+  transition: none !important;
+}
+.accent,
+a,
+button,
+[data-accent="true"] {
+  /* Accent color preserved */
+  --accent-color: #541161;
+  color: var(--accent-color);
+}

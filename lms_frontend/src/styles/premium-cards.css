@@ -59,12 +59,10 @@
   box-shadow: var(--card-shadow);
   overflow: clip; /* hide shine sweep overflow while keeping rounded corners */
   transform: translateZ(0); /* enable GPU accel */
-  will-change: box-shadow, transform;
-  transition:
-    transform var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
-    box-shadow var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
-    border-color var(--transition-medium) ease,
-    background-color var(--transition-medium) ease;
+  will-change: auto;
+  /* Disable card transitions and animations globally at card source */
+  transition: none !important;
+  animation: none !important;
   color: var(--card-text-strong);
 }
 
@@ -111,8 +109,9 @@
 .review-card:focus-within,
 .certificate-card:hover,
 .certificate-card:focus-within {
+  /* Preserve static hover visuals, remove motion */
   box-shadow: var(--card-shadow-hover), var(--card-glow-hover);
-  transform: translateY(-2px) scale(var(--card-scale));
+  transform: none !important;
   border-color: var(--card-border-hover);
   outline: none;
 }
@@ -131,7 +130,7 @@
   border-radius: inherit;
   pointer-events: none;
   box-shadow: var(--card-glow);
-  transition: box-shadow var(--transition-slow) ease;
+  transition: none !important;
 }
 
 .card:hover::before,
@@ -175,9 +174,7 @@
   opacity: 0;
   border-radius: 8px;
   pointer-events: none;
-  transition:
-    opacity var(--transition-fast) ease,
-    transform var(--transition-medium) ease;
+  transition: none !important;
 }
 
 /* Trigger shine sweep on hover */
@@ -188,28 +185,26 @@
 .progress-card:hover::after,
 .review-card:hover::after,
 .certificate-card:hover::after {
-  opacity: 1;
-  transform: skewX(-15deg) translateX(260%);
+  opacity: 0; /* keep disabled */
+  transform: none !important;
 }
 
 /* Reveal-on-appear utilities */
 .reveal-on-appear {
-  opacity: 0;
-  transform: translateY(var(--reveal-translate));
+  opacity: 1 !important;
+  transform: none !important;
 }
 .reveal-on-appear.revealed {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity var(--transition-medium) ease,
-    transform var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1);
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 /* Optional stagger helpers for grid lists */
-.reveal-delay-1 { transition-delay: 40ms; }
-.reveal-delay-2 { transition-delay: 80ms; }
-.reveal-delay-3 { transition-delay: 120ms; }
-.reveal-delay-4 { transition-delay: 160ms; }
+.reveal-delay-1,
+.reveal-delay-2,
+.reveal-delay-3,
+.reveal-delay-4 { transition-delay: 0ms !important; }
 
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
