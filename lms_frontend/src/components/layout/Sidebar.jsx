@@ -20,6 +20,8 @@ export function Sidebar() {
     { label: 'AI', to: '/catalog/ai' },
     { label: 'Reviews', to: '/reviews' },
     { label: 'Certificates', to: '/certificates' },
+    // Temporary: Admin link visible to signed-in users; proper role checks will be added later
+    { label: 'Admin', to: '/admin' },
   ];
 
   const isActive = (to) => location.pathname === to;

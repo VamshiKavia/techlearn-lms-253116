@@ -9,6 +9,7 @@ import { CatalogPage } from './pages/common/CatalogPage';
 import { CategorySectionsPage } from './pages/common/CategorySectionsPage';
 import { PlayerPage } from './pages/common/PlayerPage';
 import { AuthProvider, useAuth } from './core/auth/AuthContext';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import { SupabaseDevHealthCheck } from './lib/SupabaseDevHealthCheck';
 import { FullStackDevelopment } from './pages/student/FullStackDevelopment';
 import { Reviews } from './pages/student/Reviews';
@@ -24,7 +25,6 @@ function ProtectedRoute({ children }) {
   const { user, initializing } = useAuth();
   const location = useLocation();
 
-  // Avoid redirecting while we are still checking existing session
   if (initializing) {
     return (
       <div style={{ padding: 24 }}>
@@ -39,6 +39,37 @@ function ProtectedRoute({ children }) {
     const ret = encodeURIComponent(location.pathname + location.search);
     return <Navigate to={`/auth?redirect=${ret}`} replace />;
   }
+  return children;
+}
+
+/**
+ * AdminProtectedRoute:
+ * Temporary guard that allows any signed-in user. Once roles are configured in Supabase,
+ * replace the allow rule with actual role claims check (e.g., user.app_metadata.role === 'admin').
+ */
+function AdminProtectedRoute({ children }) {
+  const { user, initializing } = useAuth();
+  const location = useLocation();
+
+  if (initializing) {
+    return (
+      <div style={{ padding: 24 }}>
+        <div className="card" style={{ padding: 16, borderRadius: 12 }}>
+          Checking session…
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    const ret = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/auth?redirect=${ret}`} replace />;
+  }
+
+  // TODO: Enforce role-based auth once roles are set in Supabase
+  // Example:
+  // const isAdmin = user?.app_metadata?.role === 'admin';
+  // if (!isAdmin) return <Navigate to="/student/overview" replace />;
   return children;
 }
 
@@ -125,6 +156,14 @@ function App() {
                 <ProtectedRoute>
                   <Account />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <AdminProtectedRoute>
+                  <AdminDashboard />
+                </AdminProtectedRoute>
               }
             />
 

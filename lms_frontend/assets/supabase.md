@@ -48,3 +48,63 @@ Security Notes:
 - Configure allowed redirect URLs in Supabase project settings.
 - Ensure REACT_APP_SUPABASE_KEY is the public anon key (not service role).
 - The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects on sign-up confirmation.
+
+---
+
+## Courses Table (Expected Schema) and RLS
+
+To enable the Admin UI's course creation form, create the following table in your Supabase project.
+
+Suggested SQL:
+
+```sql
+create table if not exists public.courses (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  subtitle text,
+  category text,
+  level text,
+  price numeric,
+  is_free boolean default false,
+  description text,
+  thumbnail_url text,
+  status text default 'draft' check (status in ('draft','published')),
+  created_at timestamp with time zone default now(),
+  created_by uuid references auth.users (id)
+);
+
+-- Enable RLS
+alter table public.courses enable row level security;
+
+-- Example policy: allow admins to insert
+-- Replace the role-check with your actual approach once you set up roles.
+-- For example, if you store role in auth.jwt() claims:
+--   (auth.jwt() ->> 'role') = 'admin'
+create policy "allow_admin_insert"
+on public.courses
+for insert
+with check (
+  -- TODO: update to your real admin role condition
+  (auth.jwt() ->> 'role') = 'admin'
+);
+```
+
+How to run this SQL:
+1) Open Supabase Dashboard -> SQL Editor.
+2) Paste the SQL and Run.
+3) Verify the `courses` table exists and RLS is enabled.
+
+Temporary Local Behavior:
+- The current frontend allows any signed-in user to access /admin and create courses, but inserts will fail unless your RLS policy authorizes the user. The UI shows friendly error messages if the table is missing or permission is denied.
+
+Production Role-Based Access:
+- Once roles are configured in Supabase, update:
+  - RLS policy to check for the Admin role in JWT claims or a user->role mapping table.
+  - Frontend guard in App.js (AdminProtectedRoute) to block non-admins client-side:
+    Example:
+    const isAdmin = user?.app_metadata?.role === 'admin';
+    if (!isAdmin) return <Navigate to="/student/overview" replace />;
+
+Notes:
+- Avoid hardcoding secrets. REACT_APP_SUPABASE_KEY must be the public anon key.
+- Do not log access tokens or PII.
