@@ -10,24 +10,19 @@
 .sidebar {
   grid-row: 1 / span 2;
 
-  /* Glassmorphism surface - use tokens and adapt to theme */
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--bg-panel) 86%, transparent) 0%,
-      color-mix(in srgb, var(--bg-panel) 72%, transparent) 100%
-    );
-  -webkit-backdrop-filter: blur(12px) saturate(120%);
-  backdrop-filter: blur(12px) saturate(120%);
+  /* Fully transparent: inherit global page/canvas background with no glass/blur */
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 
-  /* Borders adapt to mode while providing separation */
+  /* Keep a subtle divider for structure/contrast */
   border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
-
-  /* Soft inner edge highlight for glass depth */
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: none;
 
   padding: var(--space-4);
-  color: color-mix(in srgb, var(--color-text) 90%, white 10%);
+
+  /* Preserve strong readable text color from theme tokens */
+  color: var(--color-text);
 }
 
 .topbar {
@@ -79,15 +74,16 @@
   border: 1px solid transparent;
 }
 .navItem:hover {
-  background: color-mix(in srgb, var(--color-surface) 85%, transparent);
+  /* On transparent sidebar, use subtle overlay that works in both modes */
+  background: color-mix(in srgb, var(--bg-subtle) 65%, transparent);
   color: var(--color-text);
   text-shadow: 0 0 8px rgba(84, 17, 97, 0.18);
   transform: translateX(1px);
   border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
 }
 .navItem.active {
-  /* Distinct active with purple tint; ensure contrast in both themes */
-  background: color-mix(in srgb, var(--color-primary) 10%, var(--bg-panel) 90%);
+  /* Distinct active overlay; visible on transparent background in both themes */
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--bg-subtle) 86%);
   color: var(--color-text);
   position: relative;
   border: 1px solid color-mix(in srgb, var(--color-primary) 35%, var(--color-border) 65%);
@@ -505,26 +501,15 @@ textarea:focus {
 }
 
 /* Sidebar glass fine-tuning per theme */
-:root[data-theme='light'] .sidebar {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, #ffffff 84%, transparent) 0%,
-      color-mix(in srgb, #ffffff 72%, transparent) 100%
-    );
-  border-right: 1px solid color-mix(in srgb, var(--color-border) 85%, var(--color-primary) 15%);
-  color: color-mix(in srgb, var(--color-text) 95%, black 5%);
-}
+:root[data-theme='light'] .sidebar,
 :root[data-theme='dark'] .sidebar {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, rgba(15, 23, 42, 0.6) 100%, transparent) 0%,
-      color-mix(in srgb, rgba(15, 23, 42, 0.42) 100%, transparent) 100%
-    );
-  border-right: 1px solid color-mix(in srgb, var(--color-border) 55%, var(--color-primary) 45%);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.04),
-    0 8px 24px rgba(0,0,0,0.35);
-  color: color-mix(in srgb, var(--color-text) 92%, white 8%);
+  /* Force transparency in both themes; inherit global gradient/canvas */
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+
+  /* Maintain separator and readable text */
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-primary) 30%);
+  box-shadow: none;
+  color: var(--color-text);
 }
