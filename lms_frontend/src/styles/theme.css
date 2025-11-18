@@ -90,10 +90,13 @@
   --card-border: var(--border-subtle);
   --card-shadow: var(--shadow-sm);
 
-  /* Card hover/focus tokens (LIGHT) - very subtle translucent surface */
-  --card-hover-bg: rgba(17, 24, 39, 0.035); /* keeps text contrast high */
-  --card-hover-border: rgba(17, 24, 39, 0.12);
-  --card-hover-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
+  /* Card hover/focus tokens (LIGHT) - slightly stronger translucency for emphasis */
+  /* Background tint increased for clearer hover while maintaining text contrast */
+  --card-hover-bg: rgba(17, 24, 39, 0.06);
+  /* Border emphasis slightly stronger to outline the card on hover */
+  --card-hover-border: rgba(17, 24, 39, 0.18);
+  /* Shadow/glow intensity increased one notch (spread and opacity) */
+  --card-hover-shadow: 0 7px 20px rgba(2, 6, 23, 0.12);
 }
 
 :root[data-theme='dark'] {
@@ -173,10 +176,13 @@
   --card-border: var(--color-border);
   --card-shadow: var(--shadow-sm);
 
-  /* Card hover/focus tokens (DARK) - #541161 tinted translucency */
-  --card-hover-bg: rgba(84, 17, 97, 0.18);
-  --card-hover-border: rgba(84, 17, 97, 0.35);
-  --card-hover-shadow: 0 8px 22px rgba(84, 17, 97, 0.25);
+  /* Card hover/focus tokens (DARK) - #541161 tinted translucency, stronger for clarity */
+  /* Suggested adjustment: raise alpha to ~0.22 for clearer hover while preserving legibility */
+  --card-hover-bg: rgba(84, 17, 97, 0.22);
+  /* Border emphasis subtly increased */
+  --card-hover-border: rgba(84, 17, 97, 0.42);
+  /* Slightly stronger shadow/glow (radius/spread and opacity) */
+  --card-hover-shadow: 0 10px 26px rgba(84, 17, 97, 0.32);
 }
 
 /* Base document using tokens */
