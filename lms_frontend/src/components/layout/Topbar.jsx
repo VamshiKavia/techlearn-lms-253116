@@ -6,7 +6,7 @@ import { useUI } from '../../core/ui/UIContext';
 
 /**
  * PUBLIC_INTERFACE
- * Topbar: Displays minor app label and user actions (Menu toggle, Home, Login/Logout).
+ * Topbar: Displays app label and user actions. Remains statically aligned; no sidebar transforms applied here.
  */
 export function Topbar() {
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ export function Topbar() {
           aria-label="Toggle sidebar"
           onClick={toggleSidebar}
         >
-          {/* simple hamburger icon */}
           <span aria-hidden="true" style={{ display: 'inline-flex', flexDirection: 'column', gap: 3 }}>
             <span style={{ width: 18, height: 2, background: 'currentColor', borderRadius: 2 }} />
             <span style={{ width: 18, height: 2, background: 'currentColor', borderRadius: 2 }} />

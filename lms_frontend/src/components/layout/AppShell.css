@@ -1,6 +1,6 @@
 @import url('../../styles/premium-cards-shared.css');
 
-/* Intentionally minimal: global layout.css handles responsive push/overlay behavior */
+/* Keep AppShell styles minimal; main behavior handled via styles/layout.css */
 .app-shell,
 .app-content,
 .app-main {
