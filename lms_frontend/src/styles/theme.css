@@ -1,7 +1,7 @@
 ﻿/* Ocean Professional Theme Variables - Light Blue + White palette with Neon accents */
 :root {
   /* Surfaces */
-  --bg-canvas: #FFFFFF;         /* main background */
+  --bg-canvas: #FFFFFF;         /* main background (base fallback) */
   --bg-subtle: #F8FAFF;         /* very light blue wash */
   --bg-panel: #FFFFFF;          /* cards/panels */
   --sidebar-bg: #FFFFFF;        /* sidebar */
@@ -86,6 +86,10 @@
   --neon-emerald-25: rgba(52, 211, 153, 0.25);
   --neon-pink-20: rgba(244, 114, 182, 0.2);
   --neon-blue-25: rgba(96, 165, 250, 0.25);
+
+  /* Glass surface for neon background readability */
+  --glass-bg: rgba(17, 24, 39, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.18);
 
   /* Subtle neon card background token (very low contrast to keep minimalism) */
   --neon-card-bg: linear-gradient(
@@ -242,6 +246,20 @@ input, select, textarea, button { font: inherit; color: inherit; }
 }
 .card:hover { box-shadow: var(--shadow-md), var(--glow-sm); }
 
+/* Glass surface helper for neon background readability */
+.neon-surface,
+.modal,
+.Dialog,
+.dialog,
+.sheet,
+.panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: #F3F4F6;
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+}
+
 /* Optional high-contrast helpers for card content */
 .card .muted,
 [data-card] .muted { color: var(--text-muted); }
@@ -283,7 +301,7 @@ input, select, textarea, button { font: inherit; color: inherit; }
 .alert {
   border-radius: var(--radius-md);
   padding: 10px 12px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-subtle);
   background: #F8FAFF;
   color: var(--text-secondary);
 }

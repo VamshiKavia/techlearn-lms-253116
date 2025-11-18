@@ -4,7 +4,7 @@
   grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-  background: var(--bg-canvas);
+  background: transparent; /* background handled globally */
 }
 
 .sidebar {
@@ -74,6 +74,7 @@
 .main {
   grid-column: 2;
   padding: var(--space-6) 32px;
+  color: var(--text-primary);
 }
 
 .pageHeader {

@@ -22,7 +22,7 @@ export function Topbar() {
   const onLogin = () => navigate('/login');
 
   return (
-    <>
+    <div className="neon-surface" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>TechLearn LMS</div>
       <div style={{ display: 'flex', gap: 12 }}>
         <button className="btn btn-outline" onClick={onHome} aria-label="Go to Home">Home</button>
@@ -32,6 +32,6 @@ export function Topbar() {
           <button className="btn btn-primary" onClick={onLogin} aria-label="Login">Login</button>
         )}
       </div>
-    </>
+    </div>
   );
 }
