@@ -10,6 +10,7 @@
 .qa-ensure-visible .card,
 .qa-ensure-visible [data-card] {
   outline: 0; /* keep clean; can be changed to visualize */
+  background: transparent !important; /* avoid reintroducing surfaces */
 }
 
 .qa-ensure-visible .reveal,

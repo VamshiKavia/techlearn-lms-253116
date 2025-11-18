@@ -1,27 +1,59 @@
 :root {
   --card-radius: 14px;
-  --card-bg: #ffffff;
-  --card-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 1px 3px rgba(17, 24, 39, 0.1);
-  --card-shadow-hover: 0 8px 24px rgba(17, 24, 39, 0.14), 0 2px 8px rgba(17, 24, 39, 0.08);
-  --card-border: rgba(17, 24, 39, 0.08);
   --card-scale: 1.015;
   --card-glow-color: #541161;
+
+  /* Shadow/base tokens for light mode */
+  --card-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 1px 3px rgba(17, 24, 39, 0.1);
+  --card-shadow-hover: 0 8px 24px rgba(17, 24, 39, 0.14), 0 2px 8px rgba(17, 24, 39, 0.08);
+  --card-border: rgba(84, 17, 97, 0.18);
+  --card-border-hover: rgba(84, 17, 97, 0.35);
+  --card-border-focus: rgba(84, 17, 97, 0.5);
+
+  /* Purple glow */
   --card-glow: 0 0 0px rgba(84, 17, 97, 0), 0 0 0px rgba(84, 17, 97, 0);
   --card-glow-hover: 0 0 18px rgba(84, 17, 97, 0.22), 0 0 40px rgba(84, 17, 97, 0.18);
+
+  /* Shine */
   --shine-angle: 130deg;
   --shine-color: rgba(255, 255, 255, 0.28);
   --shine-size: 22%;
   --reveal-translate: 12px;
+
+  /* Transitions */
   --transition-fast: 200ms;
   --transition-medium: 360ms;
   --transition-slow: 640ms;
+
+  /* Text */
+  --card-text-strong: var(--text-primary, #111827);
+  --card-text-muted: var(--text-muted, rgba(17, 24, 39, 0.74));
 }
 
-/* Base selector for any card wrapper */
+/* Dark mode tuning */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-shadow: 0 1px 2px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.5);
+    --card-shadow-hover: 0 10px 26px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.6);
+    --card-border: rgba(84, 17, 97, 0.30);
+    --card-border-hover: rgba(84, 17, 97, 0.50);
+    --card-border-focus: rgba(84, 17, 97, 0.62);
+    --card-text-strong: rgba(255,255,255,0.95);
+    --card-text-muted: rgba(255,255,255,0.80);
+    --card-glow-hover: 0 0 18px rgba(184,116,208,0.35), 0 0 40px rgba(184,116,208,0.25);
+  }
+}
+
+/* Base selector for any card wrapper - transparent surface */
 .card,
-[data-card] {
+[data-card],
+.course-card,
+.topic-card,
+.progress-card,
+.review-card,
+.certificate-card {
   position: relative;
-  background: var(--card-bg);
+  background: transparent !important; /* Make all cards transparent */
   border-radius: var(--card-radius);
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
@@ -31,33 +63,68 @@
   transition:
     transform var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
     box-shadow var(--transition-medium) cubic-bezier(0.2, 0.6, 0.2, 1),
-    border-color var(--transition-medium) ease;
+    border-color var(--transition-medium) ease,
+    background-color var(--transition-medium) ease;
+  color: var(--card-text-strong);
+}
+
+/* Ensure internal text remains readable */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6,
+.card p, .card span, .card a,
+[data-card] h1, [data-card] h2, [data-card] h3, [data-card] h4, [data-card] h5, [data-card] h6,
+[data-card] p, [data-card] span, [data-card] a,
+.course-card h1, .course-card h2, .course-card h3, .course-card h4, .course-card h5, .course-card h6,
+.course-card p, .course-card span, .course-card a,
+.topic-card h1, .topic-card h2, .topic-card h3, .topic-card h4, .topic-card h5, .topic-card h6,
+.topic-card p, .topic-card span, .topic-card a,
+.progress-card h1, .progress-card h2, .progress-card h3, .progress-card h4, .progress-card h5, .progress-card h6,
+.progress-card p, .progress-card span, .progress-card a,
+.review-card h1, .review-card h2, .review-card h3, .review-card h4, .review-card h5, .review-card h6,
+.review-card p, .review-card span, .review-card a,
+.certificate-card h1, .certificate-card h2, .certificate-card h3, .certificate-card h4, .certificate-card h5, .certificate-card h6,
+.certificate-card p, .certificate-card span, .certificate-card a {
+  color: var(--card-text-strong);
+}
+
+.card .text-muted,
+[data-card] .text-muted,
+.course-card .text-muted,
+.topic-card .text-muted,
+.progress-card .text-muted,
+.review-card .text-muted,
+.certificate-card .text-muted {
+  color: var(--card-text-muted);
 }
 
 /* Hover/Focus: lift, scale, glow, expanded shadow */
 .card:hover,
 .card:focus-within,
 [data-card]:hover,
-[data-card]:focus-within {
+[data-card]:focus-within,
+.course-card:hover,
+.course-card:focus-within,
+.topic-card:hover,
+.topic-card:focus-within,
+.progress-card:hover,
+.progress-card:focus-within,
+.review-card:hover,
+.review-card:focus-within,
+.certificate-card:hover,
+.certificate-card:focus-within {
   box-shadow: var(--card-shadow-hover), var(--card-glow-hover);
   transform: translateY(-2px) scale(var(--card-scale));
-  border-color: rgba(84, 17, 97, 0.22);
-}
-
-/* Light-mode enhancement: softer purple glow suited for light surfaces */
-:root[data-theme='light'] .card:hover,
-:root[data-theme='light'] [data-card]:hover,
-:root[data-theme='light'] .card:focus-within,
-:root[data-theme='light'] [data-card]:focus-within {
-  box-shadow:
-    0 8px 24px rgba(17, 24, 39, 0.12),
-    0 0 0 1px rgba(84, 17, 97, 0.20),
-    0 0 22px rgba(84, 17, 97, 0.18);
+  border-color: var(--card-border-hover);
+  outline: none;
 }
 
 /* Gentle glow layer to smooth the purple ambience */
 .card::before,
-[data-card]::before {
+[data-card]::before,
+.course-card::before,
+.topic-card::before,
+.progress-card::before,
+.review-card::before,
+.certificate-card::before {
   content: "";
   position: absolute;
   inset: -1px;
@@ -70,13 +137,28 @@
 .card:hover::before,
 .card:focus-within::before,
 [data-card]:hover::before,
-[data-card]:focus-within::before {
+[data-card]:focus-within::before,
+.course-card:hover::before,
+.course-card:focus-within::before,
+.topic-card:hover::before,
+.topic-card:focus-within::before,
+.progress-card:hover::before,
+.progress-card:focus-within::before,
+.review-card:hover::before,
+.review-card:focus-within::before,
+.certificate-card:hover::before,
+.certificate-card:focus-within::before {
   box-shadow: var(--card-glow-hover);
 }
 
 /* Light-sweep shine effect */
 .card::after,
-[data-card]::after {
+[data-card]::after,
+.course-card::after,
+.topic-card::after,
+.progress-card::after,
+.review-card::after,
+.certificate-card::after {
   content: "";
   position: absolute;
   top: -20%;
@@ -100,7 +182,12 @@
 
 /* Trigger shine sweep on hover */
 .card:hover::after,
-[data-card]:hover::after {
+[data-card]:hover::after,
+.course-card:hover::after,
+.topic-card:hover::after,
+.progress-card:hover::after,
+.review-card:hover::after,
+.certificate-card:hover::after {
   opacity: 1;
   transform: skewX(-15deg) translateX(260%);
 }
@@ -110,7 +197,6 @@
   opacity: 0;
   transform: translateY(var(--reveal-translate));
 }
-
 .reveal-on-appear.revealed {
   opacity: 1;
   transform: translateY(0);
@@ -128,14 +214,29 @@
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .card,
-  [data-card] {
+  [data-card],
+  .course-card,
+  .topic-card,
+  .progress-card,
+  .review-card,
+  .certificate-card {
     transition: none !important;
     transform: none !important;
   }
   .card::after,
   [data-card]::after,
   .card::before,
-  [data-card]::before {
+  [data-card]::before,
+  .course-card::before,
+  .course-card::after,
+  .topic-card::before,
+  .topic-card::after,
+  .progress-card::before,
+  .progress-card::after,
+  .review-card::before,
+  .review-card::after,
+  .certificate-card::before,
+  .certificate-card::after {
     display: none !important;
   }
   .reveal-on-appear,

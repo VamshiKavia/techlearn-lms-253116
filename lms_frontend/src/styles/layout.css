@@ -145,17 +145,16 @@ a:active {
 }
 
 /* Card */
-/* Transparent card surfaces that inherit page background while preserving outline and depth */
+/* Transparent card surfaces inherit page background while preserving outline and depth */
 .card,
 [data-card] {
-  /* Use concrete surface token to ensure visibility on complex canvases */
-  background: var(--card-bg) !important;
+  background: transparent !important;
 
-  /* Slight glass blur for cards too, but subtle */
-  -webkit-backdrop-filter: blur(6px) saturate(110%);
-  backdrop-filter: blur(6px) saturate(110%);
+  /* Remove glass blur; we keep clean transparency */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 
-  /* Subtle neon-purple border glow */
+  /* Preserve border/shadow/halo */
   border: 1px solid var(--card-border, var(--border-subtle));
   border-radius: var(--radius-lg);
   box-shadow:
@@ -169,18 +168,17 @@ a:active {
     box-shadow var(--motion-duration-2) var(--motion-ease-out),
     transform var(--motion-duration-2) var(--motion-ease-out);
 
-  /* Clean typography adjustments */
+  /* Typography */
   color: var(--text-primary);
   line-height: 1.5;
   letter-spacing: 0.01em;
 
-  /* Balanced padding defaults for generic cards (specific components may override) */
   padding: clamp(14px, 2.4vw, 18px);
 
   will-change: transform, box-shadow;
-  position: relative; /* required for shine effect */
-  overflow: hidden;   /* clip shine */
-  isolation: isolate; /* prevent blend effects from ancestors affecting content */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 /* Shine sweep element */
