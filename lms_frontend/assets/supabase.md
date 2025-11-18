@@ -49,6 +49,11 @@ Security Notes:
 - Ensure REACT_APP_SUPABASE_KEY is the public anon key (not service role).
 - The app emits console.warn if REACT_APP_SITE_URL is not defined; it will fallback to window.location.origin for email redirects on sign-up confirmation.
 
+Role Handling (Frontend-only persistence for now):
+- The Login page includes a required Role selector (Admin, Instructor, Student).
+- The selected role is stored in localStorage under 'techlearn.role' and can be read by the app (e.g., to conditionally navigate to '/admin' when the feature flag REACT_APP_FEATURE_FLAGS includes 'roleBasedRedirect').
+- No secrets are altered and no sensitive data is stored; once roles are available in Supabase (e.g., as JWT claims in app_metadata), update client guards to read role from user/app_metadata instead of localStorage.
+
 ---
 
 ## Courses Table (Expected Schema) and RLS
