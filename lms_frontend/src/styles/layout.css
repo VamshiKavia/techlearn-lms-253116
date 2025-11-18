@@ -125,20 +125,44 @@ a:active {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm), var(--edge-light);
+
+  /* Smooth transitions including hover tokens */
   transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
     box-shadow var(--transition-base),
-    transform var(--transition-base),
-    border-color var(--transition-fast);
+    transform var(--transition-base);
+
   /* Maintain readable text color tokens */
   color: var(--text-primary);
 }
 
-/* Optional: provide a subtle hover ring without adding background */
+/* Subtle hover/focus background using theme tokens */
+.card:hover,
+.card:focus-within,
+[data-card]:hover,
+[data-card]:focus-within {
+  background-color: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
+  box-shadow: var(--card-hover-shadow), var(--edge-light);
+}
+
+/* Ensure internal interactive elements retain contrast */
+.card > *,
+[data-card] > * {
+  color: var(--text-primary);
+}
+.card a, .card button,
+[data-card] a, [data-card] button {
+  color: var(--text-primary);
+}
+
+/* Optional: elevated and interactive helpers */
 .card--elevated,
 [data-card].card--elevated { box-shadow: var(--shadow-md), var(--edge-light); }
 .card--interactive:hover,
 [data-card].card--interactive:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--card-hover-shadow), var(--edge-light);
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--color-border) 60%, var(--color-primary) 40%);
 }
@@ -146,7 +170,7 @@ a:active {
 /* Reduced motion for cards */
 @media (prefers-reduced-motion: reduce) {
   .card,
-  [data-card] { transform: none; }
+  [data-card] { transform: none; transition: none; }
 }
 
 /* Modal primitives */

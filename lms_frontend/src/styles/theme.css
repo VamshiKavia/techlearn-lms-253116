@@ -84,6 +84,16 @@
   /* Canvas tokens */
   --bg-canvas: var(--color-background);
   --bg-canvas-gradient: var(--color-background);
+
+  /* Card baseline tokens (transparent by default) */
+  --card-bg: transparent;
+  --card-border: var(--border-subtle);
+  --card-shadow: var(--shadow-sm);
+
+  /* Card hover/focus tokens (LIGHT) - very subtle translucent surface */
+  --card-hover-bg: rgba(17, 24, 39, 0.035); /* keeps text contrast high */
+  --card-hover-border: rgba(17, 24, 39, 0.12);
+  --card-hover-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
 }
 
 :root[data-theme='dark'] {
@@ -157,6 +167,16 @@
   /* Canvas background tokens for global dark canvas */
   --bg-canvas: #000000;
   --bg-canvas-gradient: linear-gradient(180deg, #541161 0%, #000000 100%);
+
+  /* Card baseline (inherit) */
+  --card-bg: transparent;
+  --card-border: var(--color-border);
+  --card-shadow: var(--shadow-sm);
+
+  /* Card hover/focus tokens (DARK) - #541161 tinted translucency */
+  --card-hover-bg: rgba(84, 17, 97, 0.18);
+  --card-hover-border: rgba(84, 17, 97, 0.35);
+  --card-hover-shadow: 0 8px 22px rgba(84, 17, 97, 0.25);
 }
 
 /* Base document using tokens */
