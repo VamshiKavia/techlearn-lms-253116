@@ -22,6 +22,9 @@ body {
 :root[data-theme='dark'] html,
 :root[data-theme='dark'] body,
 :root[data-theme='dark'] #root {
+  /* Solid fallback first for broader compatibility */
+  background: var(--bg-canvas);
+  /* Preferred gradient per requirement */
   background: var(--bg-canvas-gradient);
   background-attachment: fixed;
   background-size: cover;
