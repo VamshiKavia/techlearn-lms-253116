@@ -3,8 +3,7 @@ import './styles/theme.css';
 import './styles/layout.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
-import './styles/theme.css';
-import './styles/layout.css';
+import { ThemeProvider } from './core/theme/ThemeContext';
 import { AppShell } from './components/layout/AppShell';
 import { StudentOverviewPage } from './pages/student/StudentOverviewPage';
 import { CatalogPage } from './pages/common/CatalogPage';
@@ -87,11 +86,12 @@ function AdminProtectedRoute({ children }) {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        {/* Dev-only Supabase health check: logs to console without UI changes */}
-        <SupabaseDevHealthCheck />
-        <AppShell>
-          <Routes>
+      <ThemeProvider>
+        <Router>
+          {/* Dev-only Supabase health check: logs to console without UI changes */}
+          <SupabaseDevHealthCheck />
+          <AppShell>
+            <Routes>
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/auth" element={<LoginRegister />} />
@@ -187,7 +187,8 @@ function App() {
             <Route path="*" element={<Navigate to="/student/overview" replace />} />
           </Routes>
         </AppShell>
-      </Router>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

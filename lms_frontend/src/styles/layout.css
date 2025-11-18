@@ -4,13 +4,13 @@
   grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-  background: var(--bg-canvas);
+  background: var(--color-background);
 }
 
 .sidebar {
   grid-row: 1 / span 2;
   background: var(--sidebar-bg);
-  border-right: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--color-border);
   padding: var(--space-4);
 }
 
@@ -18,23 +18,24 @@
   grid-column: 2;
   height: 56px;
   background: var(--header-bg);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-5);
+  color: var(--color-text);
 }
 
 .brand {
   font-weight: 700;
   letter-spacing: -0.2px;
-  color: var(--text-primary);
+  color: var(--color-text);
   font-size: 18px;
 }
 
 .userEmail {
   margin-top: 6px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-size: 12px;
 }
 
@@ -50,12 +51,12 @@
   height: 40px;
   padding: 0 var(--space-3);
   border-radius: var(--radius-md);
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast), text-shadow var(--transition-fast);
 }
 
-.navItem:hover { background: var(--bg-subtle); color: var(--text-primary); text-shadow: 0 0 8px rgba(139, 92, 246, 0.25); }
+.navItem:hover { background: var(--color-surface); color: var(--color-text); text-shadow: 0 0 8px rgba(139, 92, 246, 0.25); }
 .navItem.active {
   background: #F5F3FF; /* violet-50 */
   color: var(--text-primary);
@@ -87,12 +88,12 @@
   font-size: 24px;
   line-height: 32px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text);
   margin: 0 0 6px 0;
 }
 
 .pageHeader .subtitle {
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 
@@ -183,7 +184,7 @@
 .statLabel {
   text-transform: uppercase;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-weight: 600;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
@@ -237,17 +238,17 @@
 .videoLessonsTitle { margin-top: var(--space-3); font-size: 14px; font-weight: 600; }
 .lessonRow {
   display: grid; grid-template-columns: 1fr auto auto; gap: var(--space-3); align-items: center;
-  padding: 10px 0; border-bottom: 1px solid var(--border-subtle);
+  padding: 10px 0; border-bottom: 1px solid var(--color-border);
 }
 .lessonRow:last-child { border-bottom: none; }
 .lessonDuration { color: var(--text-muted); font-size: 14px; }
 .lessonPlay {
-  background: transparent; border: 1px solid var(--border-subtle); color: var(--text-link);
+  background: transparent; border: 1px solid var(--color-border); color: var(--color-link);
   font-weight: 600; cursor: pointer; border-radius: var(--radius-md); padding: 6px 10px;
   transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-.lessonPlay:hover { background: var(--bg-subtle); border-color: rgba(139, 92, 246, 0.35); }
-.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring-neon); }
+.lessonPlay:hover { background: var(--color-surface); border-color: rgba(139, 92, 246, 0.35); }
+.lessonPlay:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
 .divider { border: none; border-top: 1px solid var(--border-subtle); margin: var(--space-6) 0; }
 
