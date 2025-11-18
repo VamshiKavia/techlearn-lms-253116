@@ -106,6 +106,10 @@
   --card-hover-border: rgba(17, 24, 39, 0.18);
   /* Shadow/glow intensity increased one notch (spread and opacity) */
   --card-hover-shadow: 0 7px 20px rgba(2, 6, 23, 0.12);
+
+  /* New minimal tokens */
+  --neon-purple: #541161;
+  --sidebar-glass-strength: 12px;
 }
 
 /* ========== Global Motion Keyframes & Utilities ========== */
@@ -266,6 +270,10 @@
   --card-hover-border: rgba(84, 17, 97, 0.42);
   /* Slightly stronger shadow/glow (radius/spread and opacity) */
   --card-hover-shadow: 0 10px 26px rgba(84, 17, 97, 0.32);
+
+  /* New minimal tokens */
+  --neon-purple: #b874d0;
+  --sidebar-glass-strength: 14px;
 }
 
 /* Base document using tokens */
