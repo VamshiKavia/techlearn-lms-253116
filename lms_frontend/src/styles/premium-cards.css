@@ -59,10 +59,9 @@
   box-shadow: var(--card-shadow);
   overflow: clip; /* hide shine sweep overflow while keeping rounded corners */
   transform: translateZ(0); /* enable GPU accel */
-  will-change: auto;
-  /* Disable card transitions and animations globally at card source */
-  transition: none !important;
-  animation: none !important;
+  will-change: transform, box-shadow;
+  /* Smooth, subtle transitions controlled by theme tokens */
+  transition: var(--card-hover-transition, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1));
   color: var(--card-text-strong);
 }
 
@@ -109,9 +108,11 @@
 .review-card:focus-within,
 .certificate-card:hover,
 .certificate-card:focus-within {
-  /* Preserve static hover visuals, remove motion */
-  box-shadow: var(--card-shadow-hover), var(--card-glow-hover);
-  transform: none !important;
+  /* Subtle lift/scale with brand glow and shadow expansion */
+  transform: translateY(calc(-1 * var(--card-hover-translate, 4px))) scale(var(--card-hover-scale, 1.03));
+  box-shadow:
+    var(--card-hover-shadow, 0 10px 28px rgba(2, 6, 23, 0.16)),
+    var(--card-glow-hover, 0 0 16px rgba(84, 17, 97, 0.24), 0 0 36px rgba(84, 17, 97, 0.16));
   border-color: var(--card-border-hover);
   outline: none;
 }
@@ -217,6 +218,7 @@
   .certificate-card {
     transition: none !important;
     transform: none !important;
+    /* maintain static emphasis on hover */
   }
   .card::after,
   [data-card]::after,

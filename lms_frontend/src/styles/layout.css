@@ -147,7 +147,7 @@ a:active {
 /* Transparent card surfaces that inherit page background while preserving outline and depth */
 .card,
 [data-card] {
-  /* Keep surfaces transparent; hover effects come from premium-cards.css */
+  /* Keep surfaces transparent; hover effects come from unified rules below */
   background: transparent !important;
 
   /* Remove glass blur to stay consistent with unified Full Stack effect */
@@ -161,9 +161,9 @@ a:active {
     var(--card-shadow, var(--shadow-sm)),
     0 0 0 1px rgba(84, 17, 97, 0.10);
 
-  /* Smooth transitions; scaling/glow handled in premium-cards hover */
-  /* Disable card transitions; keep static visuals */
-  transition: none !important;
+  /* Smooth transitions for transform/shadow per requirements */
+  transition: var(--card-hover-transition, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1));
+  will-change: transform, box-shadow;
 
   /* Clean typography adjustments */
   color: var(--text-primary);
@@ -172,17 +172,39 @@ a:active {
 
   /* Balanced padding defaults for generic cards (specific components may override) */
   padding: clamp(14px, 2.4vw, 18px);
-
-  will-change: transform, box-shadow;
 }
 
 /* Delegate hover visuals to premium-cards.css shared selectors to ensure consistency */
 .card:hover,
 .card:focus-within,
 [data-card]:hover,
-[data-card]:focus-within {
-  /* Keep background transparent; the tint, glow, and scale come from unified rules */
-  background-color: transparent;
+[data-card]:focus-within,
+.courseCard:hover,
+.courseCard:focus-within {
+  /* Transform: slight lift and scale with shadow/glow expansion */
+  transform: translateY(calc(-1 * var(--card-hover-translate, 4px))) scale(var(--card-hover-scale, 1.03));
+  box-shadow:
+    var(--card-hover-shadow, 0 10px 28px rgba(2, 6, 23, 0.16)),
+    var(--card-hover-glow, 0 0 16px rgba(84, 17, 97, 0.24), 0 0 36px rgba(84, 17, 97, 0.16));
+  border-color: var(--card-hover-border, color-mix(in srgb, var(--color-border) 55%, var(--color-primary) 45%));
+  background-color: transparent; /* preserve visibility */
+}
+
+/* Motion preferences: disable transforms while keeping static hover shadow/border */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover,
+  .card:focus-within,
+  [data-card]:hover,
+  [data-card]:focus-within,
+  .courseCard:hover,
+  .courseCard:focus-within {
+    transform: none !important;
+    transition: none !important;
+    /* keep expanded shadow statically for clear affordance */
+    box-shadow:
+      var(--card-hover-shadow, 0 10px 28px rgba(2, 6, 23, 0.16)),
+      var(--card-hover-glow, 0 0 16px rgba(84, 17, 97, 0.24), 0 0 36px rgba(84, 17, 97, 0.16));
+  }
 }
 
 .card:focus-visible,
@@ -321,8 +343,13 @@ a:active {
 @media (max-width: 1023px) { .courseGrid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 639px)  { .courseGrid { grid-template-columns: 1fr; } }
 
-.courseCard { padding: 18px; transition: none !important; border-radius: var(--radius-lg); }
-.courseCard:hover { box-shadow: var(--shadow-md); transform: none !important; }
+.courseCard {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  transition: var(--card-hover-transition, transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1));
+  will-change: transform, box-shadow;
+}
+.courseCard:hover { /* hover transform defined above; keep here as no-op placeholder */ }
 .courseTitle { font-size: 18px; font-weight: 700; line-height: 1.35; letter-spacing: 0.01em; margin-bottom: 8px; }
 .metaRow { display: flex; gap: 14px; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; align-items: center; }
 .viewBtn { margin-top: 12px; height: 34px; box-shadow: 0 2px 10px rgba(84,17,97,0.16); }
