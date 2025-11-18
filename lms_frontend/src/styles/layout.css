@@ -56,16 +56,17 @@
 
 .navItem:hover { background: var(--bg-subtle); color: var(--text-primary); }
 .navItem.active {
-  background: #F0F5FF;
+  background: #EFF6FF; /* blue-50 */
   color: var(--text-primary);
   position: relative;
+  border: 1px solid #DBEAFE; /* blue-100 */
 }
 .navItem.active::before {
   content: "";
   position: absolute;
   left: 0; top: 8px; bottom: 8px;
   width: 3px;
-  background: #1D4ED8;
+  background: var(--primary);
   border-radius: 3px;
 }
 
@@ -149,7 +150,7 @@
   font-weight: 700;
   color: var(--text-primary);
 }
-.statValue.accent { color: #1D4ED8; }
+.statValue.accent { color: var(--primary); }
 .statSub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
 
 .detailsGrid {

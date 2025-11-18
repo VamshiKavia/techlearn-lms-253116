@@ -1,42 +1,53 @@
-/* Ocean Professional Theme Variables */
+/* Ocean Professional Theme Variables - Light Blue + White palette */
 :root {
-  --bg-canvas: #FFFFFF;
-  --bg-subtle: #F7F8FA;
-  --bg-panel: #FFFFFF;
-  --sidebar-bg: #FFFFFF;
-  --header-bg: #FFFFFF;
+  /* Surfaces */
+  --bg-canvas: #FFFFFF;         /* main background */
+  --bg-subtle: #F8FAFF;         /* very light blue wash */
+  --bg-panel: #FFFFFF;          /* cards/panels */
+  --sidebar-bg: #FFFFFF;        /* sidebar */
+  --header-bg: #FFFFFF;         /* topbar */
 
-  --text-primary: #111827;
-  --text-secondary: #4B5563;
-  --text-muted: #6B7280;
+  /* Text */
+  --text-primary: #0F172A;      /* slate-900 for strong contrast on white */
+  --text-secondary: #334155;    /* slate-700 */
+  --text-muted: #64748B;        /* slate-500 */
   --text-inverse: #FFFFFF;
-  --text-link: #1D4ED8;
+  --text-link: #2563EB;         /* blue-600 */
 
-  --border-subtle: #E5E7EB;
-  --border-strong: #D1D5DB;
+  /* Borders */
+  --border-subtle: #E5E7EB;     /* gray-200 */
+  --border-strong: #CBD5E1;     /* slate-300 */
 
-  --primary: #111827;
-  --primary-600: #0B1220;
+  /* Primary brand (buttons/active states) */
+  --primary: #2563EB;           /* blue-600 */
+  --primary-600: #1D4ED8;       /* blue-700 (hover/darker) */
   --primary-contrast: #FFFFFF;
 
-  --accent: #1F2937;
-  --accent-contrast: #FFFFFF;
+  /* Accent (sparingly for highlights, not main CTAs) */
+  --accent: #60A5FA;            /* blue-400 */
+  --accent-contrast: #0F172A;
 
-  --success: #16A34A;
-  --warning: #F59E0B;
-  --info: #2563EB;
+  /* Status */
+  --success: #10B981;           /* emerald-500 */
+  --warning: #F59E0B;           /* amber-500 */
+  --info: #3B82F6;              /* blue-500 */
 
-  --chip-bg: #111827;
+  /* Chips/Pills */
+  --chip-bg: #2563EB;
   --chip-text: #FFFFFF;
 
+  /* Misc */
   --rating-star: #F59E0B;
   --progress-track: #E5E7EB;
-  --progress-fill: #16A34A;
+  --progress-fill: #2563EB;
 
-  --focus-ring: #2563EB33;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.10);
+  /* Focus ring with accessible tint */
+  --focus-ring: #93C5FD;        /* blue-300 */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.06);
+  --shadow-md: 0 2px 8px rgba(2, 6, 23, 0.08);
+  --shadow-lg: 0 8px 24px rgba(2, 6, 23, 0.10);
 }
 
 html, body, #root {

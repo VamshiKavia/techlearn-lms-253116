@@ -21,7 +21,12 @@ export function CourseCard({ title, rating, students, duration, onView }) {
         <span>•</span>
         <span>{duration}</span>
       </div>
-      <button className="btn btn-primary viewBtn" onClick={onView} aria-label={`View ${title}`}>
+      <button
+        className="btn btn-primary viewBtn"
+        onClick={onView}
+        aria-label={`View ${title}`}
+        style={{ alignSelf: 'flex-start' }}
+      >
         View
       </button>
     </div>

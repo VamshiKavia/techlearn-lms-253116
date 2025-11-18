@@ -23,7 +23,7 @@ export function Topbar() {
 
   return (
     <>
-      <div style={{ color: '#64748B', fontSize: 12 }}>TechLearn LMS</div>
+      <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>TechLearn LMS</div>
       <div style={{ display: 'flex', gap: 12 }}>
         <button className="btn btn-outline" onClick={onHome}>Home</button>
         {user ? (
