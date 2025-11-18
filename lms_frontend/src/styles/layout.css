@@ -4,7 +4,8 @@
   grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-  background: var(--color-background);
+  /* Transparent so global canvas (html/body/#root) gradient is visible */
+  background: transparent;
 }
 
 .sidebar {

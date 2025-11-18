@@ -128,6 +128,12 @@
     color-mix(in srgb, var(--color-elevated) 94%, var(--neon-accent) 6%)
   );
   --neon-card-bg-fallback: linear-gradient(180deg, rgba(192,132,252,0.06), rgba(221,214,254,0.06));
+
+  /* Canvas background tokens for global dark canvas only */
+  --bg-canvas: #0b1020; /* static near-black fallback */
+  --bg-canvas-gradient:
+    radial-gradient(1200px 800px at 20% 0%, rgba(124, 58, 237, 0.18) 0%, rgba(124, 58, 237, 0.10) 22%, rgba(11, 16, 32, 0.92) 55%, rgba(11, 16, 32, 1) 100%),
+    linear-gradient(180deg, #0b1020 0%, #0b1020 100%);
 }
 
 /* Base document using new tokens */
