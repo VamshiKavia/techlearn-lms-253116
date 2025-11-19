@@ -95,7 +95,6 @@ export function Login() {
       let metaRole = '';
       try {
         const u = (await (async () => user)()) || null;
-        // The local 'user' might not update synchronously; prefer the chosen role for immediate redirect.
         metaRole =
           u?.user_metadata?.role ||
           u?.app_metadata?.role ||
@@ -146,9 +145,28 @@ export function Login() {
     />
   );
 
+  // --- STYLE CHANGES: Transparent background wrapper, theme-compliant semi-transparent surface card with shadow ---
   return (
-    <div style={{ display: 'grid', placeItems: 'center', minHeight: '100vh', background: 'var(--bg-subtle)' }}>
-      <div className="card" style={{ width: 'min(420px, 92vw)', padding: 20, borderRadius: 12 }}>
+    <div
+      style={{
+        display: 'grid',
+        placeItems: 'center',
+        minHeight: '100vh',
+        background: 'transparent',
+      }}
+    >
+      <div
+        className="card"
+        style={{
+          width: 'min(420px, 92vw)',
+          padding: 20,
+          borderRadius: 14,
+          background: 'rgba(249,250,251,0.82)', // --surface w/ subtle alpha
+          boxShadow:
+            '0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 1.5px 3px rgba(0,0,0,0.030)',
+          backdropFilter: 'blur(4px)',
+        }}
+      >
         <div style={{ display: 'grid', gap: 8, marginBottom: 12 }}>
           <div style={{ fontWeight: 800, fontSize: 20, letterSpacing: -0.2, color: 'var(--text-primary)' }}>TechLearn</div>
           <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Welcome back</div>
